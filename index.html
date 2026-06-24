@@ -15,7 +15,7 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- Background decorative glows -->
+    <!-- Premium background ambient shapes -->
     <div class="background-glow top-left"></div>
     <div class="background-glow bottom-right"></div>
 
@@ -26,7 +26,10 @@
             </a>
             <nav class="nav-links">
                 <a href="#home" class="nav-item active" data-target="home">Home</a>
+                <a href="#about" class="nav-item" data-target="about">About</a>
                 <a href="#projects" class="nav-item" data-target="projects">Projects</a>
+                <a href="#pathfinder" class="nav-item" data-target="pathfinder">Pathfinder</a>
+                <a href="#resources" class="nav-item" data-target="resources">Resources</a>
                 <a href="#donate" class="nav-item" data-target="donate">Donate</a>
                 <a href="#contact" class="nav-item" data-target="contact">Contact</a>
             </nav>
@@ -37,12 +40,13 @@
         <!-- Home Section -->
         <section class="page-section" id="home-section">
             <div class="hero-block">
-                <h1 class="hero-title">Empowering the Future Through Tech & Finance</h1>
+                <span class="hero-tag">Empowering the Next Generation</span>
+                <h1 class="hero-title">Bridging Tech, Math, & Quantitative Finance</h1>
                 <p class="hero-subtitle">
-                    Ruweida's Community Initiative is dedicated to bridging educational gaps by providing youth and communities with vital skills in programming, mathematical thinking, and financial literacy.
+                    Ruweida's Community Initiative provides youth and young adults with free, high-impact workshops in software engineering, mathematical thinking, and modern financial literacy.
                 </p>
                 <div class="hero-actions">
-                    <button class="btn btn-primary" id="explore-projects-btn">Explore Our Projects</button>
+                    <button class="btn btn-primary" id="explore-projects-btn">Explore Projects</button>
                     <button class="btn btn-secondary" id="support-mission-btn">Support Our Mission</button>
                 </div>
             </div>
@@ -50,15 +54,43 @@
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-num">100%</div>
-                    <div class="stat-label">Free Programs</div>
+                    <div class="stat-label">Free Education</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-num">8+</div>
+                    <div class="stat-label">Outreach Projects</div>
                 </div>
                 <div class="stat-card">
                     <div class="stat-num">1-on-1</div>
                     <div class="stat-label">Youth Mentorship</div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-num">Future</div>
-                    <div class="stat-label">Focused Learning</div>
+            </div>
+        </section>
+
+        <!-- About / Founder Section -->
+        <section class="page-section" id="about-section">
+            <div class="about-container">
+                <div class="about-image-column">
+                    <div class="avatar-placeholder">
+                        <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <div class="about-text-column">
+                    <span class="sub-heading">About the Program</span>
+                    <h2 class="about-title">Meet the Founder</h2>
+                    <p class="about-paragraph">
+                        Welcome! I started **Ruweida's Community Initiative** to open doors for youth into the fast-growing worlds of technology, advanced math, and quantitative finance. Growing up, I saw how access to these topics can shape careers, yet they are rarely taught in standard school programs.
+                    </p>
+                    <p class="about-paragraph">
+                        Our mission is simple: to make coding, budgeting, algorithms, and mathematical logic approachable and free for every student. Whether you are building your first game in Python or learning how trading models work, we are here to support your journey.
+                    </p>
+                    <div class="founder-signature">
+                        <span class="founder-name">Ruweida Ibrahim</span>
+                        <span class="founder-title">Founder, Ruweida's Community Initiative</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -66,8 +98,8 @@
         <!-- Projects Section -->
         <section class="page-section" id="projects-section">
             <div class="section-header">
-                <h2 class="section-title">Our Programs & Projects</h2>
-                <p class="section-subtitle">Specially curated programs designed to inspire, educate, and equip youth for a tech-driven tomorrow.</p>
+                <h2 class="section-title">Our Programs & Workshops</h2>
+                <p class="section-subtitle">A curated suite of projects designed to foster analytical thinking, financial wisdom, and technical mastery.</p>
             </div>
 
             <div class="projects-grid">
@@ -80,7 +112,7 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">5-Day Coding Program</h3>
-                    <p class="project-card-desc">An immersive, hands-on workshop designed to introduce youth to programming logic, web development basics, and software design principles.</p>
+                    <p class="project-card-desc">An immersive, hands-on workshop introducing programming logic, web development basics, and software design principles.</p>
                 </div>
 
                 <!-- Program 2 -->
@@ -92,7 +124,7 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Financial Literacy</h3>
-                    <p class="project-card-desc">Equipping young adults with real-world financial skills. Topics cover basic budgeting, the power of compound interest, savings, and investments.</p>
+                    <p class="project-card-desc">Practical skills for the real world. Covering personal budgeting, compound interest, smart saving habits, and investment basics.</p>
                 </div>
 
                 <!-- Program 3 -->
@@ -105,7 +137,7 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Youth Math Tutoring</h3>
-                    <p class="project-card-desc">Providing direct support to strengthen academic foundations. Focused on building deep confidence in algebra, geometry, calculus, and logic.</p>
+                    <p class="project-card-desc">Strengthening mathematical foundations. Direct academic coaching in algebra, geometry, trigonometry, and calculus.</p>
                 </div>
 
                 <!-- Program 4 -->
@@ -117,10 +149,10 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Quant Finance & Tech</h3>
-                    <p class="project-card-desc">For advanced learners curious about the intersection of math, coding, and finance. Covers quantitative modeling, algorithmic thinking, and modern tech.</p>
+                    <p class="project-card-desc">An introduction to quantitative analysis. Bridging mathematical algorithms, Python scripts, and stock market modeling.</p>
                 </div>
 
-                <!-- Program 5 (NEW) -->
+                <!-- Program 5 -->
                 <div class="project-card">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -129,10 +161,10 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Algorithmic Trading</h3>
-                    <p class="project-card-desc">Learn how math and data fuel modern markets. Introduction to writing basic algorithms that execute simple, data-driven financial trades.</p>
+                    <p class="project-card-desc">Learn how math rules Wall Street. Introduce students to writing simple algorithms that analyze historical stock prices and make decisions.</p>
                 </div>
 
-                <!-- Program 6 (NEW) -->
+                <!-- Program 6 -->
                 <div class="project-card">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -142,10 +174,10 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Data Science for Youth</h3>
-                    <p class="project-card-desc">Unlocking the power of data. Youth learn how to gather, clean, analyze, and visualize real-world datasets to solve problems using Python.</p>
+                    <p class="project-card-desc">Discover the story behind numbers. Gather, clean, and visualize real-world datasets using charts and Python analysis libraries.</p>
                 </div>
 
-                <!-- Program 7 (NEW) -->
+                <!-- Program 7 -->
                 <div class="project-card">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -153,10 +185,10 @@
                         </svg>
                     </div>
                     <h3 class="project-card-title">Python Game Dev</h3>
-                    <p class="project-card-desc">Applying algebra and geometry in a fun way! Students build their own 2D games while mastering core programming physics and logic.</p>
+                    <p class="project-card-desc">Use math to build games! Program game physics, keyboard movement, and collision detection to create interactive 2D projects.</p>
                 </div>
 
-                <!-- Program 8 (NEW) -->
+                <!-- Program 8 -->
                 <div class="project-card">
                     <div class="project-icon">
                         <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -165,8 +197,133 @@
                             <path d="M18 10h-4v4h4v-4z"></path>
                         </svg>
                     </div>
-                    <h3 class="project-card-title">Fintech & Entrepreneurship</h3>
-                    <p class="project-card-desc">Exploring how digital wallets, smart contracts, and technology are reshaping the future of businesses and global financial systems.</p>
+                    <h3 class="project-card-title">Fintech Foundations</h3>
+                    <p class="project-card-desc">Explore the future of money. A kid-friendly introduction to digital banking systems, smart contracts, and finance technologies.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Program Pathfinder Section -->
+        <section class="page-section" id="pathfinder-section">
+            <div class="section-header">
+                <h2 class="section-title">Interactive Pathfinder</h2>
+                <p class="section-subtitle">Not sure where to begin? Answer one quick question to find the best project recommendations for you or your youth.</p>
+            </div>
+
+            <div class="pathfinder-container">
+                <div class="pathfinder-card">
+                    <h3 class="pathfinder-question">What are you most excited to learn?</h3>
+                    <div class="pathfinder-options">
+                        <button class="pathfinder-opt-btn" data-interest="tech">
+                            <span class="opt-emoji">💻</span>
+                            <span class="opt-text">Building websites, games, and writing code</span>
+                        </button>
+                        <button class="pathfinder-opt-btn" data-interest="finance">
+                            <span class="opt-emoji">📈</span>
+                            <span class="opt-text">Managing money, savings, and stock trading models</span>
+                        </button>
+                        <button class="pathfinder-opt-btn" data-interest="math">
+                            <span class="opt-emoji">🔢</span>
+                            <span class="opt-text">Solving logic puzzles, algebra, and calculus</span>
+                        </button>
+                    </div>
+
+                    <!-- Dynamic Recommendation Card -->
+                    <div class="pathfinder-results hidden" id="pathfinder-results-box">
+                        <span class="result-badge">Our Recommendation</span>
+                        <h4 class="result-title" id="result-title-text">Python Game Dev</h4>
+                        <p class="result-desc" id="result-desc-text">We recommend our Python Game Development program to turn math into coding action!</p>
+                        <button class="btn btn-secondary btn-sm" id="pathfinder-reset-btn">Start Over</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Free Resource Library Section -->
+        <section class="page-section" id="resources-section">
+            <div class="section-header">
+                <h2 class="section-title">Free Learning Resources</h2>
+                <p class="section-subtitle">Start learning immediately with these highly recommended, completely free platforms and tools.</p>
+            </div>
+
+            <div class="resources-grid">
+                <a href="https://www.codecademy.com" target="_blank" class="resource-link-card">
+                    <h4 class="resource-title">Codecademy (Free Tier)</h4>
+                    <p class="resource-desc">Interactive, browser-based coding tutorials covering Python, HTML, and web foundations.</p>
+                    <span class="resource-action">Visit Platform &rarr;</span>
+                </a>
+                <a href="https://www.khanacademy.org" target="_blank" class="resource-link-card">
+                    <h4 class="resource-title">Khan Academy Math</h4>
+                    <p class="resource-desc">Excellent, comprehensive step-by-step tutoring in arithmetic, algebra, trigonometry, and calculus.</p>
+                    <span class="resource-action">Visit Platform &rarr;</span>
+                </a>
+                <a href="https://www.investopedia.com" target="_blank" class="resource-link-card">
+                    <h4 class="resource-title">Investopedia Education</h4>
+                    <p class="resource-desc">The world's largest dictionary of financial terms, stock market strategies, and money lessons.</p>
+                    <span class="resource-action">Visit Platform &rarr;</span>
+                </a>
+                <a href="https://www.kaggle.com" target="_blank" class="resource-link-card">
+                    <h4 class="resource-title">Kaggle Learn</h4>
+                    <p class="resource-desc">Short, practical courses in Python data science, machine learning models, and SQL scripting.</p>
+                    <span class="resource-action">Visit Platform &rarr;</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- FAQs Accordion Section -->
+        <section class="page-section" id="faqs-section">
+            <div class="section-header">
+                <h2 class="section-title">Frequently Asked Questions</h2>
+                <p class="section-subtitle">Quick answers to typical questions about our workshops, tutoring schedules, and volunteer opportunities.</p>
+            </div>
+
+            <div class="faq-accordion-container">
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Are the programs completely free?</span>
+                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, all our workshops, tutoring sessions, and study booklets are 100% free of charge. We believe money should never be a barrier to high-quality education in tech and finance.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Who is eligible to participate?</span>
+                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Our programs are primarily designed for youth, students, and young adults curious about tech, math, and finance. However, we welcome anyone who wants to learn the foundations!</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>How do I register for a workshop?</span>
+                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>You can send us a message through the contact form at the bottom of this website. Our team will get in touch with you to send schedules and link details.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question-btn">
+                        <span>Can I volunteer or mentor?</span>
+                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Absolutely! If you have a background in software development, finance, economics, or math, we would love to have you join as a mentor. Please reach out via email.</p>
+                    </div>
                 </div>
             </div>
         </section>
