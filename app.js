@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function scrollToSection(targetId) {
         const targetSection = document.getElementById(targetId + '-section');
         if (targetSection) {
-            // Scroll to section with offset for sticky header
             const headerOffset = 80;
             const elementPosition = targetSection.getBoundingClientRect().top;
             const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
@@ -47,16 +46,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hash routing on direct page load
     const currentHash = window.location.hash.substring(1);
-    const validSections = ['home', 'projects', 'donate', 'contact'];
+    const validSections = ['home', 'about', 'projects', 'pathfinder', 'resources', 'donate', 'contact'];
     if (validSections.includes(currentHash)) {
-        // Wait slightly for DOM to settle
         setTimeout(() => scrollToSection(currentHash), 100);
     }
 
     // Dynamic Navigation Highlighting on Scroll (Intersection Observer)
     const observerOptions = {
         root: null,
-        rootMargin: '-40% 0px -50% 0px', // Triggers active link when section occupies upper-mid screen
+        rootMargin: '-30% 0px -65% 0px', // Triggers when section occupies upper-mid screen
         threshold: 0
     };
 
@@ -76,6 +74,71 @@ document.addEventListener('DOMContentLoaded', () => {
     }, observerOptions);
 
     sections.forEach(section => observer.observe(section));
+
+    // Interactive Pathfinder Quiz Logic
+    const pathfinderButtons = document.querySelectorAll('.pathfinder-opt-btn');
+    const resultsBox = document.getElementById('pathfinder-results-box');
+    const resultTitleText = document.getElementById('result-title-text');
+    const resultDescText = document.getElementById('result-desc-text');
+    const resetPathfinderBtn = document.getElementById('pathfinder-reset-btn');
+
+    const recommendations = {
+        tech: {
+            title: "5-Day Coding Program & Python Game Dev",
+            desc: "Based on your interest in software, we recommend starting with our 5-Day Coding Program, followed by Python Game Development to turn math and logic into fun, graphical games."
+        },
+        finance: {
+            title: "Quant Finance & Algorithmic Trading",
+            desc: "For market and money enthusiasts, we recommend our Quant Finance and Algorithmic Trading workshops to learn how mathematical algorithms analyze datasets and make mock-trades."
+        },
+        math: {
+            title: "Youth Math Tutoring & Data Science",
+            desc: "If you enjoy puzzles and logic, our Math Tutoring builds core confidence in algebra/calculus, and our Data Science workshop will show you how to analyze real-world data with Python."
+        }
+    };
+
+    pathfinderButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+            const interest = btn.getAttribute('data-interest');
+            const recommendation = recommendations[interest];
+
+            if (recommendation) {
+                resultTitleText.textContent = recommendation.title;
+                resultDescText.textContent = recommendation.desc;
+                
+                // Show result box
+                resultsBox.classList.remove('hidden');
+                
+                // Highlight option button
+                pathfinderButtons.forEach(b => b.style.borderColor = 'var(--border-color)');
+                btn.style.borderColor = 'var(--accent-gold)';
+            }
+        });
+    });
+
+    if (resetPathfinderBtn) {
+        resetPathfinderBtn.addEventListener('click', () => {
+            resultsBox.classList.add('hidden');
+            pathfinderButtons.forEach(b => b.style.borderColor = 'var(--border-color)');
+        });
+    }
+
+    // FAQ Accordion Toggle Logic
+    const faqItems = document.querySelectorAll('.faq-item');
+    faqItems.forEach(item => {
+        const questionBtn = item.querySelector('.faq-question-btn');
+        questionBtn.addEventListener('click', () => {
+            const isOpen = item.classList.contains('open');
+            
+            // Close all items first for a clean accordion effect
+            faqItems.forEach(i => i.classList.remove('open'));
+            
+            // If it wasn't open, open it now
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        });
+    });
 
     // Donation Component Logic
     const tierCards = document.querySelectorAll('.tier-card');
@@ -127,9 +190,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
             showToast(`Thank you! Your donation of $${selectedAmount} was simulated successfully.`);
+            
             // Reset state
             customInput.value = '';
-            // Reset to default tier ($50)
             tierCards.forEach(c => c.classList.remove('active'));
             const defaultTier = document.querySelector('.tier-card[data-amount="50"]');
             if (defaultTier) {
