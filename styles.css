@@ -324,29 +324,35 @@ body {
     width: 100%;
 }
 
+.avatar-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 140px;
+}
+
 .avatar-placeholder {
-    width: 130px;
-    height: 130px;
+    width: 120px;
+    height: 120px;
     border-radius: 50%;
     background-color: var(--bg-champagne);
     color: var(--accent-gold);
     border: 3px solid var(--accent-gold);
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     box-shadow: var(--shadow-md);
-    position: relative;
-    padding-top: 10px;
 }
 
 .avatar-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     font-weight: 700;
     color: var(--text-navy);
-    margin-top: 8px;
+    margin-top: 12px;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    text-align: center;
 }
 
 .sub-heading {
