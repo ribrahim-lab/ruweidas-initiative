@@ -1,14 +1,14 @@
 (function() {
-    // 1. Inject Styles
+    // 1. Inject CSS Styles
     const styles = `
         #voyager-wrapper {
             position: relative;
             width: 800px;
             height: 600px;
-            background-color: #050811;
-            border: 2px solid #C5A059;
+            background-color: #0d1117;
+            border: 3px solid #E74C3C;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.7), 0 0 20px rgba(197, 160, 89, 0.15);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(231, 76, 60, 0.25);
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             user-select: none;
@@ -19,6 +19,7 @@
             display: block;
             width: 100%;
             height: 100%;
+            cursor: crosshair;
         }
 
         .voyager-overlay {
@@ -31,79 +32,139 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(8, 12, 26, 0.95);
-            backdrop-filter: blur(6px);
+            background: rgba(13, 17, 23, 0.96);
+            backdrop-filter: blur(8px);
             padding: 30px 40px;
             text-align: center;
-            color: #E2E8F0;
+            color: #F8FAFC;
             z-index: 10;
             box-sizing: border-box;
-            transition: opacity 0.3s ease;
         }
 
         .voyager-overlay.hidden {
             display: none !important;
-            opacity: 0;
-            pointer-events: none;
         }
 
         .voyager-title {
-            font-size: 2.2rem;
+            font-size: 2.4rem;
             font-weight: 800;
-            color: #C5A059;
-            margin-bottom: 15px;
+            color: #E74C3C;
+            margin-bottom: 10px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+        }
+
+        .voyager-subtitle {
+            font-size: 1rem;
+            color: #94A3B8;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .weapon-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            width: 100%;
+            max-width: 680px;
+            margin-bottom: 25px;
+        }
+
+        .weapon-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid #30363d;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .weapon-card:hover {
+            border-color: #E74C3C;
+            background: rgba(231, 76, 60, 0.04);
+            transform: translateY(-2px);
+        }
+
+        .weapon-card.selected {
+            border-color: #E74C3C;
+            background: rgba(231, 76, 60, 0.15);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
+        }
+
+        .weapon-name {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #F8FAFC;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .weapon-ammo-tag {
+            font-size: 0.75rem;
+            background: #E74C3C;
+            color: #FFF;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .weapon-desc {
+            font-size: 0.85rem;
+            color: #94A3B8;
+            line-height: 1.4;
+            margin-bottom: 10px;
+        }
+
+        .weapon-stats {
+            display: flex;
+            gap: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #CBD5E1;
+        }
+
+        .stat-item span {
+            color: #E74C3C;
         }
 
         .voyager-text {
-            font-size: 0.95rem;
+            font-size: 1rem;
             line-height: 1.6;
             color: #CBD5E1;
-            max-width: 680px;
+            max-width: 600px;
             margin-bottom: 25px;
             white-space: pre-line;
-            text-align: center;
         }
 
         .voyager-btn {
             font-family: inherit;
-            padding: 12px 28px;
-            font-size: 1.05rem;
-            font-weight: 700;
-            border: 2px solid #C5A059;
+            padding: 12px 32px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border: 2px solid #E74C3C;
             border-radius: 8px;
             background-color: transparent;
-            color: #C5A059;
+            color: #E74C3C;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.1);
-            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
+            transition: all 0.25s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
         }
 
         .voyager-btn:hover {
-            background-color: #C5A059;
-            color: #050811;
+            background-color: #E74C3C;
+            color: #FFF;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.35);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
         }
 
         .voyager-btn:active {
             transform: translateY(0);
-        }
-
-        .alien-container {
-            margin: 15px 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            filter: drop-shadow(0 0 10px rgba(46, 204, 113, 0.3));
-            animation: alienFloat 3s ease-in-out infinite;
-        }
-
-        @keyframes alienFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-8px) rotate(2deg); }
         }
     `;
 
@@ -112,314 +173,88 @@
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
 
-    // 2. Constants & Star Coordinates (Scaled and Centered for 800x600 Viewport)
-    const CONSTELLATIONS = [
+    // 2. Weapons Configurations
+    const WEAPONS = [
         {
-            name: "Aries",
-            stars: [
-                { x: 220, y: 350 },
-                { x: 340, y: 250 },
-                { x: 480, y: 280 },
-                { x: 580, y: 340 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3]
-            ]
+            id: "pistol",
+            name: "Red's Revolver",
+            desc: "Red bird's reliable standard sidearm. High precision, infinite ammo, and solid mid-range combat capabilities.",
+            damage: 25,
+            fireRate: 200, // Ms between shots
+            range: 500,
+            ammoType: "Infinite",
+            color: "#E74C3C"
         },
         {
-            name: "Taurus",
-            stars: [
-                { x: 420, y: 280 }, // Aldebaran
-                { x: 480, y: 240 },
-                { x: 510, y: 190 },
-                { x: 450, y: 170 },
-                { x: 400, y: 210 },
-                { x: 620, y: 110 }, // Horn 1
-                { x: 570, y: 90 },  // Horn 2
-                { x: 280, y: 260 }, // Body
-                { x: 310, y: 330 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 4], [4, 0],
-                [2, 5], [3, 6], [4, 7], [0, 8], [7, 8]
-            ]
+            id: "shotgun",
+            name: "Chuck's Boomstick",
+            desc: "Yellow bird's close-range scatter gun. Fires 5 high-impact feathers in a wide cone. Devastating up close.",
+            damage: 15,
+            fireRate: 800,
+            range: 220,
+            ammoType: "Medium",
+            color: "#F1C40F"
         },
         {
-            name: "Gemini",
-            stars: [
-                { x: 250, y: 200 }, // Castor head
-                { x: 300, y: 270 },
-                { x: 350, y: 350 },
-                { x: 370, y: 450 }, // Castor feet
-                { x: 230, y: 290 }, // Castor hand
-                { x: 400, y: 170 }, // Pollux head
-                { x: 450, y: 240 },
-                { x: 500, y: 320 },
-                { x: 520, y: 420 }, // Pollux feet
-                { x: 550, y: 260 }  // Pollux hand
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [1, 4],
-                [5, 6], [6, 7], [7, 8], [6, 9],
-                [0, 5], [2, 7]
-            ]
+            id: "rifle",
+            name: "Bomb's Blaster",
+            desc: "Black bird's fully automatic assault rifle. Fires rapid-velocity explosive bullets that shred waves of pigs.",
+            damage: 18,
+            fireRate: 80,
+            range: 600,
+            ammoType: "High",
+            color: "#34495E"
         },
         {
-            name: "Cancer",
-            stars: [
-                { x: 400, y: 300 }, // Center
-                { x: 400, y: 220 }, // Fork split
-                { x: 320, y: 150 }, // Left tip
-                { x: 480, y: 150 }, // Right tip
-                { x: 400, y: 420 }  // Bottom tail
-            ],
-            edges: [
-                [0, 1], [1, 2], [1, 3], [0, 4]
-            ]
-        },
-        {
-            name: "Leo",
-            stars: [
-                { x: 580, y: 380 }, // Denebola
-                { x: 480, y: 410 },
-                { x: 420, y: 330 }, // Regulus
-                { x: 440, y: 230 },
-                { x: 500, y: 190 },
-                { x: 540, y: 230 },
-                { x: 520, y: 280 },
-                { x: 520, y: 350 },
-                { x: 620, y: 310 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 2], [1, 7], [7, 8], [8, 0]
-            ]
-        },
-        {
-            name: "Virgo",
-            stars: [
-                { x: 420, y: 320 }, // Spica
-                { x: 320, y: 300 },
-                { x: 270, y: 240 },
-                { x: 220, y: 260 },
-                { x: 370, y: 400 },
-                { x: 470, y: 400 },
-                { x: 520, y: 340 },
-                { x: 500, y: 240 },
-                { x: 440, y: 200 },
-                { x: 340, y: 200 },
-                { x: 400, y: 260 },
-                { x: 540, y: 170 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [0, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10], [10, 1], [7, 11]
-            ]
-        },
-        {
-            name: "Libra",
-            stars: [
-                { x: 400, y: 180 }, // Top
-                { x: 300, y: 280 }, // Left
-                { x: 500, y: 260 }, // Right
-                { x: 400, y: 360 }, // Bottom
-                { x: 250, y: 400 }, // Left scale pan
-                { x: 550, y: 380 }  // Right scale pan
-            ],
-            edges: [
-                [0, 1], [0, 2], [1, 3], [2, 3], [1, 4], [2, 5]
-            ]
-        },
-        {
-            name: "Scorpio",
-            stars: [
-                { x: 420, y: 200 }, // Antares
-                { x: 370, y: 170 },
-                { x: 340, y: 210 },
-                { x: 400, y: 140 },
-                { x: 450, y: 260 },
-                { x: 470, y: 330 },
-                { x: 450, y: 400 },
-                { x: 400, y: 450 },
-                { x: 340, y: 440 },
-                { x: 300, y: 400 },
-                { x: 280, y: 340 },
-                { x: 310, y: 300 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [0, 3], [0, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 9], [9, 10], [10, 11]
-            ]
-        },
-        {
-            name: "Sagittarius",
-            stars: [
-                { x: 320, y: 370 },
-                { x: 400, y: 320 },
-                { x: 460, y: 380 },
-                { x: 360, y: 440 },
-                { x: 360, y: 270 },
-                { x: 440, y: 240 },
-                { x: 500, y: 300 },
-                { x: 540, y: 360 },
-                { x: 500, y: 440 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 0], [1, 4], [4, 5], [5, 6], [6, 7], [7, 8], [8, 2], [6, 2]
-            ]
-        },
-        {
-            name: "Capricorn",
-            stars: [
-                { x: 270, y: 220 },
-                { x: 340, y: 200 },
-                { x: 470, y: 240 },
-                { x: 570, y: 300 },
-                { x: 520, y: 400 },
-                { x: 420, y: 420 },
-                { x: 320, y: 370 },
-                { x: 250, y: 300 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 0], [1, 6]
-            ]
-        },
-        {
-            name: "Aquarius",
-            stars: [
-                { x: 420, y: 270 },
-                { x: 370, y: 240 },
-                { x: 320, y: 280 },
-                { x: 270, y: 220 },
-                { x: 300, y: 170 },
-                { x: 470, y: 300 },
-                { x: 520, y: 370 },
-                { x: 600, y: 400 },
-                { x: 480, y: 400 },
-                { x: 400, y: 440 },
-                { x: 340, y: 480 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 4], [0, 5], [5, 6], [6, 7], [5, 8], [8, 9], [9, 10]
-            ]
-        },
-        {
-            name: "Pisces",
-            stars: [
-                { x: 420, y: 420 }, // Apex
-                { x: 470, y: 360 }, // Line 1
-                { x: 520, y: 300 },
-                { x: 540, y: 220 },
-                { x: 570, y: 190 }, // Loop 1
-                { x: 600, y: 220 },
-                { x: 570, y: 250 },
-                { x: 350, y: 390 }, // Line 2
-                { x: 280, y: 360 },
-                { x: 210, y: 330 },
-                { x: 170, y: 300 }, // Loop 2
-                { x: 150, y: 330 },
-                { x: 170, y: 360 },
-                { x: 200, y: 350 }
-            ],
-            edges: [
-                [0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 3],
-                [0, 7], [7, 8], [8, 9], [9, 10], [10, 11], [11, 12], [12, 13], [13, 9]
-            ]
+            id: "sniper",
+            name: "Terence's Longshot",
+            desc: "Huge bird's heavy piercing sniper. Extremely slow bolt-action, but pierces through multiple pigs at infinite range.",
+            damage: 110,
+            fireRate: 1500,
+            range: 1000,
+            ammoType: "Low",
+            color: "#9B59B6"
         }
     ];
 
-    // 3. Creative SVG Alien definition
-    const ALIEN_SVG = `
-        <div class="alien-container">
-            <svg viewBox="0 0 200 200" width="130" height="130">
-                <!-- Outer Space Helmet / Bubble -->
-                <circle cx="100" cy="100" r="85" fill="rgba(52, 152, 219, 0.15)" stroke="#3498DB" stroke-width="2.5" stroke-dasharray="6, 4"/>
-                <circle cx="100" cy="100" r="75" fill="rgba(52, 152, 219, 0.1)" stroke="rgba(52, 152, 219, 0.4)" stroke-width="1"/>
-                
-                <!-- Floating Alien Body -->
-                <ellipse cx="100" cy="115" rx="55" ry="42" fill="#2ECC71" stroke="#25A255" stroke-width="4.5"/>
-                
-                <!-- Eye stalk -->
-                <path d="M100 70 L100 45" stroke="#2ECC71" stroke-width="7.5" stroke-linecap="round"/>
-                <circle cx="100" cy="35" r="16" fill="#2ECC71"/>
-                
-                <!-- Lateral Antennas -->
-                <path d="M68 78 Q42 58 52 42" fill="none" stroke="#2ECC71" stroke-width="4.5" stroke-linecap="round"/>
-                <circle cx="52" cy="42" r="7" fill="#F1C40F"/>
-                
-                <path d="M132 78 Q158 58 148 42" fill="none" stroke="#2ECC71" stroke-width="4.5" stroke-linecap="round"/>
-                <circle cx="148" cy="42" r="7" fill="#F1C40F"/>
-                
-                <!-- Large central eye -->
-                <circle cx="100" cy="102" r="23" fill="#FFFFFF" stroke="#1A252F" stroke-width="3.5"/>
-                <circle cx="100" cy="102" r="9" fill="#3498DB"/>
-                <circle cx="97" cy="99" r="4.5" fill="#FFFFFF"/> <!-- Shine -->
-                
-                <!-- Cheeks -->
-                <circle cx="70" cy="120" r="5" fill="#E74C3C" opacity="0.65"/>
-                <circle cx="130" cy="120" r="5" fill="#E74C3C" opacity="0.65"/>
-                
-                <!-- Happy Smile -->
-                <path d="M86 128 Q100 142 114 128" stroke="#1A252F" stroke-width="3.5" stroke-linecap="round" fill="none"/>
-                
-                <!-- Body details / Spots -->
-                <circle cx="68" cy="104" r="3.5" fill="#25A255" opacity="0.4"/>
-                <circle cx="132" cy="104" r="3.5" fill="#25A255" opacity="0.4"/>
-                
-                <!-- Weird floating arms / tentacles -->
-                <path d="M48 126 Q22 135 32 152" fill="none" stroke="#2ECC71" stroke-width="5.5" stroke-linecap="round"/>
-                <path d="M152 126 Q178 135 168 152" fill="none" stroke="#2ECC71" stroke-width="5.5" stroke-linecap="round"/>
-            </svg>
-        </div>
-    `;
-
-    // 4. Narrative Texts
-    const TEXTS = {
-        START_TITLE: "Voyager",
-        START_BODY: `Astronaut 311-C,
-
-As humanity's best pilot, you have been selected for a crucial, top-secret mission: to find extraterrestrial life.
-
-To do this, you must pilot your spacecraft between the stars of the 12 Zodiac constellations, as they appear. With each new constellation, you will have less time to connect the points. You must connect all of the constellations within the time limit to discover our intergalactic friends.
-
-Use your arrow keys to move the spacecraft. Press SHIFT to speed up and Z to slow down.
-
-Good luck, and bon voyage!`,
-
-        FAIL_TITLE: "Mission Failed",
-        FAIL_BODY: `You have failed your mission, Astronaut 311-A. Humanity remains alone among the stars. Unless you choose to try again...`,
-
-        SUCCESS_TITLE: "Mission Success",
-        SUCCESS_BODY_PRE: `Hello, traveler. I am Zarg 966-Z. Welcome to Zargaborg!`,
-        SUCCESS_BODY_POST: `I just pumped some fresh oxygen into my biosphere! So come on in, kick your boots off, and tell me all about your travels.`
-    };
-
-    // 5. Game Engine Class
-    class VoyagerGame {
+    // 3. Main Game Class
+    class CallOfBirdsGame {
         constructor(parent) {
             this.parent = parent;
             this.buildDOMElements();
             this.initCanvas();
             this.bindInputEvents();
+
+            // Game variables
+            this.gameState = 'START'; // START, PLAYING, FAIL, SUCCESS
+            this.selectedWeaponIndex = 0;
             
-            // Initial Game State
-            this.gameState = 'START';
-            this.level = 0;
+            // Stats
             this.score = 0;
-            this.timeLeft = 35.0; // Seconds
-            this.maxTime = 35.0;
-            this.stars = [];
-            this.edges = [];
+            this.playerHealth = 100;
+            this.wave = 1;
+            this.maxWaves = 5;
+            this.enemiesRemaining = 0;
+
+            // Arrays
+            this.enemies = [];
+            this.bullets = [];
             this.particles = [];
-            
-            this.ship = {
+
+            // Player coordinates
+            this.player = {
                 x: 400,
                 y: 300,
-                vx: 0,
-                vy: 0,
-                angle: -Math.PI / 2, // Upwards
-                radius: 12
+                radius: 20,
+                angle: 0,
+                speed: 3.0
             };
 
+            this.mouse = { x: 400, y: 300 };
             this.keys = {};
+            this.lastShotTime = 0;
             this.loopId = null;
+
             this.showOverlay();
         }
 
@@ -435,7 +270,7 @@ Good luck, and bon voyage!`,
             this.canvas.height = 600;
             this.wrapper.appendChild(this.canvas);
 
-            // Overlay Div
+            // Overlay Screen
             this.overlay = document.createElement('div');
             this.overlay.className = 'voyager-overlay';
             this.wrapper.appendChild(this.overlay);
@@ -445,35 +280,40 @@ Good luck, and bon voyage!`,
 
         initCanvas() {
             this.ctx = this.canvas.getContext('2d');
-            this.starsBackground = [];
-            // Spawn static backdrop stars
-            for (let i = 0; i < 150; i++) {
-                this.starsBackground.push({
-                    x: Math.random() * 800,
-                    y: Math.random() * 600,
-                    r: Math.random() * 1.5 + 0.5,
-                    alpha: Math.random() * 0.8 + 0.2,
-                    speed: Math.random() * 0.02 + 0.005
-                });
-            }
         }
 
         bindInputEvents() {
+            // Mouse Coordinates and Shooting
+            this.canvas.addEventListener('mousemove', (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                this.mouse.x = e.clientX - rect.left;
+                this.mouse.y = e.clientY - rect.top;
+            });
+
+            this.canvas.addEventListener('mousedown', (e) => {
+                this.keys['Mouse'] = true;
+            });
+
+            window.addEventListener('mouseup', () => {
+                this.keys['Mouse'] = false;
+            });
+
+            // Keyboard movements
             window.addEventListener('keydown', (e) => {
                 this.keys[e.key] = true;
-                this.keys[e.code] = true; // Support standard codes like 'ShiftLeft', 'KeyZ'
-                
-                // Prevent browser window from scrolling when using arrow keys or space bar
-                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'Spacebar', ' '].includes(e.key)) {
+                this.keys[e.code] = true;
+
+                // Prevent standard browser scrolling
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', ' '].includes(e.key)) {
                     e.preventDefault();
                 }
 
-                // Dev skip cheat: Shift + D
+                // Cheat shortcut: Shift + D (Auto Win)
                 if ((this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) && 
                     (e.key === 'D' || e.key === 'd' || e.code === 'KeyD')) {
                     if (this.gameState === 'PLAYING') {
                         e.preventDefault();
-                        this.triggerDevWin();
+                        this.triggerVictory();
                     }
                 }
             });
@@ -490,28 +330,61 @@ Good luck, and bon voyage!`,
 
             if (this.gameState === 'START') {
                 content = `
-                    <div class="voyager-title">${TEXTS.START_TITLE}</div>
-                    <div class="voyager-text">${TEXTS.START_BODY}</div>
-                    <button class="voyager-btn" id="voyager-start-btn">Start Mission</button>
+                    <div class="voyager-title">Call of Birds</div>
+                    <div class="voyager-subtitle">Angry Warfare &bull; Weapon Intel Dashboard</div>
+                    
+                    <div class="weapon-grid">
+                `;
+
+                WEAPONS.forEach((w, idx) => {
+                    const isSelected = idx === this.selectedWeaponIndex ? 'selected' : '';
+                    content += `
+                        <div class="weapon-card ${isSelected}" data-idx="${idx}">
+                            <div class="weapon-name">
+                                ${w.name}
+                                <span class="weapon-ammo-tag">${w.ammoType}</span>
+                            </div>
+                            <div class="weapon-desc">${w.desc}</div>
+                            <div class="weapon-stats">
+                                <div class="stat-item">DMG: <span>${w.damage}</span></div>
+                                <div class="stat-item">RATE: <span>${w.fireRate}ms</span></div>
+                                <div class="stat-item">RANGE: <span>${w.range}px</span></div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                content += `
+                    </div>
+                    <button class="voyager-btn" id="voyager-deploy-btn">Deploy Mission</button>
                 `;
                 this.overlay.innerHTML = content;
-                document.getElementById('voyager-start-btn').addEventListener('click', () => this.startGame());
+
+                // Add card click listeners
+                const cards = this.overlay.querySelectorAll('.weapon-card');
+                cards.forEach(card => {
+                    card.addEventListener('click', () => {
+                        cards.forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        this.selectedWeaponIndex = parseInt(card.getAttribute('data-idx'));
+                    });
+                });
+
+                document.getElementById('voyager-deploy-btn').addEventListener('click', () => this.startGame());
 
             } else if (this.gameState === 'FAIL') {
                 content = `
-                    <div class="voyager-title">${TEXTS.FAIL_TITLE}</div>
-                    <div class="voyager-text">${TEXTS.FAIL_BODY}</div>
-                    <button class="voyager-btn" id="voyager-restart-btn">Try Again</button>
+                    <div class="voyager-title" style="color: #E74C3C;">Defeated in Combat</div>
+                    <div class="voyager-text">You have failed the mission, Pilot. Piggy Island remains under pig control. Unless you choose to deploy again...</div>
+                    <button class="voyager-btn" id="voyager-restart-btn">Redeploy</button>
                 `;
                 this.overlay.innerHTML = content;
                 document.getElementById('voyager-restart-btn').addEventListener('click', () => this.restartGame());
 
             } else if (this.gameState === 'SUCCESS') {
                 content = `
-                    <div class="voyager-title">${TEXTS.SUCCESS_TITLE}</div>
-                    <div class="voyager-text" style="margin-bottom: 10px;">${TEXTS.SUCCESS_BODY_PRE}</div>
-                    ${ALIEN_SVG}
-                    <div class="voyager-text" style="margin-top: 10px; margin-bottom: 25px;">${TEXTS.SUCCESS_BODY_POST}</div>
+                    <div class="voyager-title" style="color: #2ECC71;">Mission Accomplished</div>
+                    <div class="voyager-text">Congratulations! You have wiped out all pig resistance and secured the eggs. Zarg 966-Z greets you from his biosphere!</div>
                     <button class="voyager-btn" id="voyager-close-btn">Return to Leaderboard</button>
                 `;
                 this.overlay.innerHTML = content;
@@ -525,57 +398,89 @@ Good luck, and bon voyage!`,
 
         startGame() {
             this.gameState = 'PLAYING';
-            this.level = 0;
             this.score = 0;
+            this.playerHealth = 100;
+            this.wave = 1;
+            this.enemies = [];
+            this.bullets = [];
+            this.particles = [];
+            this.player.x = 400;
+            this.player.y = 300;
+
             this.hideOverlay();
-            this.loadLevel();
+            this.startWave();
             this.gameLoop();
         }
 
         restartGame() {
-            this.gameState = 'PLAYING';
-            this.level = 0;
-            this.score = 0;
-            this.hideOverlay();
-            this.loadLevel();
-            this.gameLoop();
+            this.gameState = 'START';
+            this.showOverlay();
         }
 
-        loadLevel() {
-            const data = CONSTELLATIONS[this.level];
-            
-            // Map stars
-            this.stars = data.stars.map(s => ({
-                x: s.x,
-                y: s.y,
-                visited: false,
-                radius: 8,
-                pulse: 0
-            }));
-
-            // Map edges
-            this.edges = data.edges.map(e => ({
-                from: e[0],
-                to: e[1]
-            }));
-
-            // Time scaling: Level 0 is 35 seconds, Level 11 is 13 seconds (Aries to Pisces)
-            this.maxTime = 35.0 - (this.level * 2.0);
-            this.timeLeft = this.maxTime;
-
-            // Reset ship location to center or first star
-            this.ship.x = 400;
-            this.ship.y = 300;
-            this.ship.vx = 0;
-            this.ship.vy = 0;
-            this.ship.angle = -Math.PI / 2;
-
-            // Clear particles
-            this.particles = [];
+        startWave() {
+            this.enemiesRemaining = this.wave * 5;
+            this.enemies = [];
+            // Spawn initial enemies
+            for (let i = 0; i < Math.min(this.enemiesRemaining, 8); i++) {
+                this.spawnEnemy();
+            }
         }
 
-        triggerDevWin() {
-            this.score += 5000;
+        spawnEnemy() {
+            const side = Math.floor(Math.random() * 4); // 0: Top, 1: Right, 2: Bottom, 3: Left
+            let x, y;
+            const offset = 40;
+
+            if (side === 0) {
+                x = Math.random() * 800;
+                y = -offset;
+            } else if (side === 1) {
+                x = 800 + offset;
+                y = Math.random() * 600;
+            } else if (side === 2) {
+                x = Math.random() * 800;
+                y = 600 + offset;
+            } else {
+                x = -offset;
+                y = Math.random() * 600;
+            }
+
+            // Pig types based on wave progress
+            const dice = Math.random();
+            let type = 'normal';
+            let hp = 30 + this.wave * 5;
+            let speed = 1.0 + Math.random() * 0.5 + (this.wave * 0.1);
+            let radius = 18;
+
+            if (dice > 0.8 && this.wave >= 2) {
+                type = 'fast';
+                hp = 20;
+                speed = 2.2 + (this.wave * 0.15);
+                radius = 15;
+            } else if (dice > 0.92 && this.wave >= 3) {
+                type = 'brute';
+                hp = 100 + this.wave * 15;
+                speed = 0.6;
+                radius = 28;
+            }
+
+            this.enemies.push({
+                x: x,
+                y: y,
+                vx: 0,
+                vy: 0,
+                radius: radius,
+                type: type,
+                hp: hp,
+                maxHp: hp,
+                speed: speed,
+                angle: 0
+            });
+            this.enemiesRemaining--;
+        }
+
+        triggerVictory() {
+            this.score += 3000;
             this.gameState = 'SUCCESS';
             this.stopLoop();
             this.showOverlay();
@@ -586,7 +491,7 @@ Good luck, and bon voyage!`,
             if (window.Voyager && typeof window.Voyager.showLeaderboard === 'function') {
                 window.Voyager.showLeaderboard(this.score);
             } else {
-                console.log("window.Voyager.showLeaderboard called with score:", this.score);
+                console.log("Handoff trigger: Final Score = ", this.score);
             }
         }
 
@@ -607,17 +512,9 @@ Good luck, and bon voyage!`,
         }
 
         update() {
-            // 1. Time Limits Tracking
-            this.timeLeft -= 1 / 60; // Approximate 60fps delta
-            if (this.timeLeft <= 0) {
-                this.timeLeft = 0;
-                this.gameState = 'FAIL';
-                this.triggerHandoff();
-                this.showOverlay();
-                return;
-            }
+            const weapon = WEAPONS[this.selectedWeaponIndex];
 
-            // 2. Compute physics using "8-Way Direct" logic
+            // 1. Move Player (8-Way Direct with Shift/Z multipliers)
             let dx = 0;
             let dy = 0;
 
@@ -627,95 +524,162 @@ Good luck, and bon voyage!`,
             if (this.keys['ArrowRight'] || this.keys['KeyD']) dx += 1;
 
             if (dx !== 0 || dy !== 0) {
-                // Normalize for diagonal movement consistency
                 const length = Math.sqrt(dx * dx + dy * dy);
                 dx /= length;
                 dy /= length;
 
-                // Adjust speed constants with multipliers
                 let multiplier = 1.0;
                 if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-                    multiplier = 2.0; // Boost
+                    multiplier = 1.8; // Sprint
                 } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
-                    multiplier = 0.5; // Brake
+                    multiplier = 0.5; // Walk/Aim
                 }
 
-                const speed = 2.5 * multiplier;
-                this.ship.vx = dx * speed;
-                this.ship.vy = dy * speed;
-
-                // Update Angle towards current travel vector
-                this.ship.angle = Math.atan2(dy, dx);
-            } else {
-                // Direct stop physics
-                this.ship.vx = 0;
-                this.ship.vy = 0;
+                const moveSpeed = this.player.speed * multiplier;
+                this.player.x += dx * moveSpeed;
+                this.player.y += dy * moveSpeed;
             }
 
-            // Update positions
-            this.ship.x += this.ship.vx;
-            this.ship.y += this.ship.vy;
+            // Keep within boundaries
+            this.player.x = Math.max(this.player.radius, Math.min(800 - this.player.radius, this.player.x));
+            this.player.y = Math.max(this.player.radius, Math.min(600 - this.player.radius, this.player.y));
 
-            // Keep spacecraft in canvas boundaries
-            this.ship.x = Math.max(this.ship.radius, Math.min(800 - this.ship.radius, this.ship.x));
-            this.ship.y = Math.max(this.ship.radius, Math.min(600 - this.ship.radius, this.ship.y));
+            // Face mouse cursor
+            this.player.angle = Math.atan2(this.mouse.y - this.player.y, this.mouse.x - this.player.x);
 
-            // 3. Update background stars (Subtle twinkle)
-            this.starsBackground.forEach(star => {
-                star.alpha += star.speed;
-                if (star.alpha > 0.95 || star.alpha < 0.15) {
-                    star.speed = -star.speed;
+            // 2. Shooting Logic
+            const now = Date.now();
+            if (this.keys['Mouse'] && now - this.lastShotTime >= weapon.fireRate) {
+                this.fireWeapon(weapon);
+                this.lastShotTime = now;
+            }
+
+            // 3. Move Bullets
+            this.bullets.forEach((b, idx) => {
+                b.x += b.vx;
+                b.y += b.vy;
+                b.distanceTraveled += Math.sqrt(b.vx * b.vx + b.vy * b.vy);
+
+                if (b.distanceTraveled >= b.range || b.x < 0 || b.x > 800 || b.y < 0 || b.y > 600) {
+                    this.bullets.splice(idx, 1);
                 }
             });
 
-            // 4. Update Level Particles
+            // 4. Update Particles
             this.particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.alpha -= 0.02;
+                p.alpha -= 0.03;
                 if (p.alpha <= 0) {
                     this.particles.splice(idx, 1);
                 }
             });
 
-            // 5. Collision checks with Constellation Stars
-            let allConnected = true;
-            this.stars.forEach(star => {
-                const dist = Math.hypot(this.ship.x - star.x, this.ship.y - star.y);
-                if (dist < (this.ship.radius + star.radius)) {
-                    if (!star.visited) {
-                        star.visited = true;
-                        this.score += 100;
-                        this.spawnSparks(star.x, star.y);
+            // 5. Update Enemies
+            this.enemies.forEach((enemy, eIdx) => {
+                // Walk toward player
+                const angle = Math.atan2(this.player.y - enemy.y, this.player.x - enemy.x);
+                enemy.angle = angle;
+                enemy.vx = Math.cos(angle) * enemy.speed;
+                enemy.vy = Math.sin(angle) * enemy.speed;
+
+                enemy.x += enemy.vx;
+                enemy.y += enemy.vy;
+
+                // Collide with player
+                const playerDist = Math.hypot(this.player.x - enemy.x, this.player.y - enemy.y);
+                if (playerDist < (this.player.radius + enemy.radius)) {
+                    this.playerHealth -= 0.2; // Continuous damage on touch
+                    this.spawnSparks(enemy.x, enemy.y, '#E74C3C', 3);
+                    if (this.playerHealth <= 0) {
+                        this.playerHealth = 0;
+                        this.gameState = 'FAIL';
+                        this.triggerHandoff();
+                        this.showOverlay();
                     }
                 }
-                if (!star.visited) {
-                    allConnected = false;
-                }
-                
-                // Twinkle/Pulse active stars
-                star.pulse += 0.08;
+
+                // Check bullet collisions
+                this.bullets.forEach((bullet, bIdx) => {
+                    const bulletDist = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
+                    if (bulletDist < (enemy.radius + 4)) {
+                        enemy.hp -= bullet.damage;
+                        this.spawnSparks(bullet.x, bullet.y, enemy.type === 'brute' ? '#7F8C8D' : '#F1C40F', 8);
+
+                        // Bullet disposal (except sniper, which pierces)
+                        if (bullet.id !== 'sniper') {
+                            this.bullets.splice(bIdx, 1);
+                        }
+
+                        // Enemy death check
+                        if (enemy.hp <= 0) {
+                            this.spawnSparks(enemy.x, enemy.y, '#2ECC71', 25); // Large feather blast
+                            this.enemies.splice(eIdx, 1);
+                            this.score += enemy.type === 'brute' ? 300 : (enemy.type === 'fast' ? 150 : 100);
+                        }
+                    }
+                });
             });
 
-            // 6. Level transition
-            if (allConnected) {
-                // Level completion bonus
-                const timeBonus = Math.round(this.timeLeft * 50);
-                this.score += timeBonus;
-                this.score += 500; // Flat completion bonus
+            // Spawner checks
+            if (this.enemies.length < 5 && this.enemiesRemaining > 0) {
+                this.spawnEnemy();
+            }
 
-                this.level++;
-                if (this.level >= CONSTELLATIONS.length) {
+            // Wave completion
+            if (this.enemies.length === 0 && this.enemiesRemaining === 0) {
+                this.wave++;
+                if (this.wave > this.maxWaves) {
                     this.gameState = 'SUCCESS';
+                    this.triggerHandoff();
                     this.showOverlay();
                 } else {
-                    this.loadLevel();
+                    this.startWave();
                 }
             }
         }
 
-        spawnSparks(x, y) {
-            for (let i = 0; i < 20; i++) {
+        fireWeapon(w) {
+            const angle = this.player.angle;
+            const speed = 12.0;
+
+            if (w.id === 'shotgun') {
+                // Shoot a fan of 5 pellets
+                for (let i = -2; i <= 2; i++) {
+                    const devAngle = angle + (i * 0.08);
+                    this.bullets.push({
+                        id: w.id,
+                        x: this.player.x + Math.cos(angle) * 20,
+                        y: this.player.y + Math.sin(angle) * 20,
+                        vx: Math.cos(devAngle) * speed,
+                        vy: Math.sin(devAngle) * speed,
+                        damage: w.damage,
+                        range: w.range,
+                        distanceTraveled: 0,
+                        color: w.color
+                    });
+                }
+            } else {
+                // Single bullet shooter (Pistol, Rifle, Sniper)
+                this.bullets.push({
+                    id: w.id,
+                    x: this.player.x + Math.cos(angle) * 20,
+                    y: this.player.y + Math.sin(angle) * 20,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    damage: w.damage,
+                    range: w.range,
+                    distanceTraveled: 0,
+                    color: w.color
+                });
+            }
+
+            // Spawn slight fire particles
+            this.spawnSparks(this.player.x + Math.cos(angle) * 20, this.player.y + Math.sin(angle) * 20, '#F1C40F', 4);
+        }
+
+        spawnSparks(x, y, color, count) {
+            for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
                 const speed = Math.random() * 3 + 1;
                 this.particles.push({
@@ -724,81 +688,42 @@ Good luck, and bon voyage!`,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     alpha: 1,
-                    color: Math.random() > 0.5 ? '#00FFFF' : '#F1C40F',
-                    size: Math.random() * 2 + 1
+                    color: color,
+                    size: Math.random() * 2.5 + 1
                 });
             }
         }
 
         draw() {
-            // Clear Canvas
-            this.ctx.fillStyle = '#050811';
+            // Background
+            this.ctx.fillStyle = '#0f141c';
             this.ctx.fillRect(0, 0, 800, 600);
 
-            // Draw Background Stars
-            this.starsBackground.forEach(star => {
-                this.ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+            // Tech grid lines
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
+            this.ctx.lineWidth = 1;
+            for (let i = 0; i < 800; i += 40) {
                 this.ctx.beginPath();
-                this.ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
-                this.ctx.fill();
-            });
-
-            // Draw Constellation Guide lines & Connected paths
-            this.edges.forEach(edge => {
-                const s1 = this.stars[edge.from];
-                const s2 = this.stars[edge.to];
-                
+                this.ctx.moveTo(i, 0);
+                this.ctx.lineTo(i, 600);
+                this.ctx.stroke();
+            }
+            for (let j = 0; j < 600; j += 40) {
                 this.ctx.beginPath();
-                this.ctx.moveTo(s1.x, s1.y);
-                this.ctx.lineTo(s2.x, s2.y);
+                this.ctx.moveTo(0, j);
+                this.ctx.lineTo(800, j);
+                this.ctx.stroke();
+            }
 
-                if (s1.visited && s2.visited) {
-                    // Solid glowing neon line
-                    this.ctx.strokeStyle = '#00F3FF';
-                    this.ctx.lineWidth = 3;
-                    this.ctx.shadowBlur = 12;
-                    this.ctx.shadowColor = '#00F3FF';
-                    this.ctx.stroke();
-                } else {
-                    // Dotted guide line
-                    this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.25)';
-                    this.ctx.lineWidth = 1.5;
-                    this.ctx.setLineDash([4, 4]);
-                    this.ctx.shadowBlur = 0;
-                    this.ctx.stroke();
-                    this.ctx.setLineDash([]); // Reset
-                }
-            });
-
-            // Draw Constellation Stars
-            this.stars.forEach(star => {
-                const pulseScale = Math.sin(star.pulse) * 2 + 3;
-                
+            // Draw Bullets
+            this.bullets.forEach(b => {
                 this.ctx.beginPath();
-                this.ctx.arc(star.x, star.y, star.visited ? star.radius + 2 : star.radius, 0, Math.PI * 2);
-                
-                if (star.visited) {
-                    // Glowing cyan star
-                    this.ctx.fillStyle = '#FFFFFF';
-                    this.ctx.shadowBlur = pulseScale + 8;
-                    this.ctx.shadowColor = '#00FFFF';
-                    this.ctx.fill();
-                    
-                    // Outer ring
-                    this.ctx.strokeStyle = '#00FFFF';
-                    this.ctx.lineWidth = 1.5;
-                    this.ctx.beginPath();
-                    this.ctx.arc(star.x, star.y, star.radius + pulseScale, 0, Math.PI * 2);
-                    this.ctx.stroke();
-                } else {
-                    // Dim gold star
-                    this.ctx.fillStyle = '#C5A059';
-                    this.ctx.shadowBlur = 4;
-                    this.ctx.shadowColor = '#C5A059';
-                    this.ctx.fill();
-                }
+                this.ctx.moveTo(b.x, b.y);
+                this.ctx.lineTo(b.x - b.vx * 1.5, b.y - b.vy * 1.5);
+                this.ctx.strokeStyle = b.color;
+                this.ctx.lineWidth = b.id === 'sniper' ? 4 : 2;
+                this.ctx.stroke();
             });
-            this.ctx.shadowBlur = 0; // Reset shadow
 
             // Draw Particles
             this.particles.forEach(p => {
@@ -808,102 +733,202 @@ Good luck, and bon voyage!`,
                 this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
                 this.ctx.fill();
             });
-            this.ctx.globalAlpha = 1.0; // Reset transparency
+            this.ctx.globalAlpha = 1.0;
 
-            // Draw Spacecraft (Ship)
-            this.ctx.save();
-            this.ctx.translate(this.ship.x, this.ship.y);
-            this.ctx.rotate(this.ship.angle);
+            // Draw Enemies (Green Pigs in Helmets)
+            this.enemies.forEach(e => {
+                this.ctx.save();
+                this.ctx.translate(e.x, e.y);
+                this.ctx.rotate(e.angle);
 
-            // Back thrust fire flame if moving
-            if (this.ship.vx !== 0 || this.ship.vy !== 0) {
-                const flameLength = Math.random() * 8 + 8;
+                // Pig Body (Green sphere)
                 this.ctx.beginPath();
-                this.ctx.moveTo(-15, -5);
-                this.ctx.lineTo(-15 - flameLength, 0);
-                this.ctx.lineTo(-15, 5);
-                this.ctx.fillStyle = Math.random() > 0.5 ? '#E74C3C' : '#F1C40F';
+                this.ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
+                this.ctx.fillStyle = '#2ECC71';
                 this.ctx.fill();
-            }
+                this.ctx.strokeStyle = '#27AE60';
+                this.ctx.lineWidth = 2.5;
+                this.ctx.stroke();
 
-            // Ship Body (Arrowhead/Rocket)
+                // Pig Snout
+                this.ctx.beginPath();
+                this.ctx.ellipse(3, 0, e.radius * 0.45, e.radius * 0.35, 0, 0, Math.PI * 2);
+                this.ctx.fillStyle = '#259C51';
+                this.ctx.fill();
+                this.ctx.beginPath();
+                this.ctx.arc(1, -2, 1.5, 0, Math.PI * 2);
+                this.ctx.arc(1, 2, 1.5, 0, Math.PI * 2);
+                this.ctx.fillStyle = '#1A6B37';
+                this.ctx.fill();
+
+                // Eyes (gaze direction forward)
+                this.ctx.fillStyle = '#FFFFFF';
+                this.ctx.beginPath();
+                this.ctx.arc(-2, -e.radius * 0.4, 4, 0, Math.PI * 2);
+                this.ctx.arc(-2, e.radius * 0.4, 4, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                this.ctx.fillStyle = '#000';
+                this.ctx.beginPath();
+                this.ctx.arc(0, -e.radius * 0.4, 1.8, 0, Math.PI * 2);
+                this.ctx.arc(0, e.radius * 0.4, 1.8, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Pig Ears
+                this.ctx.fillStyle = '#2ECC71';
+                this.ctx.beginPath();
+                this.ctx.arc(-e.radius * 0.7, -e.radius * 0.7, 5, 0, Math.PI * 2);
+                this.ctx.arc(-e.radius * 0.7, e.radius * 0.7, 5, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Helmet (Military Call of Duty theme)
+                this.ctx.fillStyle = e.type === 'brute' ? '#1F242D' : '#566573';
+                this.ctx.beginPath();
+                this.ctx.arc(-e.radius * 0.25, 0, e.radius * 1.05, Math.PI / 2, -Math.PI / 2);
+                this.ctx.fill();
+
+                // Health status line
+                if (e.hp < e.maxHp) {
+                    this.ctx.restore();
+                    this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
+                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, e.radius * 2, 4);
+                    this.ctx.fillStyle = '#E74C3C';
+                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, (e.radius * 2) * (e.hp / e.maxHp), 4);
+                    this.ctx.save();
+                    this.ctx.translate(e.x, e.y);
+                }
+
+                this.ctx.restore();
+            });
+
+            // Draw Player (Angry Red Bird in Army Helmet)
+            this.ctx.save();
+            this.ctx.translate(this.player.x, this.player.y);
+            this.ctx.rotate(this.player.angle);
+
+            // Red Bird Body
             this.ctx.beginPath();
-            this.ctx.moveTo(15, 0);   // Nose cone
-            this.ctx.lineTo(-10, -10); // Left wing tip
-            this.ctx.lineTo(-6, 0);    // Back center indent
-            this.ctx.lineTo(-10, 10);  // Right wing tip
-            this.ctx.closePath();
-
-            this.ctx.fillStyle = '#FFFFFF';
-            this.ctx.strokeStyle = '#00FFFF';
-            this.ctx.lineWidth = 2;
-            this.ctx.shadowBlur = 8;
-            this.ctx.shadowColor = '#00FFFF';
+            this.ctx.arc(0, 0, this.player.radius, 0, Math.PI * 2);
+            this.ctx.fillStyle = '#E74C3C';
             this.ctx.fill();
+            this.ctx.strokeStyle = '#C0392B';
+            this.ctx.lineWidth = 2.5;
             this.ctx.stroke();
-            
-            this.ctx.restore();
-            this.ctx.shadowBlur = 0; // Reset
 
-            // Draw Level UI info headers
-            this.ctx.fillStyle = '#E2E8F0';
-            this.ctx.font = 'bold 16px "Outfit", sans-serif';
-            this.ctx.fillText(`Constellation ${this.level + 1}/12: ${CONSTELLATIONS[this.level].name.toUpperCase()}`, 20, 40);
-
-            // Draw Score
-            this.ctx.textAlign = 'right';
-            this.ctx.fillText(`SCORE: ${this.score}`, 780, 40);
-            this.ctx.textAlign = 'left'; // Reset
-
-            // Draw Timer Progress Bar
-            const timerBarWidth = 760;
-            const remainingRatio = this.timeLeft / this.maxTime;
-            const currentWidth = timerBarWidth * remainingRatio;
-
-            // Timer background container
-            this.ctx.fillStyle = 'rgba(255, 255, 255, 0.08)';
-            this.ctx.fillRect(20, 52, timerBarWidth, 6);
-
-            // Shinking neon status bar
+            // Belly
             this.ctx.beginPath();
-            this.ctx.rect(20, 52, currentWidth, 6);
-            if (remainingRatio > 0.4) {
-                this.ctx.fillStyle = '#00FFCC'; // Safe
-                this.ctx.shadowColor = '#00FFCC';
-            } else if (remainingRatio > 0.2) {
-                this.ctx.fillStyle = '#F1C40F'; // Warning
-                this.ctx.shadowColor = '#F1C40F';
-            } else {
-                this.ctx.fillStyle = '#E74C3C'; // Critical
-                this.ctx.shadowColor = '#E74C3C';
-            }
-            this.ctx.shadowBlur = 4;
+            this.ctx.arc(-this.player.radius * 0.3, 0, this.player.radius * 0.7, -Math.PI / 2, Math.PI / 2);
+            this.ctx.fillStyle = '#FFF2F2';
             this.ctx.fill();
-            this.ctx.shadowBlur = 0; // Reset
+
+            // Eyes (Glaring forward)
+            this.ctx.fillStyle = '#FFF';
+            this.ctx.beginPath();
+            this.ctx.arc(6, -5, 5, 0, Math.PI * 2);
+            this.ctx.arc(6, 5, 5, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            this.ctx.fillStyle = '#000';
+            this.ctx.beginPath();
+            this.ctx.arc(7, -5, 2, 0, Math.PI * 2);
+            this.ctx.arc(7, 5, 2, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            // Angry eyebrows
+            this.ctx.strokeStyle = '#000';
+            this.ctx.lineWidth = 3.5;
+            this.ctx.beginPath();
+            this.ctx.moveTo(1, -9);
+            this.ctx.lineTo(8, -5);
+            this.ctx.lineTo(8, 5);
+            this.ctx.lineTo(1, 9);
+            this.ctx.stroke();
+
+            // Beak (Orange)
+            this.ctx.fillStyle = '#F1C40F';
+            this.ctx.beginPath();
+            this.ctx.moveTo(8, -3);
+            this.ctx.lineTo(16, 0);
+            this.ctx.lineTo(8, 3);
+            this.ctx.closePath();
+            this.ctx.fill();
+
+            // Army Helmet (Military green)
+            this.ctx.fillStyle = '#27AE60';
+            this.ctx.beginPath();
+            this.ctx.arc(-this.player.radius * 0.15, 0, this.player.radius * 1.05, Math.PI / 2, -Math.PI / 2);
+            this.ctx.fill();
+
+            // Weapon Barrel (glowing gun barrel)
+            const weaponColor = WEAPONS[this.selectedWeaponIndex].color;
+            this.ctx.fillStyle = '#2C3E50';
+            this.ctx.fillRect(8, -4, 18, 8);
+            this.ctx.fillStyle = weaponColor;
+            this.ctx.fillRect(23, -3, 5, 6);
+
+            this.ctx.restore();
+
+            // HUD
+            this.drawHUD();
+        }
+
+        drawHUD() {
+            const weapon = WEAPONS[this.selectedWeaponIndex];
+
+            // 1. Health Bar
+            this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            this.ctx.fillRect(20, 20, 200, 16);
+            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.fillRect(20, 20, 200 * (this.playerHealth / 100), 16);
+            this.ctx.strokeStyle = '#FFF';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.strokeRect(20, 20, 200, 16);
+
+            this.ctx.fillStyle = '#FFF';
+            this.ctx.font = 'bold 12px "Outfit", sans-serif';
+            this.ctx.fillText(`HP: ${Math.ceil(this.playerHealth)}%`, 30, 32);
+
+            // 2. Score & Wave indicators
+            this.ctx.font = 'bold 16px "Outfit", sans-serif';
+            this.ctx.fillText(`SCORE: ${this.score}`, 20, 60);
+
+            this.ctx.textAlign = 'right';
+            this.ctx.fillText(`WAVE: ${this.wave} / ${this.maxWaves}`, 780, 35);
+            this.ctx.font = '13px "Outfit", sans-serif';
+            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.fillText(`INCOMING: ${this.enemies.length + this.enemiesRemaining} PIGS`, 780, 55);
+            this.ctx.textAlign = 'left';
+
+            // 3. Selected Weapon info
+            this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
+            this.ctx.fillRect(20, 520, 250, 60);
+            this.ctx.strokeStyle = weapon.color;
+            this.ctx.lineWidth = 2;
+            this.ctx.strokeRect(20, 520, 250, 60);
+
+            this.ctx.fillStyle = weapon.color;
+            this.ctx.font = 'bold 16px "Outfit", sans-serif';
+            this.ctx.fillText(weapon.name, 35, 545);
+            this.ctx.fillStyle = '#94A3B8';
+            this.ctx.font = '12px "Outfit", sans-serif';
+            this.ctx.fillText(`AMMO: ${weapon.ammoType}  |  POWER: ${weapon.damage}`, 35, 565);
         }
     }
 
-    // 6. Auto-Initialize Game inside target container
-    function initVoyager() {
-        // Look for targeted game-container
-        const gameContainer = document.getElementById('game-container') || 
-                              document.getElementById('voyager-container') || 
-                              document.body;
-                              
+    // Auto Init
+    function initGame() {
+        const gameContainer = document.getElementById('game-container') || document.body;
         if (gameContainer) {
-            window.VoyagerGameInstance = new VoyagerGame(gameContainer);
-            console.log("Voyager game engine successfully initialized!");
-        } else {
-            console.error("Voyager initialization failed: target container not found.");
+            window.VoyagerGameInstance = new CallOfBirdsGame(gameContainer);
+            console.log("Call of Birds engine loaded successfully!");
         }
     }
 
-    // Export Class and start initializer
-    window.VoyagerEngine = VoyagerGame;
-    
+    window.VoyagerEngine = CallOfBirdsGame;
+
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initVoyager);
+        document.addEventListener('DOMContentLoaded', initGame);
     } else {
-        initVoyager();
+        initGame();
     }
 })();
