@@ -8,7 +8,7 @@
             background-color: #0d1117;
             border: 3px solid #F1C40F;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(241, 196, 15, 0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(241, 196, 15, 0.25);
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             user-select: none;
@@ -47,7 +47,7 @@
 
         .voyager-title {
             font-size: 2.6rem;
-            font-weight: 900;
+            font-weight: 950;
             color: #F1C40F;
             margin-bottom: 5px;
             letter-spacing: 0.05em;
@@ -176,107 +176,100 @@
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
 
-    // 2. Weapons Configurations (Shell Shockers Themed)
+    // 2. Weapon Intel & Skins configurations (Shell Shockers 3D layout)
     const WEAPONS = [
         {
             id: "cluck",
             name: "Cluck 9mm",
-            desc: "Rapid semi-auto pistol. Perfect accuracy, infinite ammo reserve, and steady single-target suppression.",
-            damage: 22,
+            skin: "Neon Chrome",
+            desc: "Rapid semi-automatic pistol. Very steady handling, quick reload, and infinite backup magazine.",
+            damage: 25,
             fireRate: 180,
-            range: 520,
-            ammoType: "Infinite",
-            color: "#BDC3C7"
+            color: "#E2E8F0"
         },
         {
             id: "scrambler",
             name: "The Scrambler",
-            desc: "Heavy pump-action shotgun. Explodes 6 shell shards in a wide spread. Scrambles close range targets instantly.",
-            damage: 14,
-            fireRate: 850,
-            range: 240,
-            ammoType: "High Spread",
-            color: "#E67E22"
+            skin: "Gold Wood",
+            desc: "Tactical pump-action shotgun. Fires a wide spread of 8 shell fragments. Fatal at point-blank range.",
+            damage: 15,
+            fireRate: 900,
+            color: "#D35400"
         },
         {
             id: "eggk47",
             name: "EggK-47",
-            desc: "Classic fully automatic assault rifle. Devastating fire rate with balanced spray damage and excellent mid-range accuracy.",
-            damage: 20,
+            skin: "Military Camo",
+            desc: "Fully automatic assault rifle. Fires armor-piercing bullets at high velocity. Excellent all-rounder.",
+            damage: 22,
             fireRate: 90,
-            range: 620,
-            ammoType: "Auto",
-            color: "#2ECC71"
+            color: "#27AE60"
         },
         {
             id: "rpegg",
             name: "RPEGG Launcher",
-            desc: "Heavy rocket-propelled egg launcher. Shoots high-explosive yolks that detonate on contact, dealing area-of-effect damage.",
-            damage: 80,
-            fireRate: 1400,
-            range: 700,
-            ammoType: "Explosive",
+            skin: "Carbon Fiber",
+            desc: "Heavy RPG firing high-explosive yolks that detonate on contact, clearing all nearby enemies.",
+            damage: 90,
+            fireRate: 1500,
             color: "#E74C3C",
             explosive: true,
-            explosionRadius: 80
+            explosionRadius: 100
         }
     ];
 
-    // 3. Main Game Class
-    class ShellShockersGame {
+    // 3. Main 3D Game Engine Class
+    class ShellShockers3DGame {
         constructor(parent) {
             this.parent = parent;
             this.buildDOMElements();
             this.initCanvas();
             this.bindInputEvents();
 
-            // Game State
+            // Game Settings
             this.gameState = 'START';
             this.selectedWeaponIndex = 0;
-            
-            // Statistics
             this.score = 0;
             this.playerHealth = 100;
             this.wave = 1;
             this.maxWaves = 5;
             this.enemiesRemaining = 0;
 
-            // Arrays
+            // Camera in 3D Space
+            this.camera = {
+                x: 0,
+                y: 0, // Vertical position
+                z: 0,
+                yaw: -Math.PI / 2, // Rotational heading
+                bob: 0
+            };
+
+            // Game loops structures
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
-            this.explosions = []; // AOE explosions
+            this.explosions = [];
 
-            // Player configuration (Egg shaped physics)
-            this.player = {
-                x: 400,
-                y: 300,
-                radius: 18,
-                angle: 0,
-                speed: 3.2
-            };
-
-            this.mouse = { x: 400, y: 300 };
-            this.keys = {};
+            // Timing
             this.lastShotTime = 0;
+            this.recoil = 0;
+            this.recoilTarget = 0;
             this.loopId = null;
+            this.keys = {};
 
             this.showOverlay();
         }
 
         buildDOMElements() {
-            // Main Wrapper
             this.wrapper = document.createElement('div');
             this.wrapper.id = 'voyager-wrapper';
 
-            // Canvas
             this.canvas = document.createElement('canvas');
             this.canvas.id = 'voyager-canvas';
             this.canvas.width = 800;
             this.canvas.height = 600;
             this.wrapper.appendChild(this.canvas);
 
-            // Overlay Screen
             this.overlay = document.createElement('div');
             this.overlay.className = 'voyager-overlay';
             this.wrapper.appendChild(this.overlay);
@@ -289,20 +282,6 @@
         }
 
         bindInputEvents() {
-            this.canvas.addEventListener('mousemove', (e) => {
-                const rect = this.canvas.getBoundingClientRect();
-                this.mouse.x = e.clientX - rect.left;
-                this.mouse.y = e.clientY - rect.top;
-            });
-
-            this.canvas.addEventListener('mousedown', (e) => {
-                this.keys['Mouse'] = true;
-            });
-
-            window.addEventListener('mouseup', () => {
-                this.keys['Mouse'] = false;
-            });
-
             window.addEventListener('keydown', (e) => {
                 this.keys[e.key] = true;
                 this.keys[e.code] = true;
@@ -312,7 +291,7 @@
                     e.preventDefault();
                 }
 
-                // Win cheat: Shift + D
+                // Cheat shortcut: Shift + D
                 if ((this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) && 
                     (e.key === 'D' || e.key === 'd' || e.code === 'KeyD')) {
                     if (this.gameState === 'PLAYING') {
@@ -326,6 +305,14 @@
                 this.keys[e.key] = false;
                 this.keys[e.code] = false;
             });
+
+            this.canvas.addEventListener('mousedown', () => {
+                this.keys['Mouse'] = true;
+            });
+
+            window.addEventListener('mouseup', () => {
+                this.keys['Mouse'] = false;
+            });
         }
 
         showOverlay() {
@@ -334,7 +321,7 @@
 
             if (this.gameState === 'START') {
                 content = `
-                    <div class="voyager-title">Shell Shockers 2D</div>
+                    <div class="voyager-title">Shell Shockers 3D</div>
                     <div class="voyager-subtitle">Egg Warfare &bull; Arsenal Selection</div>
                     
                     <div class="weapon-grid">
@@ -346,13 +333,12 @@
                         <div class="weapon-card ${isSelected}" data-idx="${idx}">
                             <div class="weapon-name">
                                 ${w.name}
-                                <span class="weapon-ammo-tag">${w.ammoType}</span>
+                                <span class="weapon-ammo-tag">${w.skin}</span>
                             </div>
                             <div class="weapon-desc">${w.desc}</div>
                             <div class="weapon-stats">
                                 <div class="stat-item">DMG: <span>${w.damage}</span></div>
                                 <div class="stat-item">RATE: <span>${w.fireRate}ms</span></div>
-                                <div class="stat-item">RANGE: <span>${w.range}px</span></div>
                             </div>
                         </div>
                     `;
@@ -360,7 +346,7 @@
 
                 content += `
                     </div>
-                    <button class="voyager-btn" id="voyager-deploy-btn">Crack some Shells</button>
+                    <button class="voyager-btn" id="voyager-deploy-btn">Deploy In 3D</button>
                 `;
                 this.overlay.innerHTML = content;
 
@@ -377,8 +363,8 @@
 
             } else if (this.gameState === 'FAIL') {
                 content = `
-                    <div class="voyager-title" style="color: #E74C3C;">You Got Scrambled!</div>
-                    <div class="voyager-text">Your shell has been cracked. The Bad Eggs successfully occupied the grid. Try again, pilot!</div>
+                    <div class="voyager-title" style="color: #E74C3C;">Scrambled!</div>
+                    <div class="voyager-text">Your shell was cracked by the bad eggs. Get back in the fight!</div>
                     <button class="voyager-btn" id="voyager-restart-btn">Redeploy</button>
                 `;
                 this.overlay.innerHTML = content;
@@ -386,9 +372,9 @@
 
             } else if (this.gameState === 'SUCCESS') {
                 content = `
-                    <div class="voyager-title" style="color: #2ECC71;">Egg-cellent Victory</div>
-                    <div class="voyager-text">Spectacular combat! You successfully scrambled all 5 waves of Bad Eggs. Zarg welcomes you back to the biosphere.</div>
-                    <button class="voyager-btn" id="voyager-close-btn">Transmit Logs</button>
+                    <div class="voyager-title" style="color: #2ECC71;">Splat Victory</div>
+                    <div class="voyager-text">Egg-cellent combat! All waves of Bad Eggs have been scrambled. Zarg congratulates you.</div>
+                    <button class="voyager-btn" id="voyager-close-btn">Return to Archives</button>
                 `;
                 this.overlay.innerHTML = content;
                 document.getElementById('voyager-close-btn').addEventListener('click', () => this.triggerHandoff());
@@ -404,12 +390,18 @@
             this.score = 0;
             this.playerHealth = 100;
             this.wave = 1;
+            
+            // Clean arrays
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
             this.explosions = [];
-            this.player.x = 400;
-            this.player.y = 300;
+
+            // Reset camera in 3D
+            this.camera.x = 0;
+            this.camera.z = -200;
+            this.camera.yaw = Math.PI / 2;
+            this.camera.bob = 0;
 
             this.hideOverlay();
             this.startWave();
@@ -422,63 +414,52 @@
         }
 
         startWave() {
-            this.enemiesRemaining = this.wave * 6;
+            this.enemiesRemaining = this.wave * 5 + 3;
             this.enemies = [];
-            for (let i = 0; i < Math.min(this.enemiesRemaining, 10); i++) {
+            for (let i = 0; i < Math.min(this.enemiesRemaining, 6); i++) {
                 this.spawnEnemy();
             }
         }
 
         spawnEnemy() {
-            const side = Math.floor(Math.random() * 4);
-            let x, y;
-            const offset = 40;
-
-            if (side === 0) {
-                x = Math.random() * 800; y = -offset;
-            } else if (side === 1) {
-                x = 800 + offset; y = Math.random() * 600;
-            } else if (side === 2) {
-                x = Math.random() * 800; y = 600 + offset;
-            } else {
-                x = -offset; y = Math.random() * 600;
-            }
+            // Spawn in 3D radius around player
+            const angle = Math.random() * Math.PI * 2;
+            const dist = Math.random() * 500 + 400; // Far away
 
             const dice = Math.random();
             let type = 'normal';
-            let hp = 30 + this.wave * 6;
-            let speed = 1.1 + (this.wave * 0.1);
-            let radius = 16;
+            let hp = 40 + this.wave * 10;
+            let speed = 1.6 + (this.wave * 0.12);
+            let size = 25; // 3D billboard scale
 
-            if (dice > 0.8 && this.wave >= 2) {
+            if (dice > 0.75 && this.wave >= 2) {
                 type = 'speedy';
-                hp = 22;
-                speed = 2.4 + (this.wave * 0.12);
-                radius = 13;
+                hp = 25;
+                speed = 2.8 + (this.wave * 0.15);
+                size = 20;
             } else if (dice > 0.9 && this.wave >= 3) {
                 type = 'brute';
-                hp = 110 + this.wave * 20;
-                speed = 0.65;
-                radius = 24;
+                hp = 120 + this.wave * 20;
+                speed = 0.8;
+                size = 38;
             }
 
             this.enemies.push({
-                x: x,
-                y: y,
-                vx: 0,
-                vy: 0,
-                radius: radius,
+                x: this.camera.x + Math.cos(angle) * dist,
+                z: this.camera.z + Math.sin(angle) * dist,
+                y: 10, // Height relative to floor
+                size: size,
                 type: type,
                 hp: hp,
                 maxHp: hp,
                 speed: speed,
-                angle: 0
+                damagedCooldown: 0
             });
             this.enemiesRemaining--;
         }
 
         triggerVictory() {
-            this.score += 4000;
+            this.score += 5000;
             this.gameState = 'SUCCESS';
             this.stopLoop();
             this.showOverlay();
@@ -489,7 +470,7 @@
             if (window.Voyager && typeof window.Voyager.showLeaderboard === 'function') {
                 window.Voyager.showLeaderboard(this.score);
             } else {
-                console.log("Handoff trigger: Final Score = ", this.score);
+                console.log("Handoff trigger: Score = ", this.score);
             }
         }
 
@@ -512,95 +493,118 @@
         update() {
             const weapon = WEAPONS[this.selectedWeaponIndex];
 
-            // 1. Move Player (8-Way Direct with Shift/Z multipliers)
-            let dx = 0;
-            let dy = 0;
-
-            if (this.keys['ArrowUp'] || this.keys['KeyW']) dy -= 1;
-            if (this.keys['ArrowDown'] || this.keys['KeyS']) dy += 1;
-            if (this.keys['ArrowLeft'] || this.keys['KeyA']) dx -= 1;
-            if (this.keys['ArrowRight'] || this.keys['KeyD']) dx += 1;
-
-            if (dx !== 0 || dy !== 0) {
-                const length = Math.sqrt(dx * dx + dy * dy);
-                dx /= length;
-                dy /= length;
-
-                let multiplier = 1.0;
-                if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-                    multiplier = 1.8;
-                } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
-                    multiplier = 0.5;
-                }
-
-                const moveSpeed = this.player.speed * multiplier;
-                this.player.x += dx * moveSpeed;
-                this.player.y += dy * moveSpeed;
+            // 1. Camera Rotations & 3D Movement (Keyboard controls)
+            // Rotate camera yaw (Horizontal look)
+            if (this.keys['ArrowLeft'] || this.keys['KeyA']) {
+                this.camera.yaw -= 0.04;
+            }
+            if (this.keys['ArrowRight'] || this.keys['KeyD']) {
+                this.camera.yaw += 0.04;
             }
 
-            // Keep within boundaries
-            this.player.x = Math.max(this.player.radius, Math.min(800 - this.player.radius, this.player.x));
-            this.player.y = Math.max(this.player.radius, Math.min(600 - this.player.radius, this.player.y));
+            // Move forward/backward along view yaw
+            let moveX = 0;
+            let moveZ = 0;
+            if (this.keys['ArrowUp'] || this.keys['KeyW']) {
+                moveX += Math.cos(this.camera.yaw);
+                moveZ += Math.sin(this.camera.yaw);
+            }
+            if (this.keys['ArrowDown'] || this.keys['KeyS']) {
+                moveX -= Math.cos(this.camera.yaw);
+                moveZ -= Math.sin(this.camera.yaw);
+            }
 
-            // Face mouse cursor
-            this.player.angle = Math.atan2(this.mouse.y - this.player.y, this.mouse.x - this.player.x);
+            if (moveX !== 0 || moveZ !== 0) {
+                const len = Math.sqrt(moveX * moveX + moveZ * moveZ);
+                let multiplier = 1.0;
+                if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+                    multiplier = 1.8; // Sprint
+                } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
+                    multiplier = 0.4; // Aim walk
+                }
 
-            // 2. Shooting
+                const moveSpeed = 2.8 * multiplier;
+                this.camera.x += (moveX / len) * moveSpeed;
+                this.camera.z += (moveZ / len) * moveSpeed;
+
+                // Bobbing camera
+                this.camera.bob += 0.15;
+                this.camera.y = Math.sin(this.camera.bob) * 1.5;
+            } else {
+                // Settle camera bobbing
+                this.camera.y = this.camera.y * 0.9;
+            }
+
+            // Keep inside play field boundary limits (e.g. 800 width boundaries)
+            this.camera.x = Math.max(-600, Math.min(600, this.camera.x));
+            this.camera.z = Math.max(-600, Math.min(600, this.camera.z));
+
+            // 2. Weapons shooting
             const now = Date.now();
             if (this.keys['Mouse'] && now - this.lastShotTime >= weapon.fireRate) {
                 this.fireWeapon(weapon);
                 this.lastShotTime = now;
             }
 
-            // 3. Move Bullets
+            // Recoil decay
+            this.recoil += (this.recoilTarget - this.recoil) * 0.2;
+            this.recoilTarget *= 0.8;
+
+            // 3. Move Bullets in 3D Space
             this.bullets.forEach((b, idx) => {
                 b.x += b.vx;
                 b.y += b.vy;
-                b.distanceTraveled += Math.sqrt(b.vx * b.vx + b.vy * b.vy);
-
-                // Check out of range
-                if (b.distanceTraveled >= b.range || b.x < 0 || b.x > 800 || b.y < 0 || b.y > 600) {
+                b.z += b.vz;
+                
+                // Bullet range check
+                b.life--;
+                if (b.life <= 0) {
                     if (b.explosive) {
-                        this.explode(b.x, b.y, b.explosionRadius, b.damage);
+                        this.explode3D(b.x, b.y, b.z, b.explosionRadius, b.damage);
                     }
                     this.bullets.splice(idx, 1);
                 }
             });
 
-            // 4. Update AOE Explosions
+            // 4. Update 3D Explosions
             this.explosions.forEach((ex, idx) => {
                 ex.radius += ex.growthSpeed;
-                ex.alpha -= 0.04;
+                ex.alpha -= 0.05;
                 if (ex.alpha <= 0) {
                     this.explosions.splice(idx, 1);
                 }
             });
 
-            // 5. Update Particles
+            // 5. Update 3D Particles (Gravity physics)
             this.particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
+                p.z += p.vz;
+                
+                p.vy += 0.15; // Gravity
                 p.alpha -= 0.03;
-                if (p.alpha <= 0) {
+                if (p.alpha <= 0 || p.y > 40) { // Settle floor
                     this.particles.splice(idx, 1);
                 }
             });
 
-            // 6. Update Enemies
-            this.enemies.forEach((enemy, eIdx) => {
-                const angle = Math.atan2(this.player.y - enemy.y, this.player.x - enemy.x);
-                enemy.angle = angle;
-                enemy.vx = Math.cos(angle) * enemy.speed;
-                enemy.vy = Math.sin(angle) * enemy.speed;
+            // 6. Update 3D Enemies (Chase camera position)
+            this.enemies.forEach((enemy, idx) => {
+                if (enemy.damagedCooldown > 0) enemy.damagedCooldown--;
 
-                enemy.x += enemy.vx;
-                enemy.y += enemy.vy;
+                const dx = this.camera.x - enemy.x;
+                const dz = this.camera.z - enemy.z;
+                const dist = Math.hypot(dx, dz);
 
-                // Collide with player
-                const playerDist = Math.hypot(this.player.x - enemy.x, this.player.y - enemy.y);
-                if (playerDist < (this.player.radius + enemy.radius)) {
-                    this.playerHealth -= 0.22; 
-                    this.spawnYolkSplats(enemy.x, enemy.y, 2);
+                if (dist > 18) {
+                    // Chase camera coordinates
+                    enemy.x += (dx / dist) * enemy.speed;
+                    enemy.z += (dz / dist) * enemy.speed;
+                } else {
+                    // Melee attack camera
+                    this.playerHealth -= 0.35; // Damage player
+                    this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 2);
+
                     if (this.playerHealth <= 0) {
                         this.playerHealth = 0;
                         this.gameState = 'FAIL';
@@ -609,37 +613,41 @@
                     }
                 }
 
-                // Check bullet collisions
+                // Check standard bullet collisions in 3D Space
                 this.bullets.forEach((bullet, bIdx) => {
-                    const bulletDist = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
-                    if (bulletDist < (enemy.radius + 4)) {
+                    const dist3D = Math.sqrt(
+                        Math.pow(bullet.x - enemy.x, 2) +
+                        Math.pow(bullet.z - enemy.z, 2)
+                    );
+
+                    if (dist3D < (enemy.size * 0.7)) {
                         if (bullet.explosive) {
-                            this.explode(bullet.x, bullet.y, bullet.explosionRadius, bullet.damage);
+                            this.explode3D(bullet.x, bullet.y, bullet.z, bullet.explosionRadius, bullet.damage);
                         } else {
                             enemy.hp -= bullet.damage;
-                            this.spawnYolkSplats(bullet.x, bullet.y, 6);
+                            enemy.damagedCooldown = 5;
+                            this.spawnYolkSplats3D(bullet.x, bullet.y, bullet.z, 5);
                         }
 
-                        // Bullet disposal (non-sniper bullets)
+                        // Remove bullet (unless sniper pierces)
                         if (bullet.id !== 'sniper') {
                             this.bullets.splice(bIdx, 1);
                         }
 
-                        // Enemy death check
                         if (enemy.hp <= 0) {
-                            this.scrambleEnemy(enemy);
-                            this.enemies.splice(eIdx, 1);
+                            this.scrambleEnemy3D(enemy);
+                            this.enemies.splice(idx, 1);
                         }
                     }
                 });
             });
 
-            // Spawn next enemies
-            if (this.enemies.length < 6 && this.enemiesRemaining > 0) {
+            // Spawner
+            if (this.enemies.length < 5 && this.enemiesRemaining > 0) {
                 this.spawnEnemy();
             }
 
-            // Wave progress check
+            // Wave progress
             if (this.enemies.length === 0 && this.enemiesRemaining === 0) {
                 this.wave++;
                 if (this.wave > this.maxWaves) {
@@ -652,279 +660,539 @@
             }
         }
 
-        explode(x, y, radius, damage) {
-            this.explosions.push({
-                x: x,
-                y: y,
-                radius: 10,
-                maxRadius: radius,
-                growthSpeed: radius / 12,
-                alpha: 1.0
-            });
-
-            // Splash damage check on all enemies
-            this.enemies.forEach((enemy, idx) => {
-                const dist = Math.hypot(enemy.x - x, enemy.y - y);
-                if (dist < (radius + enemy.radius)) {
-                    // Linear falloff damage
-                    const damageFactor = 1 - (dist / (radius + enemy.radius));
-                    enemy.hp -= Math.round(damage * damageFactor);
-
-                    this.spawnYolkSplats(enemy.x, enemy.y, 4);
-
-                    if (enemy.hp <= 0) {
-                        this.scrambleEnemy(enemy);
-                        this.enemies.splice(idx, 1);
-                    }
-                }
-            });
-
-            // Explosion sparks
-            this.spawnYolkSplats(x, y, 20);
-        }
-
-        scrambleEnemy(enemy) {
-            this.spawnYolkSplats(enemy.x, enemy.y, 30); // Large splat
-            this.score += enemy.type === 'brute' ? 350 : (enemy.type === 'speedy' ? 180 : 100);
-        }
-
         fireWeapon(w) {
-            const angle = this.player.angle;
-            const speed = 13.0;
+            // Shoot forward along view yaw heading
+            const pitch = 0; // Straight flat
+            const speed = 25.0;
+            const heading = this.camera.yaw;
+
+            this.recoilTarget += 22; // Muzzle kick
 
             if (w.id === 'scrambler') {
-                // Shoot a fan of 6 shells
-                for (let i = -2.5; i <= 2.5; i += 1.0) {
-                    const devAngle = angle + (i * 0.08);
+                // Fan of 8 pellets
+                for (let i = -3; i <= 3; i++) {
+                    const devAngle = heading + (i * 0.05);
                     this.bullets.push({
                         id: w.id,
-                        x: this.player.x + Math.cos(angle) * 22,
-                        y: this.player.y + Math.sin(angle) * 22,
+                        x: this.camera.x,
+                        y: this.camera.y + 2,
+                        z: this.camera.z,
                         vx: Math.cos(devAngle) * speed,
-                        vy: Math.sin(devAngle) * speed,
+                        vy: (Math.random() - 0.5) * 1.5,
+                        vz: Math.sin(devAngle) * speed,
                         damage: w.damage,
                         range: w.range,
-                        distanceTraveled: 0,
-                        color: w.color,
+                        life: 15,
                         explosive: false
                     });
                 }
             } else {
                 this.bullets.push({
                     id: w.id,
-                    x: this.player.x + Math.cos(angle) * 22,
-                    y: this.player.y + Math.sin(angle) * 22,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
+                    x: this.camera.x,
+                    y: this.camera.y + 2,
+                    z: this.camera.z,
+                    vx: Math.cos(heading) * speed,
+                    vy: 0,
+                    vz: Math.sin(heading) * speed,
                     damage: w.damage,
                     range: w.range,
-                    distanceTraveled: 0,
-                    color: w.color,
+                    life: 25,
                     explosive: w.explosive || false,
                     explosionRadius: w.explosionRadius || 0
                 });
             }
 
-            // Muzzle flash sparks
-            this.spawnYolkSplats(this.player.x + Math.cos(angle) * 22, this.player.y + Math.sin(angle) * 22, 5);
+            // Muzzle sparks in front of camera
+            this.spawnYolkSplats3D(
+                this.camera.x + Math.cos(heading) * 15,
+                this.camera.y + 2,
+                this.camera.z + Math.sin(heading) * 15,
+                4
+            );
         }
 
-        spawnYolkSplats(x, y, count) {
+        explode3D(x, y, z, radius, damage) {
+            this.explosions.push({
+                x: x,
+                y: y,
+                z: z,
+                radius: 15,
+                maxRadius: radius,
+                growthSpeed: radius / 12,
+                alpha: 1.0
+            });
+
+            // Splash damage
+            this.enemies.forEach((enemy, idx) => {
+                const dist = Math.hypot(enemy.x - x, enemy.z - z);
+                if (dist < (radius + enemy.size)) {
+                    const factor = 1 - (dist / (radius + enemy.size));
+                    enemy.hp -= Math.round(damage * factor);
+                    enemy.damagedCooldown = 5;
+                    this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 5);
+
+                    if (enemy.hp <= 0) {
+                        this.scrambleEnemy3D(enemy);
+                        this.enemies.splice(idx, 1);
+                    }
+                }
+            });
+
+            this.spawnYolkSplats3D(x, y, z, 20);
+        }
+
+        scrambleEnemy3D(enemy) {
+            this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 25);
+            this.score += enemy.type === 'brute' ? 400 : (enemy.type === 'speedy' ? 200 : 100);
+        }
+
+        spawnYolkSplats3D(x, y, z, count) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 4 + 1.5;
-                const dice = Math.random();
+                const speedH = Math.random() * 4 + 1;
+                const speedV = -(Math.random() * 4 + 1); // upwards jump
 
-                let color = '#FFF8E7'; // Eggshell fragment
-                let size = Math.random() * 2 + 1;
-                
-                if (dice > 0.4) {
-                    color = '#F1C40F'; // Yellow yolk
-                    size = Math.random() * 3.5 + 1.5;
-                } else if (dice > 0.25) {
-                    color = '#E67E22'; // Orange yolk
-                    size = Math.random() * 3 + 1;
-                }
+                let color = '#FFF8E7';
+                let dice = Math.random();
+                if (dice > 0.45) color = '#F1C40F';
+                else if (dice > 0.25) color = '#E67E22';
 
                 this.particles.push({
                     x: x,
                     y: y,
-                    vx: Math.cos(angle) * speed,
-                    vy: Math.sin(angle) * speed,
+                    z: z,
+                    vx: Math.cos(angle) * speedH,
+                    vy: speedV,
+                    vz: Math.sin(angle) * speedH,
                     alpha: 1.0,
                     color: color,
-                    size: size
+                    size: Math.random() * 3 + 1
                 });
             }
         }
 
         draw() {
-            // Background
-            this.ctx.fillStyle = '#0a0d13';
-            this.ctx.fillRect(0, 0, 800, 600);
+            // 1. Draw Sky (Dual Gradient)
+            this.ctx.fillStyle = '#05070c';
+            this.ctx.fillRect(0, 0, 800, 300); // Sky
+            this.ctx.fillStyle = '#0d1117';
+            this.ctx.fillRect(0, 300, 800, 300); // Floor base
 
-            // Technical/Futuristic map grid lines
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
-            this.ctx.lineWidth = 1;
-            for (let i = 0; i < 800; i += 40) {
+            // Draw Horizon glow
+            const horizonGrad = this.ctx.createLinearGradient(0, 240, 0, 300);
+            horizonGrad.addColorStop(0, 'rgba(241, 196, 15, 0)');
+            horizonGrad.addColorStop(1, 'rgba(241, 196, 15, 0.06)');
+            this.ctx.fillStyle = horizonGrad;
+            this.ctx.fillRect(0, 240, 800, 60);
+
+            // 2. Project 3D floor grid lines (converges to horizon at 300px Y)
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
+            this.ctx.lineWidth = 1.5;
+
+            // Horizon line
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, 300);
+            this.ctx.lineTo(800, 300);
+            this.ctx.stroke();
+
+            // Perspective lines converging from camera
+            const fov = 400; // perspective focal scale
+            const floorY = 40; // Camera height offset
+
+            // Draw vertical longitudinal perspective lines
+            for (let x = -800; x <= 800; x += 100) {
+                // Project line from horizon (0 length) to bottom of screen
+                const startX = x - this.camera.x;
+                
+                // Let's project two points of the line
+                // Point 1 (near horizon): z = 300
+                // Point 2 (near bottom): z = 20
+                const px1 = 400 + (startX / 250) * fov;
+                const py1 = 300 + (floorY / 250) * fov;
+
+                const px2 = 400 + (startX / 25) * fov;
+                const py2 = 300 + (floorY / 25) * fov;
+
                 this.ctx.beginPath();
-                this.ctx.moveTo(i, 0);
-                this.ctx.lineTo(i, 600);
+                this.ctx.moveTo(px1, py1);
+                this.ctx.lineTo(px2, py2);
                 this.ctx.stroke();
             }
-            for (let j = 0; j < 600; j += 40) {
+
+            // Draw horizontal transverse perspective lines
+            // Z coordinates spaces exponentially
+            for (let z = 20; z < 500; z *= 1.45) {
+                const screenZ = z;
+                const py = 300 + (floorY / screenZ) * fov;
+
                 this.ctx.beginPath();
-                this.ctx.moveTo(0, j);
-                this.ctx.lineTo(800, j);
+                this.ctx.moveTo(0, py);
+                this.ctx.lineTo(800, py);
                 this.ctx.stroke();
             }
 
-            // Draw Bullets
-            this.bullets.forEach(b => {
-                this.ctx.beginPath();
-                this.ctx.moveTo(b.x, b.y);
-                this.ctx.lineTo(b.x - b.vx * 1.5, b.y - b.vy * 1.5);
-                this.ctx.strokeStyle = b.color;
-                this.ctx.lineWidth = b.id === 'rpegg' ? 5 : (b.id === 'sniper' ? 3.5 : 2);
-                this.ctx.stroke();
-            });
+            // 3. Project 3D elements (Enemies, Bullets, Explosions, Particles)
+            const renderQueue = [];
 
-            // Draw AOE Explosions (Expanding yolk bubbles)
-            this.explosions.forEach(ex => {
-                this.ctx.save();
-                this.ctx.globalAlpha = ex.alpha * 0.45;
-                
-                // Exploding core
-                const grad = this.ctx.createRadialGradient(ex.x, ex.y, 2, ex.x, ex.y, ex.radius);
-                grad.addColorStop(0, '#FFFFFF');
-                grad.addColorStop(0.2, '#F1C40F');
-                grad.addColorStop(0.8, '#E67E22');
-                grad.addColorStop(1.0, 'rgba(231, 76, 60, 0)');
-                
-                this.ctx.fillStyle = grad;
-                this.ctx.beginPath();
-                this.ctx.arc(ex.x, ex.y, ex.radius, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                this.ctx.restore();
-            });
-
-            // Draw Particles (Egg yolks and shards)
-            this.particles.forEach(p => {
-                this.ctx.fillStyle = p.color;
-                this.ctx.globalAlpha = p.alpha;
-                this.ctx.beginPath();
-                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
-                this.ctx.fill();
-            });
-            this.ctx.globalAlpha = 1.0;
-
-            // Draw Bad Egg Enemies (Gray cracked eggs with red eyes)
+            // Project Enemies
             this.enemies.forEach(e => {
-                this.ctx.save();
-                this.ctx.translate(e.x, e.y);
-                this.ctx.rotate(e.angle);
-
-                // Body (Egg shape)
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, -e.radius * 1.25);
-                this.ctx.bezierCurveTo(e.radius * 0.9, -e.radius * 1.25, e.radius * 1.1, e.radius, 0, e.radius);
-                this.ctx.bezierCurveTo(-e.radius * 1.1, e.radius, -e.radius * 0.9, -e.radius * 1.25, 0, -e.radius * 1.25);
-                this.ctx.closePath();
-                this.ctx.fillStyle = e.type === 'brute' ? '#7F8C8D' : (e.type === 'speedy' ? '#D5D8DC' : '#BDC3C7');
-                this.ctx.fill();
-                this.ctx.strokeStyle = '#95A5A6';
-                this.ctx.lineWidth = 2.5;
-                this.ctx.stroke();
-
-                // Shell Crack Lines
-                this.ctx.strokeStyle = '#7F8C8D';
-                this.ctx.lineWidth = 1.8;
-                this.ctx.beginPath();
-                this.ctx.moveTo(-e.radius * 0.3, -e.radius * 0.3);
-                this.ctx.lineTo(-e.radius * 0.1, 0);
-                this.ctx.lineTo(-e.radius * 0.4, e.radius * 0.3);
-                this.ctx.stroke();
-
-                // Angry red eyes
-                this.ctx.fillStyle = '#E74C3C';
-                this.ctx.beginPath();
-                this.ctx.arc(e.radius * 0.3, -e.radius * 0.35, 3, 0, Math.PI * 2);
-                this.ctx.arc(e.radius * 0.3, e.radius * 0.35, 3, 0, Math.PI * 2);
-                this.ctx.fill();
-
-                // Gun (Bad eggs carrying SMGs)
-                this.ctx.fillStyle = '#34495E';
-                this.ctx.fillRect(e.radius * 0.4, -3, 12, 6);
-
-                // Health bar draw
-                if (e.hp < e.maxHp) {
-                    this.ctx.restore();
-                    this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
-                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 12, e.radius * 2, 4);
-                    this.ctx.fillStyle = '#E74C3C';
-                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 12, (e.radius * 2) * (e.hp / e.maxHp), 4);
-                    this.ctx.save();
-                    this.ctx.translate(e.x, e.y);
+                const proj = this.project3D(e.x, e.y, e.z);
+                if (proj) {
+                    renderQueue.push({
+                        type: 'enemy',
+                        z: proj.rz,
+                        proj: proj,
+                        ref: e
+                    });
                 }
-
-                this.ctx.restore();
             });
 
-            // Draw Player (Dapper shell shockers Egg carrying weapons)
+            // Project Bullets
+            this.bullets.forEach(b => {
+                const proj = this.project3D(b.x, b.y, b.z);
+                if (proj) {
+                    renderQueue.push({
+                        type: 'bullet',
+                        z: proj.rz,
+                        proj: proj,
+                        ref: b
+                    });
+                }
+            });
+
+            // Project Particles
+            this.particles.forEach(p => {
+                const proj = this.project3D(p.x, p.y, p.z);
+                if (proj) {
+                    renderQueue.push({
+                        type: 'particle',
+                        z: proj.rz,
+                        proj: proj,
+                        ref: p
+                    });
+                }
+            });
+
+            // Project Explosions
+            this.explosions.forEach(ex => {
+                const proj = this.project3D(ex.x, ex.y, ex.z);
+                if (proj) {
+                    renderQueue.push({
+                        type: 'explosion',
+                        z: proj.rz,
+                        proj: proj,
+                        ref: ex
+                    });
+                }
+            });
+
+            // Sort render queue by distance (Back-to-Front painter's algorithm)
+            renderQueue.sort((a, b) => b.z - a.z);
+
+            // Draw projected queue
+            renderQueue.forEach(item => {
+                if (item.type === 'enemy') {
+                    this.drawEnemy3D(item.proj, item.ref);
+                } else if (item.type === 'bullet') {
+                    this.drawBullet3D(item.proj, item.ref);
+                } else if (item.type === 'particle') {
+                    this.drawParticle3D(item.proj, item.ref);
+                } else if (item.type === 'explosion') {
+                    this.drawExplosion3D(item.proj, item.ref);
+                }
+            });
+
+            // 4. First-Person Weapons HUD overlay
+            this.drawFirstPersonWeapon();
+
+            // Screen damage vignette
+            if (this.playerHealth < 40) {
+                const vigGrad = this.ctx.createRadialGradient(400, 300, 200, 400, 300, 500);
+                vigGrad.addColorStop(0, 'rgba(231, 76, 60, 0)');
+                vigGrad.addColorStop(1, `rgba(231, 76, 60, ${0.4 * (1 - this.playerHealth/40)})`);
+                this.ctx.fillStyle = vigGrad;
+                this.ctx.fillRect(0, 0, 800, 600);
+            }
+
+            // HUD
+            this.drawHUD();
+        }
+
+        project3D(ox, oy, oz) {
+            // Translate relative to camera position
+            const dx = ox - this.camera.x;
+            const dy = oy - this.camera.y;
+            const dz = oz - this.camera.z;
+
+            // Rotate based on Camera Heading Yaw
+            const rx = dx * Math.cos(-this.camera.yaw) - dz * Math.sin(-this.camera.yaw);
+            const rz = dx * Math.sin(-this.camera.yaw) + dz * Math.cos(-this.camera.yaw);
+            const ry = dy + 15; // height offset
+
+            // Don't draw if behind camera or too close
+            if (rz <= 4.0) return null;
+
+            const fov = 400; // perspective focal scale
+            const scale = fov / rz;
+
+            return {
+                x: 400 + rx * scale,
+                y: 300 + ry * scale,
+                scale: scale,
+                rz: rz
+            };
+        }
+
+        drawEnemy3D(p, enemy) {
+            const size = enemy.size * p.scale * 0.75;
+            if (size <= 0) return;
+
             this.ctx.save();
-            this.ctx.translate(this.player.x, this.player.y);
-            this.ctx.rotate(this.player.angle);
+            this.ctx.translate(p.x, p.y);
 
-            // Egg Body Shape
+            // Shading based on distance (Atmospheric fog)
+            const fogFactor = Math.min(1.0, p.rz / 900);
+            const baseColor = enemy.damagedCooldown > 0 ? '#E74C3C' : (enemy.type === 'brute' ? '#7F8C8D' : (enemy.type === 'speedy' ? '#E2E8F0' : '#F1C40F'));
+            
+            // Draw Billboard Egg
             this.ctx.beginPath();
-            this.ctx.moveTo(0, -this.player.radius * 1.25);
-            this.ctx.bezierCurveTo(this.player.radius * 0.9, -this.player.radius * 1.25, this.player.radius * 1.1, this.player.radius, 0, this.player.radius);
-            this.ctx.bezierCurveTo(-this.player.radius * 1.1, this.player.radius, -this.player.radius * 0.9, -this.player.radius * 1.25, 0, -this.player.radius * 1.25);
+            this.ctx.moveTo(0, -size * 1.35);
+            this.ctx.bezierCurveTo(size * 1.0, -size * 1.35, size * 1.15, size, 0, size);
+            this.ctx.bezierCurveTo(-size * 1.15, size, -size * 1.0, -size * 1.35, 0, -size * 1.35);
             this.ctx.closePath();
-            this.ctx.fillStyle = '#FFF8E7'; // Clean egg color
+
+            this.ctx.fillStyle = baseColor;
             this.ctx.fill();
-            this.ctx.strokeStyle = '#D5C5A1';
-            this.ctx.lineWidth = 2.8;
+            this.ctx.strokeStyle = '#95A5A6';
+            this.ctx.lineWidth = Math.max(1, 2.5 * p.scale * 0.015);
             this.ctx.stroke();
 
-            // Determined black eyes
-            this.ctx.fillStyle = '#000';
+            // Cracks on egg
+            this.ctx.strokeStyle = 'rgba(0,0,0,0.15)';
             this.ctx.beginPath();
-            this.ctx.arc(this.player.radius * 0.35, -this.player.radius * 0.3, 3, 0, Math.PI * 2);
-            this.ctx.arc(this.player.radius * 0.35, this.player.radius * 0.3, 3, 0, Math.PI * 2);
+            this.ctx.moveTo(-size*0.2, -size*0.2);
+            this.ctx.lineTo(0, 0);
+            this.ctx.lineTo(-size*0.3, size*0.3);
+            this.ctx.stroke();
+
+            // Determined Red Eyes
+            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.beginPath();
+            this.ctx.arc(-size * 0.3, -size * 0.35, Math.max(1, size * 0.15), 0, Math.PI * 2);
+            this.ctx.arc(size * 0.3, -size * 0.35, Math.max(1, size * 0.15), 0, Math.PI * 2);
             this.ctx.fill();
 
-            // Angry eyebrows
+            // Eyebrows
             this.ctx.strokeStyle = '#000';
-            this.ctx.lineWidth = 2.5;
+            this.ctx.lineWidth = Math.max(1, size * 0.1);
             this.ctx.beginPath();
-            this.ctx.moveTo(this.player.radius * 0.1, -this.player.radius * 0.5);
-            this.ctx.lineTo(this.player.radius * 0.5, -this.player.radius * 0.35);
-            this.ctx.moveTo(this.player.radius * 0.1, this.player.radius * 0.5);
-            this.ctx.lineTo(this.player.radius * 0.5, this.player.radius * 0.35);
+            this.ctx.moveTo(-size * 0.5, -size * 0.5);
+            this.ctx.lineTo(-size * 0.1, -size * 0.4);
+            this.ctx.moveTo(size * 0.5, -size * 0.5);
+            this.ctx.lineTo(size * 0.1, -size * 0.4);
             this.ctx.stroke();
 
-            // Weapon model
-            const weapon = WEAPONS[this.selectedWeaponIndex];
-            this.ctx.fillStyle = '#34495E';
-            if (weapon.id === 'rpegg') {
-                this.ctx.fillRect(this.player.radius * 0.4, -6, 22, 12);
+            // Military Accessories (Shell Shockers style cosmetics)
+            if (enemy.type === 'brute') {
+                // Soldier Helmet
+                this.ctx.fillStyle = '#34495E';
+                this.ctx.beginPath();
+                this.ctx.arc(0, -size * 0.5, size * 1.1, Math.PI, 0);
+                this.ctx.fill();
+            } else if (enemy.type === 'speedy') {
+                // Red bandana band
                 this.ctx.fillStyle = '#E74C3C';
-                this.ctx.fillRect(this.player.radius * 0.4 + 20, -5, 4, 10);
+                this.ctx.fillRect(-size*0.8, -size*0.5, size*1.6, size*0.2);
+            }
+
+            // Health bar 3D
+            if (enemy.hp < enemy.maxHp) {
+                const barW = size * 1.5;
+                this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                this.ctx.fillRect(-barW/2, -size * 1.6, barW, 4);
+                this.ctx.fillStyle = '#2ECC71';
+                this.ctx.fillRect(-barW/2, -size * 1.6, barW * (enemy.hp / enemy.maxHp), 4);
+            }
+
+            // Fog layer overlay
+            this.ctx.fillStyle = `rgba(13, 17, 23, ${fogFactor * 0.8})`;
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, -size * 1.35);
+            this.ctx.bezierCurveTo(size * 1.0, -size * 1.35, size * 1.15, size, 0, size);
+            this.ctx.bezierCurveTo(-size * 1.15, size, -size * 1.0, -size * 1.35, 0, -size * 1.35);
+            this.ctx.fill();
+
+            this.ctx.restore();
+        }
+
+        drawBullet3D(p, bullet) {
+            const size = Math.max(1.5, 6 * p.scale * 0.02);
+            this.ctx.fillStyle = bullet.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            this.ctx.shadowBlur = size * 3;
+            this.ctx.shadowColor = bullet.color;
+            this.ctx.fill();
+            this.ctx.shadowBlur = 0; // Reset
+        }
+
+        drawParticle3D(p, particle) {
+            const size = Math.max(1, particle.size * p.scale * 0.02);
+            this.ctx.fillStyle = particle.color;
+            this.ctx.globalAlpha = particle.alpha;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.globalAlpha = 1.0;
+        }
+
+        drawExplosion3D(p, ex) {
+            const size = ex.radius * p.scale * 0.055;
+            if (size <= 0) return;
+
+            this.ctx.save();
+            this.ctx.globalAlpha = ex.alpha * 0.55;
+
+            const grad = this.ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, size);
+            grad.addColorStop(0, '#FFFFFF');
+            grad.addColorStop(0.3, '#F1C40F');
+            grad.addColorStop(0.7, '#D35400');
+            grad.addColorStop(1, 'rgba(231,76,60,0)');
+
+            this.ctx.fillStyle = grad;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            this.ctx.fill();
+
+            this.ctx.restore();
+        }
+
+        drawFirstPersonWeapon() {
+            const weapon = WEAPONS[this.selectedWeaponIndex];
+            const recoilOffset = this.recoil;
+            
+            // Bobbing movement offset when sprinting
+            const isMoving = this.keys['ArrowUp'] || this.keys['ArrowDown'] || this.keys['ArrowLeft'] || this.keys['ArrowRight'] ||
+                             this.keys['KeyW'] || this.keys['KeyS'] || this.keys['KeyA'] || this.keys['KeyD'];
+            const bobX = isMoving ? Math.sin(this.camera.bob) * 12 : 0;
+            const bobY = isMoving ? Math.abs(Math.cos(this.camera.bob)) * 8 : 0;
+
+            const isSniperScope = (weapon.id === 'cluck' || weapon.id === 'cluck') ? false : (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']);
+
+            if (isSniperScope) {
+                // RENDER SNIPER SCOPE VIEW (Aiming down sights zoom)
+                this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                this.ctx.fillRect(0, 0, 800, 600);
+
+                // Scope black bounds
+                this.ctx.strokeStyle = '#000';
+                this.ctx.lineWidth = 140;
+                this.ctx.beginPath();
+                this.ctx.arc(400, 300, 380, 0, Math.PI * 2);
+                this.ctx.stroke();
+
+                // Crosshair lines
+                this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.4)';
+                this.ctx.lineWidth = 2;
+                this.ctx.beginPath();
+                this.ctx.moveTo(400, 50);
+                this.ctx.lineTo(400, 550);
+                this.ctx.moveTo(50, 300);
+                this.ctx.lineTo(750, 300);
+                this.ctx.stroke();
+
+                // Center red dot
+                this.ctx.fillStyle = 'red';
+                this.ctx.beginPath();
+                this.ctx.arc(400, 300, 3, 0, Math.PI * 2);
+                this.ctx.fill();
+                return;
+            }
+
+            // Normal First Person Weapon Drawing (Call of Duty / Shell Shockers perspective)
+            this.ctx.save();
+            this.ctx.translate(560 + bobX, 480 + bobY + recoilOffset);
+
+            // Draw Player Hands (Cute white egg shells holding weapon)
+            this.ctx.fillStyle = '#FFF8E7';
+            this.ctx.strokeStyle = '#D5C5A1';
+            this.ctx.lineWidth = 3;
+            this.ctx.beginPath();
+            this.ctx.arc(-40, 80, 26, 0, Math.PI * 2);
+            this.ctx.fill();
+            this.ctx.stroke();
+
+            // Draw Weapon based on Skin
+            if (weapon.id === 'cluck') {
+                // Pistol (Neon Chrome skin)
+                this.ctx.fillStyle = '#7F8C8D';
+                this.ctx.fillRect(-25, -20, 20, 50); // grip
+                this.ctx.fillStyle = '#BDC3C7';
+                this.ctx.fillRect(-25, -20, 60, 22);  // slide
+                this.ctx.fillStyle = '#00F3FF'; // Neon glow lines
+                this.ctx.fillRect(-10, -10, 40, 3);
             } else if (weapon.id === 'scrambler') {
-                this.ctx.fillRect(this.player.radius * 0.4, -5, 18, 10);
-                this.ctx.strokeStyle = '#1B2631';
-                this.ctx.lineWidth = 1;
-                this.ctx.strokeRect(this.player.radius * 0.4, -5, 18, 10);
-            } else {
-                this.ctx.fillRect(this.player.radius * 0.4, -3, 20, 6);
+                // Shotgun (Gold Wood skin)
+                this.ctx.fillStyle = '#873600'; // wooden butt stock
+                this.ctx.beginPath();
+                this.ctx.moveTo(-70, 60);
+                this.ctx.lineTo(-40, 20);
+                this.ctx.lineTo(-10, 10);
+                this.ctx.lineTo(-50, 60);
+                this.ctx.fill();
+                
+                this.ctx.fillStyle = '#F39C12'; // golden receiver
+                this.ctx.fillRect(-30, 0, 50, 28);
+                
+                this.ctx.fillStyle = '#1A252F'; // dual iron barrels
+                this.ctx.fillRect(20, 4, 110, 10);
+                this.ctx.fillRect(20, 14, 110, 10);
+            } else if (weapon.id === 'eggk47') {
+                // Assault Rifle (Military Camo skin)
+                this.ctx.fillStyle = '#2E4053'; // frame
+                this.ctx.fillRect(-40, -10, 80, 32);
+                
+                // Camo barrel
+                this.ctx.fillStyle = '#27AE60';
+                this.ctx.fillRect(40, -5, 110, 16);
+                this.ctx.fillStyle = '#1E8449';
+                this.ctx.fillRect(60, -5, 30, 16);
+                
+                this.ctx.fillStyle = '#85929E'; // magazine clip
+                this.ctx.beginPath();
+                this.ctx.moveTo(-10, 22);
+                this.ctx.lineTo(-5, 65);
+                this.ctx.lineTo(15, 60);
+                this.ctx.lineTo(10, 22);
+                this.ctx.fill();
+            } else if (weapon.id === 'rpegg') {
+                // Heavy Rocket (Carbon fiber skin)
+                this.ctx.fillStyle = '#1F242D'; // Carbon black body
+                this.ctx.fillRect(-50, -25, 120, 50);
+                
+                this.ctx.fillStyle = '#E74C3C'; // Red stripes
+                this.ctx.fillRect(-30, -25, 8, 50);
+                this.ctx.fillRect(20, -25, 8, 50);
+
+                this.ctx.fillStyle = '#2C3E50'; // Launcher tube front
+                this.ctx.fillRect(70, -18, 45, 36);
+
+                // Load rocket yolk head
+                this.ctx.fillStyle = '#F1C40F';
+                this.ctx.beginPath();
+                this.ctx.arc(115, 0, 14, -Math.PI/2, Math.PI/2);
+                this.ctx.fill();
             }
 
             this.ctx.restore();
 
-            // HUD overlay drawing
-            this.drawHUD();
+            // Crosshair in center
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+            this.ctx.lineWidth = 2;
+            this.ctx.beginPath();
+            this.ctx.arc(400, 300, 6, 0, Math.PI * 2);
+            this.ctx.stroke();
         }
 
         drawHUD() {
@@ -966,7 +1234,7 @@
             this.ctx.fillText(weapon.name, 35, 545);
             this.ctx.fillStyle = '#94A3B8';
             this.ctx.font = '12px "Outfit", sans-serif';
-            this.ctx.fillText(`AMMO: ${weapon.ammoType}  |  POWER: ${weapon.damage}`, 35, 565);
+            this.ctx.fillText(`SKIN: ${weapon.skin}  |  DAMAGE: ${weapon.damage}`, 35, 565);
         }
     }
 
@@ -974,12 +1242,12 @@
     function initGame() {
         const gameContainer = document.getElementById('game-container') || document.body;
         if (gameContainer) {
-            window.VoyagerGameInstance = new ShellShockersGame(gameContainer);
-            console.log("Shell Shockers 2D engine loaded successfully!");
+            window.VoyagerGameInstance = new ShellShockers3DGame(gameContainer);
+            console.log("Shell Shockers 3D engine loaded successfully!");
         }
     }
 
-    window.VoyagerEngine = ShellShockersGame;
+    window.VoyagerEngine = ShellShockers3DGame;
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initGame);
