@@ -983,24 +983,31 @@
             }
             
             const levelIdx = inst.wave - 1; 
-            const player = inst.player;
+            const camera = inst.camera;
             const keys = inst.keys;
             const gameState = inst.gameState;
             const health = inst.playerHealth;
             
             if (gameState === 'PLAYING') {
                 document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">INFILTRATION WAVE ${inst.wave}/5</span>`;
-                document.getElementById('telemetry-coords').textContent = `X: ${player.x.toFixed(1)}, Y: ${player.y.toFixed(1)}`;
-                
-                const speed = Math.hypot(player.vx || 0, player.vy || 0);
-                document.getElementById('telemetry-velocity').textContent = `${(speed * 15.2).toFixed(1)} KTS`;
-                
-                let thrustStatus = 'TACTICAL PATROL';
-                let thrustClass = 'thrust-nominal';
+                document.getElementById('telemetry-coords').textContent = `X: ${camera.x.toFixed(1)}, Z: ${camera.z.toFixed(1)}`;
                 
                 // Read from movement keys
                 const isMoving = keys['ArrowUp'] || keys['ArrowDown'] || keys['ArrowLeft'] || keys['ArrowRight'] ||
                                  keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD'];
+                
+                let baseSpeed = isMoving ? 2.8 : 0;
+                let multiplier = 1.0;
+                if (keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']) {
+                    multiplier = 1.8;
+                } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
+                    multiplier = 0.4;
+                }
+                const speed = baseSpeed * multiplier;
+                document.getElementById('telemetry-velocity').textContent = `${(speed * 15.2).toFixed(1)} KTS`;
+                
+                let thrustStatus = 'TACTICAL PATROL';
+                let thrustClass = 'thrust-nominal';
                                  
                 if (!isMoving) {
                     thrustStatus = 'STATIONARY / AIMING';
@@ -1033,7 +1040,7 @@
                 });
             } else {
                 document.getElementById('telemetry-sector').textContent = 'STANDBY / SYSTEM IDLE';
-                document.getElementById('telemetry-coords').textContent = 'X: 400.0, Y: 300.0';
+                document.getElementById('telemetry-coords').textContent = 'X: 0.0, Z: -200.0';
                 document.getElementById('telemetry-velocity').textContent = '0.0 KTS';
                 
                 const thrustEl = document.getElementById('telemetry-thrust');
