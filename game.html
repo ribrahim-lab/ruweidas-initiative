@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Zombie Ops - Call of Duty & Fortnite POV Survival</title>
+    <title>Voyager - Deep Space Navigation Initiative</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -800,12 +800,12 @@
 
     <header class="voyager-header">
         <div class="brand">
-            <h1>Zombie Ops</h1>
-            <p class="subtitle">Call of Duty & Fortnite POV Survival</p>
+            <h1>Voyager</h1>
+            <p class="subtitle">Deep Space Flight Decision Engine</p>
         </div>
         <div class="header-actions">
             <a href="index.html" class="nav-btn">Ascent Initiative</a>
-            <button id="header-leaderboard-btn" class="nav-btn btn-gold">Soldier Records</button>
+            <button id="header-leaderboard-btn" class="nav-btn btn-gold">Pilot Records</button>
         </div>
     </header>
 
@@ -819,72 +819,75 @@
         <!-- Telemetry columns -->
         <div class="side-panels">
             
-            <!-- Combat Telemetry -->
+            <!-- Flight Telemetry -->
             <div class="space-card">
-                <h2>Combat Telemetry <span class="card-icon">🔫</span></h2>
+                <h2>Flight Telemetry <span class="card-icon">ðŸ›°ï¸</span></h2>
                 <div class="telemetry-row">
                     <div class="telemetry-item full-width">
-                        <span class="tel-label">Current Objective</span>
-                        <span class="tel-value" id="telemetry-sector">WARZONE STANDBY</span>
+                        <span class="tel-label">Sector Survey Target</span>
+                        <span class="tel-value" id="telemetry-sector">SYSTEMS OFFLINE</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Vitals Health</span>
-                        <span class="tel-value digital glow-cyan" id="telemetry-timer">---%</span>
+                        <span class="tel-label">Biosphere Oxygen</span>
+                        <span class="tel-value digital glow-cyan" id="telemetry-timer">--.-s</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Location Coordinates</span>
+                        <span class="tel-label">Flight Coordinates</span>
                         <span class="tel-value digital" id="telemetry-coords">X: ---.-, Y: ---.-</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Threat Approach Speed</span>
-                        <span class="tel-value digital" id="telemetry-velocity">0.0 KTS</span>
+                        <span class="tel-label">Pilot Velocity</span>
+                        <span class="tel-value digital" id="telemetry-velocity">0.0 LY/s</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Tactical Stance</span>
+                        <span class="tel-label">Engine Thrust</span>
                         <span class="tel-value" id="telemetry-thrust">OFFLINE</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Wave checklist -->
+            <!-- Zodiac Survey checklist -->
             <div class="space-card">
-                <h2>Assault Waves Secured <span class="card-icon">🎮</span></h2>
-                <div class="survey-grid" style="grid-template-columns: repeat(5, 1fr);">
-                    <div class="survey-item survey-locked" data-index="0">Wave 1</div>
-                    <div class="survey-item survey-locked" data-index="1">Wave 2</div>
-                    <div class="survey-item survey-locked" data-index="2">Wave 3</div>
-                    <div class="survey-item survey-locked" data-index="3">Wave 4</div>
-                    <div class="survey-item survey-locked" data-index="4">Wave 5</div>
+                <h2>Constellation Survey Map <span class="card-icon">ðŸŒŒ</span></h2>
+                <div class="survey-grid">
+                    <div class="survey-item survey-locked" data-index="0">ARI</div>
+                    <div class="survey-item survey-locked" data-index="1">TAU</div>
+                    <div class="survey-item survey-locked" data-index="2">GEM</div>
+                    <div class="survey-item survey-locked" data-index="3">CAN</div>
+                    <div class="survey-item survey-locked" data-index="4">LEO</div>
+                    <div class="survey-item survey-locked" data-index="5">VIR</div>
+                    <div class="survey-item survey-locked" data-index="6">LIB</div>
+                    <div class="survey-item survey-locked" data-index="7">SCO</div>
+                    <div class="survey-item survey-locked" data-index="8">SAG</div>
+                    <div class="survey-item survey-locked" data-index="9">CAP</div>
+                    <div class="survey-item survey-locked" data-index="10">AQU</div>
+                    <div class="survey-item survey-locked" data-index="11">PIS</div>
                 </div>
             </div>
 
             <!-- Keyboard Flight Diagnostics -->
             <div class="space-card">
-                <h2>Tactile Controls HUD <span class="card-icon">⌨️</span></h2>
+                <h2>Flight Diagnostics <span class="card-icon">ðŸŽ›ï¸</span></h2>
                 <div class="diagnostics-keyboard">
                     <div class="keycap-row">
                         <div class="keycap empty"></div>
-                        <div class="keycap" id="key-up">▲</div>
+                        <div class="keycap" id="key-up">â–²</div>
                         <div class="keycap empty"></div>
                     </div>
                     <div class="keycap-row">
-                        <div class="keycap" id="key-left">◀</div>
-                        <div class="keycap" id="key-down">▼</div>
-                        <div class="keycap" id="key-right">▶</div>
+                        <div class="keycap" id="key-left">â—€</div>
+                        <div class="keycap" id="key-down">â–¼</div>
+                        <div class="keycap" id="key-right">â–¶</div>
                     </div>
                     
                     <div class="control-helpers">
                         <div class="helper-item">
                             <span class="keycap-wide" id="key-shift">SHIFT</span>
-                            <span class="helper-desc">Tactical Sprint (1.8x Speed)</span>
+                            <span class="helper-desc">Hyper-Boost (2.0x Speed)</span>
                         </div>
                         <div class="helper-item">
                             <span class="keycap-char" id="key-z">Z</span>
-                            <span class="helper-desc">Sniper Focus Scope (0.4x Speed)</span>
-                        </div>
-                        <div class="helper-item">
-                            <span class="keycap-wide" style="min-width: 60px;">MOUSE</span>
-                            <span class="helper-desc">Aim and Fire Weapons</span>
+                            <span class="helper-desc">Retro-Brake (0.5x Speed)</span>
                         </div>
                     </div>
                 </div>
@@ -897,33 +900,33 @@
     <!-- Leaderboard Modal Overlay -->
     <div id="leaderboard-screen" class="modal-overlay">
         <div class="modal-container">
-            <button id="modal-close-btn-top" class="modal-close-btn-top" title="Dismiss">×</button>
+            <button id="modal-close-btn-top" class="modal-close-btn-top" title="Dismiss">Ã—</button>
             
             <!-- Phase 1: Submit score -->
             <div id="new-high-score-section">
-                <h2 class="modal-heading">Operation Concluded</h2>
-                <div class="congrats-title" id="completion-status">Operation Survival Status</div>
+                <h2 class="modal-heading">Mission Concluded</h2>
+                <div class="congrats-title" id="completion-status">Sector Mapping Status</div>
                 <div class="score-display">
-                    <span class="score-label">Total Survival Score</span>
+                    <span class="score-label">Accumulated Mission Score</span>
                     <span class="score-number" id="modal-final-score">0</span>
                 </div>
-                <p class="callsign-prompt">Record your soldier tag (3 initials) to log your score in the leaderboard archives:</p>
+                <p class="callsign-prompt">Establish authorization. Enter your pilot call sign to record this log in the telemetry archives:</p>
                 <div class="input-group">
-                    <input type="text" id="pilot-name-input" maxlength="3" placeholder="SOLDIER TAG" autocomplete="off" />
-                    <button id="submit-score-btn" class="space-btn-primary">Submit Survival Record</button>
+                    <input type="text" id="pilot-name-input" maxlength="3" placeholder="PILOT CALL SIGN" autocomplete="off" />
+                    <button id="submit-score-btn" class="space-btn-primary">Transmit Flight Log</button>
                 </div>
-                <button id="skip-submit-btn" class="space-btn-link">Skip & View Leaderboard</button>
+                <button id="skip-submit-btn" class="space-btn-link">Skip & View Archives</button>
             </div>
- 
+
             <!-- Phase 2: Show leaderboard -->
             <div id="leaderboard-view-section" class="hidden">
-                <h2 class="modal-heading">Warzone Leaders</h2>
+                <h2 class="modal-heading">Deep Space Leaders</h2>
                 <div class="leaderboard-table-container">
                     <table class="leaderboard-table">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Rank</th>
-                                <th>Soldier</th>
+                                <th>Pilot</th>
                                 <th style="text-align: right; padding-right: 15px;">Score</th>
                             </tr>
                         </thead>
@@ -933,19 +936,19 @@
                     </table>
                 </div>
                 <div class="modal-actions">
-                    <button id="modal-play-again-btn" class="space-btn-primary">Redeploy Operation</button>
+                    <button id="modal-play-again-btn" class="space-btn-primary">Relaunch Mission</button>
                     <div class="modal-sub-actions">
                         <button id="modal-reset-btn" class="space-btn-danger">Clear Logs</button>
-                        <button id="modal-close-btn-bottom" class="space-btn-secondary">Close</button>
+                        <button id="modal-close-btn-bottom" class="space-btn-secondary">Dismiss</button>
                     </div>
                 </div>
             </div>
- 
+
         </div>
     </div>
- 
+
     <footer>
-        Zombie Ops POV System &copy; 2026. Inspired by Call of Duty & Fortnite. Built for <a href="../index.html">Ascent Learning Initiative</a>.
+        Voyager System &copy; 2026. Built by Agent B for <a href="../index.html">Ascent Learning Initiative</a>. All flight rules apply.
     </footer>
 
     <!-- Firebase SDKs (using hosting reserved URLs) -->
@@ -974,49 +977,43 @@
         function updateTelemetry() {
             const inst = window.VoyagerGameInstance;
             if (!inst) {
-                document.getElementById('telemetry-sector').textContent = 'AWAITING ZOMBIE ENGINE...';
+                document.getElementById('telemetry-sector').textContent = 'AWAITING FLIGHT ENGINE...';
                 document.getElementById('telemetry-coords').textContent = 'X: ---.-, Y: ---.-';
-                document.getElementById('telemetry-velocity').textContent = '0.0 KTS';
+                document.getElementById('telemetry-velocity').textContent = '0.0 LY/s';
                 document.getElementById('telemetry-thrust').textContent = 'OFFLINE';
-                document.getElementById('telemetry-timer').textContent = '---%';
+                document.getElementById('telemetry-timer').textContent = '--.-s';
                 return;
             }
             
-            const levelIdx = inst.wave - 1; 
-            const camera = inst.camera;
+            const levelIdx = inst.level;
+            const ship = inst.ship;
             const keys = inst.keys;
             const gameState = inst.gameState;
-            const health = inst.playerHealth;
+            const timeLeft = inst.timeLeft;
+            
+            const constellations = [
+                "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+                "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+            ];
+            const activeConstellation = constellations[levelIdx] || "FINISHED";
             
             if (gameState === 'PLAYING') {
-                document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">ASSAULT WAVE ${inst.wave}/5</span>`;
-                document.getElementById('telemetry-coords').textContent = `X: ${camera.x.toFixed(1)}, Z: ${camera.z.toFixed(1)}`;
+                document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">SECTOR ${levelIdx + 1}/12</span>: ${activeConstellation.toUpperCase()}`;
+                document.getElementById('telemetry-coords').textContent = `X: ${ship.x.toFixed(1)}, Y: ${ship.y.toFixed(1)}`;
                 
-                // Read from movement keys
-                const isMoving = keys['ArrowUp'] || keys['ArrowDown'] || keys['ArrowLeft'] || keys['ArrowRight'] ||
-                                 keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD'];
+                const speed = Math.hypot(ship.vx, ship.vy);
+                document.getElementById('telemetry-velocity').textContent = `${(speed * 42.5).toFixed(1)} LY/s`;
                 
-                let baseSpeed = isMoving ? 2.8 : 0;
-                let multiplier = 1.0;
-                if (keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']) {
-                    multiplier = 1.8;
-                } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
-                    multiplier = 0.4;
-                }
-                const speed = baseSpeed * multiplier;
-                document.getElementById('telemetry-velocity').textContent = `${(speed * 15.2).toFixed(1)} KTS`;
-                
-                let thrustStatus = 'TACTICAL PATROL';
+                let thrustStatus = 'CRUISE NOMINAL';
                 let thrustClass = 'thrust-nominal';
-                                 
-                if (!isMoving) {
-                    thrustStatus = 'STATIONARY / AIMING';
+                if (speed === 0) {
+                    thrustStatus = 'STATIONARY';
                     thrustClass = 'thrust-stationary';
                 } else if (keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']) {
-                    thrustStatus = 'TACTICAL SPRINT';
+                    thrustStatus = 'HYPER-BOOST ACTIVE';
                     thrustClass = 'thrust-boost';
                 } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
-                    thrustStatus = 'SNIPER FOCUS ON';
+                    thrustStatus = 'RETRO-BRAKE ACTIVE';
                     thrustClass = 'thrust-brake';
                 }
                 
@@ -1024,9 +1021,9 @@
                 thrustEl.textContent = thrustStatus;
                 thrustEl.className = thrustClass;
                 
-                document.getElementById('telemetry-timer').textContent = `${Math.ceil(health)}%`;
+                document.getElementById('telemetry-timer').textContent = `${timeLeft.toFixed(1)}s`;
                 
-                // Update waves checklist grid
+                // Update constellation Survey Map grid active highlights
                 const surveyItems = document.querySelectorAll('.survey-item');
                 surveyItems.forEach((item, index) => {
                     item.className = 'survey-item'; // reset
@@ -1039,15 +1036,15 @@
                     }
                 });
             } else {
-                document.getElementById('telemetry-sector').textContent = 'WARZONE STANDBY';
-                document.getElementById('telemetry-coords').textContent = 'X: 0.0, Z: -200.0';
-                document.getElementById('telemetry-velocity').textContent = '0.0 KTS';
+                document.getElementById('telemetry-sector').textContent = 'STANDBY / SYSTEM IDLE';
+                document.getElementById('telemetry-coords').textContent = 'X: 400.0, Y: 300.0';
+                document.getElementById('telemetry-velocity').textContent = '0.0 LY/s';
                 
                 const thrustEl = document.getElementById('telemetry-thrust');
                 thrustEl.textContent = 'STANDBY';
                 thrustEl.className = 'thrust-stationary';
                 
-                document.getElementById('telemetry-timer').textContent = '0%';
+                document.getElementById('telemetry-timer').textContent = '00.0s';
                 
                 const surveyItems = document.querySelectorAll('.survey-item');
                 surveyItems.forEach((item) => {
@@ -1057,10 +1054,10 @@
 
             // Keyboard highlights diagnostic mapping
             if (keys) {
-                toggleKeyHighlight('key-up', keys['ArrowUp'] || keys['KeyW'] || keys['w'] || keys['ArrowUp']);
-                toggleKeyHighlight('key-down', keys['ArrowDown'] || keys['KeyS'] || keys['s'] || keys['ArrowDown']);
-                toggleKeyHighlight('key-left', keys['ArrowLeft'] || keys['KeyA'] || keys['a'] || keys['ArrowLeft']);
-                toggleKeyHighlight('key-right', keys['ArrowRight'] || keys['KeyD'] || keys['d'] || keys['ArrowRight']);
+                toggleKeyHighlight('key-up', keys['ArrowUp'] || keys['KeyW'] || keys['w']);
+                toggleKeyHighlight('key-down', keys['ArrowDown'] || keys['KeyS'] || keys['s']);
+                toggleKeyHighlight('key-left', keys['ArrowLeft'] || keys['KeyA'] || keys['a']);
+                toggleKeyHighlight('key-right', keys['ArrowRight'] || keys['KeyD'] || keys['d']);
                 toggleKeyHighlight('key-shift', keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']);
                 toggleKeyHighlight('key-z', keys['z'] || keys['KeyZ'] || keys['Z']);
             }
@@ -1075,6 +1072,3 @@
 
     <!-- Load the game engine -->
     <script src="game.js"></script>
-
-</body>
-</html>
