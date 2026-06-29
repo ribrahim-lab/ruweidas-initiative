@@ -1,4 +1,4 @@
-(function() {
+﻿(function() {
     // 1. Initialize Anonymous Auth
     firebase.auth().signInAnonymously().then(() => {
         console.log("[Firebase] Anonymous Authentication Successful");
@@ -42,10 +42,10 @@
         if (statusEl) {
             const inst = window.VoyagerGameInstance;
             if (inst && inst.gameState === 'SUCCESS') {
-                statusEl.textContent = 'VICTORY: CHOPPER EXTRACT SUCCESSFUL';
+                statusEl.textContent = 'SYSTEM CLEAR: ALL SECTORS MAPPED';
                 statusEl.style.color = 'var(--accent-cyan)';
             } else {
-                statusEl.textContent = 'DEFEAT: KILLED IN ACTION (K.I.A.)';
+                statusEl.textContent = 'LOGISTICAL FAILURE: TIME LIMIT EXCEEDED';
                 statusEl.style.color = '#E74C3C';
             }
         }
@@ -64,7 +64,7 @@
 
         const submitBtn = document.getElementById('submit-score-btn');
         if (submitBtn) {
-            submitBtn.textContent = 'Submit Record';
+            submitBtn.textContent = 'Transmit Flight Log';
             submitBtn.disabled = false;
         }
 
@@ -111,7 +111,7 @@
         
         // Restrict to exactly 3 letters A-Z
         if (!/^[A-Z]{3}$/.test(initials)) {
-            alert("Please enter exactly 3 letters for your soldier initials.");
+            alert("Please enter exactly 3 letters for your pilot initials.");
             nameInput.focus();
             return;
         }
@@ -122,7 +122,7 @@
         const submitBtn = document.getElementById('submit-score-btn');
         if (submitBtn) {
             submitBtn.disabled = true;
-            submitBtn.textContent = 'Submitting...';
+            submitBtn.textContent = 'Transmitting...';
         }
 
         const skipBtn = document.getElementById('skip-submit-btn');
@@ -154,7 +154,7 @@
             nameInput.disabled = false;
             if (submitBtn) {
                 submitBtn.disabled = false;
-                submitBtn.textContent = 'Submit Record';
+                submitBtn.textContent = 'Transmit Flight Log';
             }
             if (skipBtn) {
                 skipBtn.style.display = 'inline-block';
@@ -167,7 +167,7 @@
         const tbody = document.getElementById('leaderboard-table-body');
         if (!tbody) return;
 
-        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px 0;">Synchronizing with Warzone archives...</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px 0;">Synchronizing with telemetry archives...</td></tr>';
 
         db.collection('scores')
             .orderBy('score', 'desc')
@@ -177,7 +177,7 @@
                 tbody.innerHTML = '';
                 
                 if (querySnapshot.empty) {
-                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px 0;">No records in Warzone archives.</td></tr>';
+                    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:var(--text-muted); padding:20px 0;">No records in telemetry archives.</td></tr>';
                     return;
                 }
 
@@ -195,11 +195,11 @@
                     const tdRank = document.createElement('td');
                     tdRank.className = 'rank-cell';
                     if (rank === 1) {
-                        tdRank.innerHTML = '<span class="medal gold">🥇</span>';
+                        tdRank.innerHTML = '<span class="medal gold">ðŸ¥‡</span>';
                     } else if (rank === 2) {
-                        tdRank.innerHTML = '<span class="medal silver">🥈</span>';
+                        tdRank.innerHTML = '<span class="medal silver">ðŸ¥ˆ</span>';
                     } else if (rank === 3) {
-                        tdRank.innerHTML = '<span class="medal bronze">🥉</span>';
+                        tdRank.innerHTML = '<span class="medal bronze">ðŸ¥‰</span>';
                     } else {
                         tdRank.textContent = rank;
                     }
@@ -228,7 +228,7 @@
                 });
             }).catch(err => {
                 console.error("[Firestore] Error reading scores:", err);
-                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#E74C3C; padding:20px 0;">Warzone leaderboard retrieval error.</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; color:#E74C3C; padding:20px 0;">Telemetry retrieval error.</td></tr>';
             });
     }
 
@@ -329,3 +329,4 @@
         }
     });
 })();
+
