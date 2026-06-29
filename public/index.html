@@ -1,0 +1,1077 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyager - Deep Space Navigation Initiative</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* CSS resets & variables */
+        :root {
+            --bg-dark: #03050c;
+            --bg-panel: rgba(10, 15, 30, 0.75);
+            --accent-gold: #C5A059;
+            --accent-gold-hover: #e5be75;
+            --accent-gold-glow: rgba(197, 160, 89, 0.2);
+            --accent-cyan: #00F3FF;
+            --accent-cyan-glow: rgba(0, 243, 255, 0.25);
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(197, 160, 89, 0.2);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(155, 89, 182, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ambient Nebulas */
+        .nebula-purple {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(155, 89, 182, 0.06) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .nebula-gold {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(197, 160, 89, 0.05) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .voyager-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px 20px 20px;
+            box-sizing: border-box;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #FFF 30%, #C5A059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 15px rgba(197, 160, 89, 0.25));
+        }
+
+        .brand .subtitle {
+            margin: 4px 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #FFF;
+        }
+
+        .nav-btn.btn-gold {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.1);
+        }
+
+        .nav-btn.btn-gold:hover {
+            background: var(--accent-gold);
+            color: #03050c;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+
+        /* Dashboard Container */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px 40px 20px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 800px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+            .voyager-header {
+                max-width: 800px;
+            }
+        }
+
+        /* Game pedestal wrapper */
+        .game-pedestal {
+            background: rgba(5, 8, 17, 0.5);
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            display: inline-block;
+        }
+
+        #game-container {
+            width: 800px;
+            height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Side panels container */
+        .side-panels {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        /* Space Card Component */
+        .space-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .space-card h2 {
+            margin: 0 0 16px 0;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-bottom: 1px dashed rgba(197, 160, 89, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-icon {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            opacity: 0.8;
+        }
+
+        /* Diagnostic Telemetry Stats */
+        .telemetry-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 4px;
+        }
+
+        .telemetry-item {
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .telemetry-item.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .tel-label {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .tel-value {
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: #FFF;
+        }
+
+        .tel-value.digital {
+            font-family: monospace, monospace;
+            font-size: 1.15rem;
+        }
+
+        .glow-cyan {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 8px rgba(0, 243, 255, 0.35);
+        }
+
+        .thrust-nominal {
+            color: #2ecc71;
+            text-shadow: 0 0 8px rgba(46, 204, 113, 0.35);
+        }
+
+        .thrust-boost {
+            color: var(--accent-cyan);
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.5);
+            font-weight: 800;
+        }
+
+        .thrust-brake {
+            color: #f1c40f;
+            text-shadow: 0 0 8px rgba(241, 196, 15, 0.35);
+        }
+
+        .thrust-stationary {
+            color: var(--text-muted);
+        }
+
+        /* Checklist grid */
+        .survey-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 8px;
+        }
+
+        .survey-item {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-align: center;
+            padding: 8px 4px;
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            background: rgba(255, 255, 255, 0.01);
+            color: rgba(255, 255, 255, 0.25);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .survey-item.survey-mapped {
+            border-color: rgba(46, 204, 113, 0.3);
+            background: rgba(46, 204, 113, 0.08);
+            color: #2ecc71;
+            text-shadow: 0 0 5px rgba(46, 204, 113, 0.4);
+        }
+
+        .survey-item.survey-active {
+            border-color: var(--accent-gold);
+            background: rgba(197, 160, 89, 0.15);
+            color: var(--accent-gold);
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.15);
+            animation: surveyPulse 1.5s infinite alternate;
+        }
+
+        @keyframes surveyPulse {
+            from { transform: scale(1); opacity: 0.8; }
+            to { transform: scale(1.04); opacity: 1; }
+        }
+
+        .survey-item.survey-locked {
+            color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.01);
+        }
+
+        .survey-item.survey-standby {
+            color: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.03);
+        }
+
+        /* Keyboard keycaps display */
+        .diagnostics-keyboard {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 10px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .keycap-row {
+            display: flex;
+            justify-content: center;
+            gap: 6px;
+            margin-bottom: 6px;
+        }
+
+        .keycap {
+            width: 32px;
+            height: 32px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom-width: 3px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.4);
+            transition: all 0.1s ease;
+            box-sizing: border-box;
+        }
+
+        .keycap.empty {
+            visibility: hidden;
+            border: none;
+            background: none;
+        }
+
+        .keycap.pressed, .keycap-wide.pressed, .keycap-char.pressed {
+            background: rgba(0, 243, 255, 0.12) !important;
+            border-color: var(--accent-cyan) !important;
+            color: var(--accent-cyan) !important;
+            box-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+            transform: translateY(2px);
+            border-bottom-width: 1px;
+            margin-bottom: 2px;
+        }
+
+        .control-helpers {
+            margin-top: 12px;
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .helper-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
+
+        .keycap-wide {
+            display: inline-block;
+            padding: 4px 10px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom-width: 3px;
+            border-radius: 6px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            min-width: 60px;
+            text-align: center;
+            box-sizing: border-box;
+            transition: all 0.1s ease;
+        }
+
+        .keycap-char {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-bottom-width: 3px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.4);
+            text-align: center;
+            line-height: 20px;
+            box-sizing: border-box;
+            transition: all 0.1s ease;
+        }
+
+        .helper-desc {
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        /* Leaderboard Modal Backdrop */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(3, 5, 12, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        /* Modal Container */
+        .modal-container {
+            width: 92%;
+            max-width: 480px;
+            background: rgba(8, 12, 26, 0.96);
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(197, 160, 89, 0.25);
+            border-radius: 16px;
+            padding: 35px;
+            box-sizing: border-box;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        /* Close Button in Modal */
+        .modal-close-btn-top {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close-btn-top:hover {
+            color: #FFF;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .modal-heading {
+            margin: 0 0 20px 0;
+            color: var(--accent-gold);
+            text-align: center;
+            font-size: 1.7rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+
+        .congrats-title {
+            color: var(--accent-cyan);
+            text-align: center;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.3);
+        }
+
+        .score-display {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .score-label {
+            display: block;
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            letter-spacing: 0.15em;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .score-number {
+            font-size: 3rem;
+            font-weight: 900;
+            color: #FFF;
+            letter-spacing: 0.05em;
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+        }
+
+        .callsign-prompt {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+            text-align: center;
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 15px;
+        }
+
+        #pilot-name-input {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1.5px solid rgba(197, 160, 89, 0.3);
+            border-radius: 8px;
+            color: #FFF;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            width: 100%;
+            box-sizing: border-box;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        #pilot-name-input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        /* Buttons in Modal */
+        .space-btn-primary {
+            background: var(--accent-gold);
+            color: #03050c;
+            border: none;
+            padding: 14px 28px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .space-btn-primary:hover {
+            background: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.5);
+        }
+
+        .space-btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .space-btn-link {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            text-decoration: underline;
+            font-size: 0.8rem;
+            cursor: pointer;
+            margin-top: 15px;
+            display: inline-block;
+            transition: color 0.2s ease;
+            width: 100%;
+            text-align: center;
+        }
+
+        .space-btn-link:hover {
+            color: #FFF;
+        }
+
+        .space-btn-danger {
+            background: transparent;
+            color: #e74c3c;
+            border: 1px solid rgba(231, 76, 60, 0.4);
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            box-sizing: border-box;
+        }
+
+        .space-btn-danger:hover {
+            background: rgba(231, 76, 60, 0.08);
+            border-color: #e74c3c;
+        }
+
+        .space-btn-secondary {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-transform: uppercase;
+            box-sizing: border-box;
+        }
+
+        .space-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        /* Leaderboard table */
+        .leaderboard-table-container {
+            margin: 20px 0 25px 0;
+            max-height: 250px;
+            overflow-y: auto;
+            border: 1px solid rgba(197, 160, 89, 0.15);
+            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .leaderboard-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+            color: #E2E8F0;
+            text-align: left;
+        }
+
+        .leaderboard-table th {
+            padding: 12px;
+            border-bottom: 2px solid rgba(197, 160, 89, 0.2);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            position: sticky;
+            top: 0;
+            background: rgba(8, 12, 26, 0.98);
+        }
+
+        .leaderboard-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        .leaderboard-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .leaderboard-table tr.highlight-row {
+            background: rgba(0, 243, 255, 0.12);
+            animation: rowFlash 1.5s infinite alternate;
+        }
+
+        @keyframes rowFlash {
+            from { box-shadow: inset 0 0 5px rgba(0, 243, 255, 0.2); }
+            to { box-shadow: inset 0 0 15px rgba(0, 243, 255, 0.5); }
+        }
+
+        .rank-cell {
+            font-weight: 700;
+            width: 60px;
+            text-align: center;
+        }
+
+        .score-cell {
+            font-family: monospace;
+            font-weight: 700;
+            text-align: right;
+            color: var(--accent-cyan);
+            font-size: 1rem;
+        }
+
+        .modal-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .modal-sub-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 4px;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .medal {
+            font-size: 1.1rem;
+            filter: drop-shadow(0 0 3px rgba(255,255,255,0.2));
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
+        }
+
+        footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nebula-purple"></div>
+    <div class="nebula-gold"></div>
+
+    <header class="voyager-header">
+        <div class="brand">
+            <h1>Voyager</h1>
+            <p class="subtitle">Deep Space Flight Decision Engine</p>
+        </div>
+        <div class="header-actions">
+            <a href="../index.html" class="nav-btn">Ascent Initiative</a>
+            <button id="header-leaderboard-btn" class="nav-btn btn-gold">Pilot Records</button>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- Game pedestal column -->
+        <div class="game-pedestal">
+            <div id="game-container"></div>
+        </div>
+
+        <!-- Telemetry columns -->
+        <div class="side-panels">
+            
+            <!-- Flight Telemetry -->
+            <div class="space-card">
+                <h2>Flight Telemetry <span class="card-icon">🛰️</span></h2>
+                <div class="telemetry-row">
+                    <div class="telemetry-item full-width">
+                        <span class="tel-label">Sector Survey Target</span>
+                        <span class="tel-value" id="telemetry-sector">SYSTEMS OFFLINE</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span class="tel-label">Biosphere Oxygen</span>
+                        <span class="tel-value digital glow-cyan" id="telemetry-timer">--.-s</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span class="tel-label">Flight Coordinates</span>
+                        <span class="tel-value digital" id="telemetry-coords">X: ---.-, Y: ---.-</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span class="tel-label">Pilot Velocity</span>
+                        <span class="tel-value digital" id="telemetry-velocity">0.0 LY/s</span>
+                    </div>
+                    <div class="telemetry-item">
+                        <span class="tel-label">Engine Thrust</span>
+                        <span class="tel-value" id="telemetry-thrust">OFFLINE</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Zodiac Survey checklist -->
+            <div class="space-card">
+                <h2>Constellation Survey Map <span class="card-icon">🌌</span></h2>
+                <div class="survey-grid">
+                    <div class="survey-item survey-locked" data-index="0">ARI</div>
+                    <div class="survey-item survey-locked" data-index="1">TAU</div>
+                    <div class="survey-item survey-locked" data-index="2">GEM</div>
+                    <div class="survey-item survey-locked" data-index="3">CAN</div>
+                    <div class="survey-item survey-locked" data-index="4">LEO</div>
+                    <div class="survey-item survey-locked" data-index="5">VIR</div>
+                    <div class="survey-item survey-locked" data-index="6">LIB</div>
+                    <div class="survey-item survey-locked" data-index="7">SCO</div>
+                    <div class="survey-item survey-locked" data-index="8">SAG</div>
+                    <div class="survey-item survey-locked" data-index="9">CAP</div>
+                    <div class="survey-item survey-locked" data-index="10">AQU</div>
+                    <div class="survey-item survey-locked" data-index="11">PIS</div>
+                </div>
+            </div>
+
+            <!-- Keyboard Flight Diagnostics -->
+            <div class="space-card">
+                <h2>Flight Diagnostics <span class="card-icon">🎛️</span></h2>
+                <div class="diagnostics-keyboard">
+                    <div class="keycap-row">
+                        <div class="keycap empty"></div>
+                        <div class="keycap" id="key-up">▲</div>
+                        <div class="keycap empty"></div>
+                    </div>
+                    <div class="keycap-row">
+                        <div class="keycap" id="key-left">◀</div>
+                        <div class="keycap" id="key-down">▼</div>
+                        <div class="keycap" id="key-right">▶</div>
+                    </div>
+                    
+                    <div class="control-helpers">
+                        <div class="helper-item">
+                            <span class="keycap-wide" id="key-shift">SHIFT</span>
+                            <span class="helper-desc">Hyper-Boost (2.0x Speed)</span>
+                        </div>
+                        <div class="helper-item">
+                            <span class="keycap-char" id="key-z">Z</span>
+                            <span class="helper-desc">Retro-Brake (0.5x Speed)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Leaderboard Modal Overlay -->
+    <div id="leaderboard-screen" class="modal-overlay">
+        <div class="modal-container">
+            <button id="modal-close-btn-top" class="modal-close-btn-top" title="Dismiss">×</button>
+            
+            <!-- Phase 1: Submit score -->
+            <div id="new-high-score-section">
+                <h2 class="modal-heading">Mission Concluded</h2>
+                <div class="congrats-title" id="completion-status">Sector Mapping Status</div>
+                <div class="score-display">
+                    <span class="score-label">Accumulated Mission Score</span>
+                    <span class="score-number" id="modal-final-score">0</span>
+                </div>
+                <p class="callsign-prompt">Establish authorization. Enter your pilot call sign to record this log in the telemetry archives:</p>
+                <div class="input-group">
+                    <input type="text" id="pilot-name-input" maxlength="3" placeholder="PILOT CALL SIGN" autocomplete="off" />
+                    <button id="submit-score-btn" class="space-btn-primary">Transmit Flight Log</button>
+                </div>
+                <button id="skip-submit-btn" class="space-btn-link">Skip & View Archives</button>
+            </div>
+
+            <!-- Phase 2: Show leaderboard -->
+            <div id="leaderboard-view-section" class="hidden">
+                <h2 class="modal-heading">Deep Space Leaders</h2>
+                <div class="leaderboard-table-container">
+                    <table class="leaderboard-table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">Rank</th>
+                                <th>Pilot</th>
+                                <th style="text-align: right; padding-right: 15px;">Score</th>
+                            </tr>
+                        </thead>
+                        <tbody id="leaderboard-table-body">
+                            <!-- Populated dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-actions">
+                    <button id="modal-play-again-btn" class="space-btn-primary">Relaunch Mission</button>
+                    <div class="modal-sub-actions">
+                        <button id="modal-reset-btn" class="space-btn-danger">Clear Logs</button>
+                        <button id="modal-close-btn-bottom" class="space-btn-secondary">Dismiss</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <footer>
+        Voyager System &copy; 2026. Built by Agent B for <a href="../index.html">Ascent Learning Initiative</a>. All flight rules apply.
+    </footer>
+
+    <!-- Firebase SDKs (using hosting reserved URLs) -->
+    <script src="/__/firebase/10.8.0/firebase-app-compat.js"></script>
+    <script src="/__/firebase/10.8.0/firebase-auth-compat.js"></script>
+    <script src="/__/firebase/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="/__/firebase/init.js"></script>
+
+    <!-- Leaderboard logic -->
+    <script src="leaderboard.js"></script>
+
+    <!-- Telemetry and Diagnostic UI Controller Script -->
+    <script>
+        // Helper to toggle pressed state on keycap elements
+        function toggleKeyHighlight(id, isActive) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            if (isActive) {
+                el.classList.add('pressed');
+            } else {
+                el.classList.remove('pressed');
+            }
+        }
+
+        // Update telemetry diagnostic panel
+        function updateTelemetry() {
+            const inst = window.VoyagerGameInstance;
+            if (!inst) {
+                document.getElementById('telemetry-sector').textContent = 'AWAITING FLIGHT ENGINE...';
+                document.getElementById('telemetry-coords').textContent = 'X: ---.-, Y: ---.-';
+                document.getElementById('telemetry-velocity').textContent = '0.0 LY/s';
+                document.getElementById('telemetry-thrust').textContent = 'OFFLINE';
+                document.getElementById('telemetry-timer').textContent = '--.-s';
+                return;
+            }
+            
+            const levelIdx = inst.level;
+            const ship = inst.ship;
+            const keys = inst.keys;
+            const gameState = inst.gameState;
+            const timeLeft = inst.timeLeft;
+            
+            const constellations = [
+                "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo",
+                "Libra", "Scorpio", "Sagittarius", "Capricorn", "Aquarius", "Pisces"
+            ];
+            const activeConstellation = constellations[levelIdx] || "FINISHED";
+            
+            if (gameState === 'PLAYING') {
+                document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">SECTOR ${levelIdx + 1}/12</span>: ${activeConstellation.toUpperCase()}`;
+                document.getElementById('telemetry-coords').textContent = `X: ${ship.x.toFixed(1)}, Y: ${ship.y.toFixed(1)}`;
+                
+                const speed = Math.hypot(ship.vx, ship.vy);
+                document.getElementById('telemetry-velocity').textContent = `${(speed * 42.5).toFixed(1)} LY/s`;
+                
+                let thrustStatus = 'CRUISE NOMINAL';
+                let thrustClass = 'thrust-nominal';
+                if (speed === 0) {
+                    thrustStatus = 'STATIONARY';
+                    thrustClass = 'thrust-stationary';
+                } else if (keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']) {
+                    thrustStatus = 'HYPER-BOOST ACTIVE';
+                    thrustClass = 'thrust-boost';
+                } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
+                    thrustStatus = 'RETRO-BRAKE ACTIVE';
+                    thrustClass = 'thrust-brake';
+                }
+                
+                const thrustEl = document.getElementById('telemetry-thrust');
+                thrustEl.textContent = thrustStatus;
+                thrustEl.className = thrustClass;
+                
+                document.getElementById('telemetry-timer').textContent = `${timeLeft.toFixed(1)}s`;
+                
+                // Update constellation Survey Map grid active highlights
+                const surveyItems = document.querySelectorAll('.survey-item');
+                surveyItems.forEach((item, index) => {
+                    item.className = 'survey-item'; // reset
+                    if (index < levelIdx) {
+                        item.classList.add('survey-mapped');
+                    } else if (index === levelIdx) {
+                        item.classList.add('survey-active');
+                    } else {
+                        item.classList.add('survey-locked');
+                    }
+                });
+            } else {
+                document.getElementById('telemetry-sector').textContent = 'STANDBY / SYSTEM IDLE';
+                document.getElementById('telemetry-coords').textContent = 'X: 400.0, Y: 300.0';
+                document.getElementById('telemetry-velocity').textContent = '0.0 LY/s';
+                
+                const thrustEl = document.getElementById('telemetry-thrust');
+                thrustEl.textContent = 'STANDBY';
+                thrustEl.className = 'thrust-stationary';
+                
+                document.getElementById('telemetry-timer').textContent = '00.0s';
+                
+                const surveyItems = document.querySelectorAll('.survey-item');
+                surveyItems.forEach((item) => {
+                    item.className = 'survey-item survey-standby';
+                });
+            }
+
+            // Keyboard highlights diagnostic mapping
+            if (keys) {
+                toggleKeyHighlight('key-up', keys['ArrowUp'] || keys['KeyW'] || keys['w']);
+                toggleKeyHighlight('key-down', keys['ArrowDown'] || keys['KeyS'] || keys['s']);
+                toggleKeyHighlight('key-left', keys['ArrowLeft'] || keys['KeyA'] || keys['a']);
+                toggleKeyHighlight('key-right', keys['ArrowRight'] || keys['KeyD'] || keys['d']);
+                toggleKeyHighlight('key-shift', keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']);
+                toggleKeyHighlight('key-z', keys['z'] || keys['KeyZ'] || keys['Z']);
+            }
+        }
+
+        // Initialize script events on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Start telemetry polling loop
+            setInterval(updateTelemetry, 50);
+        });
+    </script>
+
+    <!-- Load the game engine -->
+    <script src="game.js"></script>
+
+</body>
+</html>
