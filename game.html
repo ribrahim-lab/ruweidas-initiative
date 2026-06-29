@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shell Shockers 2D - Egg Warfare Console</title>
+    <title>Zombie Ops - Call of Duty & Fortnite POV Survival</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -800,12 +800,12 @@
 
     <header class="voyager-header">
         <div class="brand">
-            <h1>Shell Shockers 2D</h1>
-            <p class="subtitle">Egg Warfare Tactical Operations</p>
+            <h1>Zombie Ops</h1>
+            <p class="subtitle">Call of Duty & Fortnite POV Survival</p>
         </div>
         <div class="header-actions">
-            <a href="../index.html" class="nav-btn">Ascent Initiative</a>
-            <button id="header-leaderboard-btn" class="nav-btn btn-gold">Pilot Records</button>
+            <a href="index.html" class="nav-btn">Ascent Initiative</a>
+            <button id="header-leaderboard-btn" class="nav-btn btn-gold">Soldier Records</button>
         </div>
     </header>
 
@@ -819,28 +819,28 @@
         <!-- Telemetry columns -->
         <div class="side-panels">
             
-            <!-- Flight Telemetry -->
+            <!-- Combat Telemetry -->
             <div class="space-card">
                 <h2>Combat Telemetry <span class="card-icon">🔫</span></h2>
                 <div class="telemetry-row">
                     <div class="telemetry-item full-width">
-                        <span class="tel-label">Current Wave Target</span>
-                        <span class="tel-value" id="telemetry-sector">SYSTEMS OFFLINE</span>
+                        <span class="tel-label">Current Objective</span>
+                        <span class="tel-value" id="telemetry-sector">WARZONE STANDBY</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Combat Armor Health</span>
+                        <span class="tel-label">Vitals Health</span>
                         <span class="tel-value digital glow-cyan" id="telemetry-timer">---%</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Grid Coordinates</span>
+                        <span class="tel-label">Location Coordinates</span>
                         <span class="tel-value digital" id="telemetry-coords">X: ---.-, Y: ---.-</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Estimated Threat Speed</span>
+                        <span class="tel-label">Threat Approach Speed</span>
                         <span class="tel-value digital" id="telemetry-velocity">0.0 KTS</span>
                     </div>
                     <div class="telemetry-item">
-                        <span class="tel-label">Movement Mode</span>
+                        <span class="tel-label">Tactical Stance</span>
                         <span class="tel-value" id="telemetry-thrust">OFFLINE</span>
                     </div>
                 </div>
@@ -848,7 +848,7 @@
 
             <!-- Wave checklist -->
             <div class="space-card">
-                <h2>Combat Wave Checklist <span class="card-icon">🎮</span></h2>
+                <h2>Assault Waves Secured <span class="card-icon">🎮</span></h2>
                 <div class="survey-grid" style="grid-template-columns: repeat(5, 1fr);">
                     <div class="survey-item survey-locked" data-index="0">Wave 1</div>
                     <div class="survey-item survey-locked" data-index="1">Wave 2</div>
@@ -880,7 +880,7 @@
                         </div>
                         <div class="helper-item">
                             <span class="keycap-char" id="key-z">Z</span>
-                            <span class="helper-desc">Aim Stabilizer (0.5x Speed)</span>
+                            <span class="helper-desc">Sniper Focus Scope (0.4x Speed)</span>
                         </div>
                         <div class="helper-item">
                             <span class="keycap-wide" style="min-width: 60px;">MOUSE</span>
@@ -901,29 +901,29 @@
             
             <!-- Phase 1: Submit score -->
             <div id="new-high-score-section">
-                <h2 class="modal-heading">Mission Concluded</h2>
-                <div class="congrats-title" id="completion-status">Sector Mapping Status</div>
+                <h2 class="modal-heading">Operation Concluded</h2>
+                <div class="congrats-title" id="completion-status">Operation Survival Status</div>
                 <div class="score-display">
-                    <span class="score-label">Accumulated Mission Score</span>
+                    <span class="score-label">Total Survival Score</span>
                     <span class="score-number" id="modal-final-score">0</span>
                 </div>
-                <p class="callsign-prompt">Establish authorization. Enter your pilot call sign to record this log in the telemetry archives:</p>
+                <p class="callsign-prompt">Record your soldier tag (3 initials) to log your score in the leaderboard archives:</p>
                 <div class="input-group">
-                    <input type="text" id="pilot-name-input" maxlength="3" placeholder="PILOT CALL SIGN" autocomplete="off" />
-                    <button id="submit-score-btn" class="space-btn-primary">Transmit Flight Log</button>
+                    <input type="text" id="pilot-name-input" maxlength="3" placeholder="SOLDIER TAG" autocomplete="off" />
+                    <button id="submit-score-btn" class="space-btn-primary">Submit Survival Record</button>
                 </div>
-                <button id="skip-submit-btn" class="space-btn-link">Skip & View Archives</button>
+                <button id="skip-submit-btn" class="space-btn-link">Skip & View Leaderboard</button>
             </div>
-
+ 
             <!-- Phase 2: Show leaderboard -->
             <div id="leaderboard-view-section" class="hidden">
-                <h2 class="modal-heading">Deep Space Leaders</h2>
+                <h2 class="modal-heading">Warzone Leaders</h2>
                 <div class="leaderboard-table-container">
                     <table class="leaderboard-table">
                         <thead>
                             <tr>
                                 <th style="text-align: center;">Rank</th>
-                                <th>Pilot</th>
+                                <th>Soldier</th>
                                 <th style="text-align: right; padding-right: 15px;">Score</th>
                             </tr>
                         </thead>
@@ -933,19 +933,19 @@
                     </table>
                 </div>
                 <div class="modal-actions">
-                    <button id="modal-play-again-btn" class="space-btn-primary">Relaunch Mission</button>
+                    <button id="modal-play-again-btn" class="space-btn-primary">Redeploy Operation</button>
                     <div class="modal-sub-actions">
                         <button id="modal-reset-btn" class="space-btn-danger">Clear Logs</button>
-                        <button id="modal-close-btn-bottom" class="space-btn-secondary">Dismiss</button>
+                        <button id="modal-close-btn-bottom" class="space-btn-secondary">Close</button>
                     </div>
                 </div>
             </div>
-
+ 
         </div>
     </div>
-
+ 
     <footer>
-        Shell Shockers 2D System &copy; 2026. Built by Agent B for <a href="../index.html">Ascent Learning Initiative</a>. All combat rules apply.
+        Zombie Ops POV System &copy; 2026. Inspired by Call of Duty & Fortnite. Built for <a href="../index.html">Ascent Learning Initiative</a>.
     </footer>
 
     <!-- Firebase SDKs (using hosting reserved URLs) -->
@@ -974,7 +974,7 @@
         function updateTelemetry() {
             const inst = window.VoyagerGameInstance;
             if (!inst) {
-                document.getElementById('telemetry-sector').textContent = 'AWAITING TACTICAL ENGINE...';
+                document.getElementById('telemetry-sector').textContent = 'AWAITING ZOMBIE ENGINE...';
                 document.getElementById('telemetry-coords').textContent = 'X: ---.-, Y: ---.-';
                 document.getElementById('telemetry-velocity').textContent = '0.0 KTS';
                 document.getElementById('telemetry-thrust').textContent = 'OFFLINE';
@@ -989,7 +989,7 @@
             const health = inst.playerHealth;
             
             if (gameState === 'PLAYING') {
-                document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">INFILTRATION WAVE ${inst.wave}/5</span>`;
+                document.getElementById('telemetry-sector').innerHTML = `<span class="glow-cyan">ASSAULT WAVE ${inst.wave}/5</span>`;
                 document.getElementById('telemetry-coords').textContent = `X: ${camera.x.toFixed(1)}, Z: ${camera.z.toFixed(1)}`;
                 
                 // Read from movement keys
@@ -1016,7 +1016,7 @@
                     thrustStatus = 'TACTICAL SPRINT';
                     thrustClass = 'thrust-boost';
                 } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
-                    thrustStatus = 'AIM STABILIZER ON';
+                    thrustStatus = 'SNIPER FOCUS ON';
                     thrustClass = 'thrust-brake';
                 }
                 
@@ -1026,7 +1026,7 @@
                 
                 document.getElementById('telemetry-timer').textContent = `${Math.ceil(health)}%`;
                 
-                // Update constellation checklist grid
+                // Update waves checklist grid
                 const surveyItems = document.querySelectorAll('.survey-item');
                 surveyItems.forEach((item, index) => {
                     item.className = 'survey-item'; // reset
@@ -1039,7 +1039,7 @@
                     }
                 });
             } else {
-                document.getElementById('telemetry-sector').textContent = 'STANDBY / SYSTEM IDLE';
+                document.getElementById('telemetry-sector').textContent = 'WARZONE STANDBY';
                 document.getElementById('telemetry-coords').textContent = 'X: 0.0, Z: -200.0';
                 document.getElementById('telemetry-velocity').textContent = '0.0 KTS';
                 
