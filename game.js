@@ -6,9 +6,9 @@
             width: 800px;
             height: 600px;
             background-color: #0d1117;
-            border: 3px solid #E74C3C;
+            border: 3px solid #F1C40F;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(231, 76, 60, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(241, 196, 15, 0.2);
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             user-select: none;
@@ -32,7 +32,7 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            background: rgba(13, 17, 23, 0.96);
+            background: rgba(10, 14, 23, 0.96);
             backdrop-filter: blur(8px);
             padding: 30px 40px;
             text-align: center;
@@ -46,20 +46,22 @@
         }
 
         .voyager-title {
-            font-size: 2.4rem;
-            font-weight: 800;
-            color: #E74C3C;
-            margin-bottom: 10px;
+            font-size: 2.6rem;
+            font-weight: 900;
+            color: #F1C40F;
+            margin-bottom: 5px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(231, 76, 60, 0.5);
+            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
         }
 
         .voyager-subtitle {
             font-size: 1rem;
             color: #94A3B8;
             margin-bottom: 25px;
-            font-weight: 500;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
         }
 
         .weapon-grid {
@@ -72,7 +74,7 @@
         }
 
         .weapon-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border: 2px solid #30363d;
             border-radius: 10px;
             padding: 16px;
@@ -82,15 +84,15 @@
         }
 
         .weapon-card:hover {
-            border-color: #E74C3C;
-            background: rgba(231, 76, 60, 0.04);
+            border-color: #F1C40F;
+            background: rgba(241, 196, 15, 0.03);
             transform: translateY(-2px);
         }
 
         .weapon-card.selected {
-            border-color: #E74C3C;
-            background: rgba(231, 76, 60, 0.15);
-            box-shadow: 0 0 15px rgba(231, 76, 60, 0.2);
+            border-color: #F1C40F;
+            background: rgba(241, 196, 15, 0.12);
+            box-shadow: 0 0 15px rgba(241, 196, 15, 0.15);
         }
 
         .weapon-name {
@@ -105,11 +107,12 @@
 
         .weapon-ammo-tag {
             font-size: 0.75rem;
-            background: #E74C3C;
-            color: #FFF;
+            background: #F1C40F;
+            color: #050811;
             padding: 2px 6px;
             border-radius: 4px;
             text-transform: uppercase;
+            font-weight: 700;
         }
 
         .weapon-desc {
@@ -128,7 +131,7 @@
         }
 
         .stat-item span {
-            color: #E74C3C;
+            color: #F1C40F;
         }
 
         .voyager-text {
@@ -145,22 +148,22 @@
             padding: 12px 32px;
             font-size: 1.1rem;
             font-weight: 800;
-            border: 2px solid #E74C3C;
+            border: 2px solid #F1C40F;
             border-radius: 8px;
             background-color: transparent;
-            color: #E74C3C;
+            color: #F1C40F;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.1);
             transition: all 0.25s ease;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         .voyager-btn:hover {
-            background-color: #E74C3C;
-            color: #FFF;
+            background-color: #F1C40F;
+            color: #050811;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
+            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.35);
         }
 
         .voyager-btn:active {
@@ -173,63 +176,65 @@
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
 
-    // 2. Weapons Configurations
+    // 2. Weapons Configurations (Shell Shockers Themed)
     const WEAPONS = [
         {
-            id: "pistol",
-            name: "Red's Revolver",
-            desc: "Red bird's reliable standard sidearm. High precision, infinite ammo, and solid mid-range combat capabilities.",
-            damage: 25,
-            fireRate: 200, // Ms between shots
-            range: 500,
+            id: "cluck",
+            name: "Cluck 9mm",
+            desc: "Rapid semi-auto pistol. Perfect accuracy, infinite ammo reserve, and steady single-target suppression.",
+            damage: 22,
+            fireRate: 180,
+            range: 520,
             ammoType: "Infinite",
-            color: "#E74C3C"
+            color: "#BDC3C7"
         },
         {
-            id: "shotgun",
-            name: "Chuck's Boomstick",
-            desc: "Yellow bird's close-range scatter gun. Fires 5 high-impact feathers in a wide cone. Devastating up close.",
-            damage: 15,
-            fireRate: 800,
-            range: 220,
-            ammoType: "Medium",
-            color: "#F1C40F"
+            id: "scrambler",
+            name: "The Scrambler",
+            desc: "Heavy pump-action shotgun. Explodes 6 shell shards in a wide spread. Scrambles close range targets instantly.",
+            damage: 14,
+            fireRate: 850,
+            range: 240,
+            ammoType: "High Spread",
+            color: "#E67E22"
         },
         {
-            id: "rifle",
-            name: "Bomb's Blaster",
-            desc: "Black bird's fully automatic assault rifle. Fires rapid-velocity explosive bullets that shred waves of pigs.",
-            damage: 18,
-            fireRate: 80,
-            range: 600,
-            ammoType: "High",
-            color: "#34495E"
+            id: "eggk47",
+            name: "EggK-47",
+            desc: "Classic fully automatic assault rifle. Devastating fire rate with balanced spray damage and excellent mid-range accuracy.",
+            damage: 20,
+            fireRate: 90,
+            range: 620,
+            ammoType: "Auto",
+            color: "#2ECC71"
         },
         {
-            id: "sniper",
-            name: "Terence's Longshot",
-            desc: "Huge bird's heavy piercing sniper. Extremely slow bolt-action, but pierces through multiple pigs at infinite range.",
-            damage: 110,
-            fireRate: 1500,
-            range: 1000,
-            ammoType: "Low",
-            color: "#9B59B6"
+            id: "rpegg",
+            name: "RPEGG Launcher",
+            desc: "Heavy rocket-propelled egg launcher. Shoots high-explosive yolks that detonate on contact, dealing area-of-effect damage.",
+            damage: 80,
+            fireRate: 1400,
+            range: 700,
+            ammoType: "Explosive",
+            color: "#E74C3C",
+            explosive: true,
+            explosionRadius: 80
         }
     ];
 
     // 3. Main Game Class
-    class CallOfBirdsGame {
+    class ShellShockersGame {
         constructor(parent) {
             this.parent = parent;
             this.buildDOMElements();
             this.initCanvas();
             this.bindInputEvents();
 
-            // Game variables
-            this.gameState = 'START'; // START, PLAYING, FAIL, SUCCESS
+            // Game State
+            this.gameState = 'START';
             this.selectedWeaponIndex = 0;
             
-            // Stats
+            // Statistics
             this.score = 0;
             this.playerHealth = 100;
             this.wave = 1;
@@ -240,14 +245,15 @@
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
+            this.explosions = []; // AOE explosions
 
-            // Player coordinates
+            // Player configuration (Egg shaped physics)
             this.player = {
                 x: 400,
                 y: 300,
-                radius: 20,
+                radius: 18,
                 angle: 0,
-                speed: 3.0
+                speed: 3.2
             };
 
             this.mouse = { x: 400, y: 300 };
@@ -283,7 +289,6 @@
         }
 
         bindInputEvents() {
-            // Mouse Coordinates and Shooting
             this.canvas.addEventListener('mousemove', (e) => {
                 const rect = this.canvas.getBoundingClientRect();
                 this.mouse.x = e.clientX - rect.left;
@@ -298,17 +303,16 @@
                 this.keys['Mouse'] = false;
             });
 
-            // Keyboard movements
             window.addEventListener('keydown', (e) => {
                 this.keys[e.key] = true;
                 this.keys[e.code] = true;
 
-                // Prevent standard browser scrolling
+                // Stop scrolling
                 if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', ' '].includes(e.key)) {
                     e.preventDefault();
                 }
 
-                // Cheat shortcut: Shift + D (Auto Win)
+                // Win cheat: Shift + D
                 if ((this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) && 
                     (e.key === 'D' || e.key === 'd' || e.code === 'KeyD')) {
                     if (this.gameState === 'PLAYING') {
@@ -330,8 +334,8 @@
 
             if (this.gameState === 'START') {
                 content = `
-                    <div class="voyager-title">Call of Birds</div>
-                    <div class="voyager-subtitle">Angry Warfare &bull; Weapon Intel Dashboard</div>
+                    <div class="voyager-title">Shell Shockers 2D</div>
+                    <div class="voyager-subtitle">Egg Warfare &bull; Arsenal Selection</div>
                     
                     <div class="weapon-grid">
                 `;
@@ -356,11 +360,10 @@
 
                 content += `
                     </div>
-                    <button class="voyager-btn" id="voyager-deploy-btn">Deploy Mission</button>
+                    <button class="voyager-btn" id="voyager-deploy-btn">Crack some Shells</button>
                 `;
                 this.overlay.innerHTML = content;
 
-                // Add card click listeners
                 const cards = this.overlay.querySelectorAll('.weapon-card');
                 cards.forEach(card => {
                     card.addEventListener('click', () => {
@@ -374,8 +377,8 @@
 
             } else if (this.gameState === 'FAIL') {
                 content = `
-                    <div class="voyager-title" style="color: #E74C3C;">Defeated in Combat</div>
-                    <div class="voyager-text">You have failed the mission, Pilot. Piggy Island remains under pig control. Unless you choose to deploy again...</div>
+                    <div class="voyager-title" style="color: #E74C3C;">You Got Scrambled!</div>
+                    <div class="voyager-text">Your shell has been cracked. The Bad Eggs successfully occupied the grid. Try again, pilot!</div>
                     <button class="voyager-btn" id="voyager-restart-btn">Redeploy</button>
                 `;
                 this.overlay.innerHTML = content;
@@ -383,9 +386,9 @@
 
             } else if (this.gameState === 'SUCCESS') {
                 content = `
-                    <div class="voyager-title" style="color: #2ECC71;">Mission Accomplished</div>
-                    <div class="voyager-text">Congratulations! You have wiped out all pig resistance and secured the eggs. Zarg 966-Z greets you from his biosphere!</div>
-                    <button class="voyager-btn" id="voyager-close-btn">Return to Leaderboard</button>
+                    <div class="voyager-title" style="color: #2ECC71;">Egg-cellent Victory</div>
+                    <div class="voyager-text">Spectacular combat! You successfully scrambled all 5 waves of Bad Eggs. Zarg welcomes you back to the biosphere.</div>
+                    <button class="voyager-btn" id="voyager-close-btn">Transmit Logs</button>
                 `;
                 this.overlay.innerHTML = content;
                 document.getElementById('voyager-close-btn').addEventListener('click', () => this.triggerHandoff());
@@ -404,6 +407,7 @@
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
+            this.explosions = [];
             this.player.x = 400;
             this.player.y = 300;
 
@@ -418,50 +422,44 @@
         }
 
         startWave() {
-            this.enemiesRemaining = this.wave * 5;
+            this.enemiesRemaining = this.wave * 6;
             this.enemies = [];
-            // Spawn initial enemies
-            for (let i = 0; i < Math.min(this.enemiesRemaining, 8); i++) {
+            for (let i = 0; i < Math.min(this.enemiesRemaining, 10); i++) {
                 this.spawnEnemy();
             }
         }
 
         spawnEnemy() {
-            const side = Math.floor(Math.random() * 4); // 0: Top, 1: Right, 2: Bottom, 3: Left
+            const side = Math.floor(Math.random() * 4);
             let x, y;
             const offset = 40;
 
             if (side === 0) {
-                x = Math.random() * 800;
-                y = -offset;
+                x = Math.random() * 800; y = -offset;
             } else if (side === 1) {
-                x = 800 + offset;
-                y = Math.random() * 600;
+                x = 800 + offset; y = Math.random() * 600;
             } else if (side === 2) {
-                x = Math.random() * 800;
-                y = 600 + offset;
+                x = Math.random() * 800; y = 600 + offset;
             } else {
-                x = -offset;
-                y = Math.random() * 600;
+                x = -offset; y = Math.random() * 600;
             }
 
-            // Pig types based on wave progress
             const dice = Math.random();
             let type = 'normal';
-            let hp = 30 + this.wave * 5;
-            let speed = 1.0 + Math.random() * 0.5 + (this.wave * 0.1);
-            let radius = 18;
+            let hp = 30 + this.wave * 6;
+            let speed = 1.1 + (this.wave * 0.1);
+            let radius = 16;
 
             if (dice > 0.8 && this.wave >= 2) {
-                type = 'fast';
-                hp = 20;
-                speed = 2.2 + (this.wave * 0.15);
-                radius = 15;
-            } else if (dice > 0.92 && this.wave >= 3) {
+                type = 'speedy';
+                hp = 22;
+                speed = 2.4 + (this.wave * 0.12);
+                radius = 13;
+            } else if (dice > 0.9 && this.wave >= 3) {
                 type = 'brute';
-                hp = 100 + this.wave * 15;
-                speed = 0.6;
-                radius = 28;
+                hp = 110 + this.wave * 20;
+                speed = 0.65;
+                radius = 24;
             }
 
             this.enemies.push({
@@ -480,7 +478,7 @@
         }
 
         triggerVictory() {
-            this.score += 3000;
+            this.score += 4000;
             this.gameState = 'SUCCESS';
             this.stopLoop();
             this.showOverlay();
@@ -530,9 +528,9 @@
 
                 let multiplier = 1.0;
                 if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-                    multiplier = 1.8; // Sprint
+                    multiplier = 1.8;
                 } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
-                    multiplier = 0.5; // Walk/Aim
+                    multiplier = 0.5;
                 }
 
                 const moveSpeed = this.player.speed * multiplier;
@@ -547,7 +545,7 @@
             // Face mouse cursor
             this.player.angle = Math.atan2(this.mouse.y - this.player.y, this.mouse.x - this.player.x);
 
-            // 2. Shooting Logic
+            // 2. Shooting
             const now = Date.now();
             if (this.keys['Mouse'] && now - this.lastShotTime >= weapon.fireRate) {
                 this.fireWeapon(weapon);
@@ -560,12 +558,25 @@
                 b.y += b.vy;
                 b.distanceTraveled += Math.sqrt(b.vx * b.vx + b.vy * b.vy);
 
+                // Check out of range
                 if (b.distanceTraveled >= b.range || b.x < 0 || b.x > 800 || b.y < 0 || b.y > 600) {
+                    if (b.explosive) {
+                        this.explode(b.x, b.y, b.explosionRadius, b.damage);
+                    }
                     this.bullets.splice(idx, 1);
                 }
             });
 
-            // 4. Update Particles
+            // 4. Update AOE Explosions
+            this.explosions.forEach((ex, idx) => {
+                ex.radius += ex.growthSpeed;
+                ex.alpha -= 0.04;
+                if (ex.alpha <= 0) {
+                    this.explosions.splice(idx, 1);
+                }
+            });
+
+            // 5. Update Particles
             this.particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
@@ -575,9 +586,8 @@
                 }
             });
 
-            // 5. Update Enemies
+            // 6. Update Enemies
             this.enemies.forEach((enemy, eIdx) => {
-                // Walk toward player
                 const angle = Math.atan2(this.player.y - enemy.y, this.player.x - enemy.x);
                 enemy.angle = angle;
                 enemy.vx = Math.cos(angle) * enemy.speed;
@@ -589,8 +599,8 @@
                 // Collide with player
                 const playerDist = Math.hypot(this.player.x - enemy.x, this.player.y - enemy.y);
                 if (playerDist < (this.player.radius + enemy.radius)) {
-                    this.playerHealth -= 0.2; // Continuous damage on touch
-                    this.spawnSparks(enemy.x, enemy.y, '#E74C3C', 3);
+                    this.playerHealth -= 0.22; 
+                    this.spawnYolkSplats(enemy.x, enemy.y, 2);
                     if (this.playerHealth <= 0) {
                         this.playerHealth = 0;
                         this.gameState = 'FAIL';
@@ -603,30 +613,33 @@
                 this.bullets.forEach((bullet, bIdx) => {
                     const bulletDist = Math.hypot(bullet.x - enemy.x, bullet.y - enemy.y);
                     if (bulletDist < (enemy.radius + 4)) {
-                        enemy.hp -= bullet.damage;
-                        this.spawnSparks(bullet.x, bullet.y, enemy.type === 'brute' ? '#7F8C8D' : '#F1C40F', 8);
+                        if (bullet.explosive) {
+                            this.explode(bullet.x, bullet.y, bullet.explosionRadius, bullet.damage);
+                        } else {
+                            enemy.hp -= bullet.damage;
+                            this.spawnYolkSplats(bullet.x, bullet.y, 6);
+                        }
 
-                        // Bullet disposal (except sniper, which pierces)
+                        // Bullet disposal (non-sniper bullets)
                         if (bullet.id !== 'sniper') {
                             this.bullets.splice(bIdx, 1);
                         }
 
                         // Enemy death check
                         if (enemy.hp <= 0) {
-                            this.spawnSparks(enemy.x, enemy.y, '#2ECC71', 25); // Large feather blast
+                            this.scrambleEnemy(enemy);
                             this.enemies.splice(eIdx, 1);
-                            this.score += enemy.type === 'brute' ? 300 : (enemy.type === 'fast' ? 150 : 100);
                         }
                     }
                 });
             });
 
-            // Spawner checks
-            if (this.enemies.length < 5 && this.enemiesRemaining > 0) {
+            // Spawn next enemies
+            if (this.enemies.length < 6 && this.enemiesRemaining > 0) {
                 this.spawnEnemy();
             }
 
-            // Wave completion
+            // Wave progress check
             if (this.enemies.length === 0 && this.enemiesRemaining === 0) {
                 this.wave++;
                 if (this.wave > this.maxWaves) {
@@ -639,67 +652,118 @@
             }
         }
 
+        explode(x, y, radius, damage) {
+            this.explosions.push({
+                x: x,
+                y: y,
+                radius: 10,
+                maxRadius: radius,
+                growthSpeed: radius / 12,
+                alpha: 1.0
+            });
+
+            // Splash damage check on all enemies
+            this.enemies.forEach((enemy, idx) => {
+                const dist = Math.hypot(enemy.x - x, enemy.y - y);
+                if (dist < (radius + enemy.radius)) {
+                    // Linear falloff damage
+                    const damageFactor = 1 - (dist / (radius + enemy.radius));
+                    enemy.hp -= Math.round(damage * damageFactor);
+
+                    this.spawnYolkSplats(enemy.x, enemy.y, 4);
+
+                    if (enemy.hp <= 0) {
+                        this.scrambleEnemy(enemy);
+                        this.enemies.splice(idx, 1);
+                    }
+                }
+            });
+
+            // Explosion sparks
+            this.spawnYolkSplats(x, y, 20);
+        }
+
+        scrambleEnemy(enemy) {
+            this.spawnYolkSplats(enemy.x, enemy.y, 30); // Large splat
+            this.score += enemy.type === 'brute' ? 350 : (enemy.type === 'speedy' ? 180 : 100);
+        }
+
         fireWeapon(w) {
             const angle = this.player.angle;
-            const speed = 12.0;
+            const speed = 13.0;
 
-            if (w.id === 'shotgun') {
-                // Shoot a fan of 5 pellets
-                for (let i = -2; i <= 2; i++) {
+            if (w.id === 'scrambler') {
+                // Shoot a fan of 6 shells
+                for (let i = -2.5; i <= 2.5; i += 1.0) {
                     const devAngle = angle + (i * 0.08);
                     this.bullets.push({
                         id: w.id,
-                        x: this.player.x + Math.cos(angle) * 20,
-                        y: this.player.y + Math.sin(angle) * 20,
+                        x: this.player.x + Math.cos(angle) * 22,
+                        y: this.player.y + Math.sin(angle) * 22,
                         vx: Math.cos(devAngle) * speed,
                         vy: Math.sin(devAngle) * speed,
                         damage: w.damage,
                         range: w.range,
                         distanceTraveled: 0,
-                        color: w.color
+                        color: w.color,
+                        explosive: false
                     });
                 }
             } else {
-                // Single bullet shooter (Pistol, Rifle, Sniper)
                 this.bullets.push({
                     id: w.id,
-                    x: this.player.x + Math.cos(angle) * 20,
-                    y: this.player.y + Math.sin(angle) * 20,
+                    x: this.player.x + Math.cos(angle) * 22,
+                    y: this.player.y + Math.sin(angle) * 22,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
                     damage: w.damage,
                     range: w.range,
                     distanceTraveled: 0,
-                    color: w.color
+                    color: w.color,
+                    explosive: w.explosive || false,
+                    explosionRadius: w.explosionRadius || 0
                 });
             }
 
-            // Spawn slight fire particles
-            this.spawnSparks(this.player.x + Math.cos(angle) * 20, this.player.y + Math.sin(angle) * 20, '#F1C40F', 4);
+            // Muzzle flash sparks
+            this.spawnYolkSplats(this.player.x + Math.cos(angle) * 22, this.player.y + Math.sin(angle) * 22, 5);
         }
 
-        spawnSparks(x, y, color, count) {
+        spawnYolkSplats(x, y, count) {
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speed = Math.random() * 3 + 1;
+                const speed = Math.random() * 4 + 1.5;
+                const dice = Math.random();
+
+                let color = '#FFF8E7'; // Eggshell fragment
+                let size = Math.random() * 2 + 1;
+                
+                if (dice > 0.4) {
+                    color = '#F1C40F'; // Yellow yolk
+                    size = Math.random() * 3.5 + 1.5;
+                } else if (dice > 0.25) {
+                    color = '#E67E22'; // Orange yolk
+                    size = Math.random() * 3 + 1;
+                }
+
                 this.particles.push({
                     x: x,
                     y: y,
                     vx: Math.cos(angle) * speed,
                     vy: Math.sin(angle) * speed,
-                    alpha: 1,
+                    alpha: 1.0,
                     color: color,
-                    size: Math.random() * 2.5 + 1
+                    size: size
                 });
             }
         }
 
         draw() {
             // Background
-            this.ctx.fillStyle = '#0f141c';
+            this.ctx.fillStyle = '#0a0d13';
             this.ctx.fillRect(0, 0, 800, 600);
 
-            // Tech grid lines
+            // Technical/Futuristic map grid lines
             this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.02)';
             this.ctx.lineWidth = 1;
             for (let i = 0; i < 800; i += 40) {
@@ -721,11 +785,31 @@
                 this.ctx.moveTo(b.x, b.y);
                 this.ctx.lineTo(b.x - b.vx * 1.5, b.y - b.vy * 1.5);
                 this.ctx.strokeStyle = b.color;
-                this.ctx.lineWidth = b.id === 'sniper' ? 4 : 2;
+                this.ctx.lineWidth = b.id === 'rpegg' ? 5 : (b.id === 'sniper' ? 3.5 : 2);
                 this.ctx.stroke();
             });
 
-            // Draw Particles
+            // Draw AOE Explosions (Expanding yolk bubbles)
+            this.explosions.forEach(ex => {
+                this.ctx.save();
+                this.ctx.globalAlpha = ex.alpha * 0.45;
+                
+                // Exploding core
+                const grad = this.ctx.createRadialGradient(ex.x, ex.y, 2, ex.x, ex.y, ex.radius);
+                grad.addColorStop(0, '#FFFFFF');
+                grad.addColorStop(0.2, '#F1C40F');
+                grad.addColorStop(0.8, '#E67E22');
+                grad.addColorStop(1.0, 'rgba(231, 76, 60, 0)');
+                
+                this.ctx.fillStyle = grad;
+                this.ctx.beginPath();
+                this.ctx.arc(ex.x, ex.y, ex.radius, 0, Math.PI * 2);
+                this.ctx.fill();
+                
+                this.ctx.restore();
+            });
+
+            // Draw Particles (Egg yolks and shards)
             this.particles.forEach(p => {
                 this.ctx.fillStyle = p.color;
                 this.ctx.globalAlpha = p.alpha;
@@ -735,65 +819,51 @@
             });
             this.ctx.globalAlpha = 1.0;
 
-            // Draw Enemies (Green Pigs in Helmets)
+            // Draw Bad Egg Enemies (Gray cracked eggs with red eyes)
             this.enemies.forEach(e => {
                 this.ctx.save();
                 this.ctx.translate(e.x, e.y);
                 this.ctx.rotate(e.angle);
 
-                // Pig Body (Green sphere)
+                // Body (Egg shape)
                 this.ctx.beginPath();
-                this.ctx.arc(0, 0, e.radius, 0, Math.PI * 2);
-                this.ctx.fillStyle = '#2ECC71';
+                this.ctx.moveTo(0, -e.radius * 1.25);
+                this.ctx.bezierCurveTo(e.radius * 0.9, -e.radius * 1.25, e.radius * 1.1, e.radius, 0, e.radius);
+                this.ctx.bezierCurveTo(-e.radius * 1.1, e.radius, -e.radius * 0.9, -e.radius * 1.25, 0, -e.radius * 1.25);
+                this.ctx.closePath();
+                this.ctx.fillStyle = e.type === 'brute' ? '#7F8C8D' : (e.type === 'speedy' ? '#D5D8DC' : '#BDC3C7');
                 this.ctx.fill();
-                this.ctx.strokeStyle = '#27AE60';
+                this.ctx.strokeStyle = '#95A5A6';
                 this.ctx.lineWidth = 2.5;
                 this.ctx.stroke();
 
-                // Pig Snout
+                // Shell Crack Lines
+                this.ctx.strokeStyle = '#7F8C8D';
+                this.ctx.lineWidth = 1.8;
                 this.ctx.beginPath();
-                this.ctx.ellipse(3, 0, e.radius * 0.45, e.radius * 0.35, 0, 0, Math.PI * 2);
-                this.ctx.fillStyle = '#259C51';
-                this.ctx.fill();
+                this.ctx.moveTo(-e.radius * 0.3, -e.radius * 0.3);
+                this.ctx.lineTo(-e.radius * 0.1, 0);
+                this.ctx.lineTo(-e.radius * 0.4, e.radius * 0.3);
+                this.ctx.stroke();
+
+                // Angry red eyes
+                this.ctx.fillStyle = '#E74C3C';
                 this.ctx.beginPath();
-                this.ctx.arc(1, -2, 1.5, 0, Math.PI * 2);
-                this.ctx.arc(1, 2, 1.5, 0, Math.PI * 2);
-                this.ctx.fillStyle = '#1A6B37';
+                this.ctx.arc(e.radius * 0.3, -e.radius * 0.35, 3, 0, Math.PI * 2);
+                this.ctx.arc(e.radius * 0.3, e.radius * 0.35, 3, 0, Math.PI * 2);
                 this.ctx.fill();
 
-                // Eyes (gaze direction forward)
-                this.ctx.fillStyle = '#FFFFFF';
-                this.ctx.beginPath();
-                this.ctx.arc(-2, -e.radius * 0.4, 4, 0, Math.PI * 2);
-                this.ctx.arc(-2, e.radius * 0.4, 4, 0, Math.PI * 2);
-                this.ctx.fill();
-                
-                this.ctx.fillStyle = '#000';
-                this.ctx.beginPath();
-                this.ctx.arc(0, -e.radius * 0.4, 1.8, 0, Math.PI * 2);
-                this.ctx.arc(0, e.radius * 0.4, 1.8, 0, Math.PI * 2);
-                this.ctx.fill();
+                // Gun (Bad eggs carrying SMGs)
+                this.ctx.fillStyle = '#34495E';
+                this.ctx.fillRect(e.radius * 0.4, -3, 12, 6);
 
-                // Pig Ears
-                this.ctx.fillStyle = '#2ECC71';
-                this.ctx.beginPath();
-                this.ctx.arc(-e.radius * 0.7, -e.radius * 0.7, 5, 0, Math.PI * 2);
-                this.ctx.arc(-e.radius * 0.7, e.radius * 0.7, 5, 0, Math.PI * 2);
-                this.ctx.fill();
-
-                // Helmet (Military Call of Duty theme)
-                this.ctx.fillStyle = e.type === 'brute' ? '#1F242D' : '#566573';
-                this.ctx.beginPath();
-                this.ctx.arc(-e.radius * 0.25, 0, e.radius * 1.05, Math.PI / 2, -Math.PI / 2);
-                this.ctx.fill();
-
-                // Health status line
+                // Health bar draw
                 if (e.hp < e.maxHp) {
                     this.ctx.restore();
-                    this.ctx.fillStyle = 'rgba(0,0,0,0.5)';
-                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, e.radius * 2, 4);
+                    this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
+                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 12, e.radius * 2, 4);
                     this.ctx.fillStyle = '#E74C3C';
-                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 10, (e.radius * 2) * (e.hp / e.maxHp), 4);
+                    this.ctx.fillRect(e.x - e.radius, e.y - e.radius - 12, (e.radius * 2) * (e.hp / e.maxHp), 4);
                     this.ctx.save();
                     this.ctx.translate(e.x, e.y);
                 }
@@ -801,84 +871,69 @@
                 this.ctx.restore();
             });
 
-            // Draw Player (Angry Red Bird in Army Helmet)
+            // Draw Player (Dapper shell shockers Egg carrying weapons)
             this.ctx.save();
             this.ctx.translate(this.player.x, this.player.y);
             this.ctx.rotate(this.player.angle);
 
-            // Red Bird Body
+            // Egg Body Shape
             this.ctx.beginPath();
-            this.ctx.arc(0, 0, this.player.radius, 0, Math.PI * 2);
-            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.moveTo(0, -this.player.radius * 1.25);
+            this.ctx.bezierCurveTo(this.player.radius * 0.9, -this.player.radius * 1.25, this.player.radius * 1.1, this.player.radius, 0, this.player.radius);
+            this.ctx.bezierCurveTo(-this.player.radius * 1.1, this.player.radius, -this.player.radius * 0.9, -this.player.radius * 1.25, 0, -this.player.radius * 1.25);
+            this.ctx.closePath();
+            this.ctx.fillStyle = '#FFF8E7'; // Clean egg color
             this.ctx.fill();
-            this.ctx.strokeStyle = '#C0392B';
-            this.ctx.lineWidth = 2.5;
+            this.ctx.strokeStyle = '#D5C5A1';
+            this.ctx.lineWidth = 2.8;
             this.ctx.stroke();
 
-            // Belly
-            this.ctx.beginPath();
-            this.ctx.arc(-this.player.radius * 0.3, 0, this.player.radius * 0.7, -Math.PI / 2, Math.PI / 2);
-            this.ctx.fillStyle = '#FFF2F2';
-            this.ctx.fill();
-
-            // Eyes (Glaring forward)
-            this.ctx.fillStyle = '#FFF';
-            this.ctx.beginPath();
-            this.ctx.arc(6, -5, 5, 0, Math.PI * 2);
-            this.ctx.arc(6, 5, 5, 0, Math.PI * 2);
-            this.ctx.fill();
-
+            // Determined black eyes
             this.ctx.fillStyle = '#000';
             this.ctx.beginPath();
-            this.ctx.arc(7, -5, 2, 0, Math.PI * 2);
-            this.ctx.arc(7, 5, 2, 0, Math.PI * 2);
+            this.ctx.arc(this.player.radius * 0.35, -this.player.radius * 0.3, 3, 0, Math.PI * 2);
+            this.ctx.arc(this.player.radius * 0.35, this.player.radius * 0.3, 3, 0, Math.PI * 2);
             this.ctx.fill();
 
             // Angry eyebrows
             this.ctx.strokeStyle = '#000';
-            this.ctx.lineWidth = 3.5;
+            this.ctx.lineWidth = 2.5;
             this.ctx.beginPath();
-            this.ctx.moveTo(1, -9);
-            this.ctx.lineTo(8, -5);
-            this.ctx.lineTo(8, 5);
-            this.ctx.lineTo(1, 9);
+            this.ctx.moveTo(this.player.radius * 0.1, -this.player.radius * 0.5);
+            this.ctx.lineTo(this.player.radius * 0.5, -this.player.radius * 0.35);
+            this.ctx.moveTo(this.player.radius * 0.1, this.player.radius * 0.5);
+            this.ctx.lineTo(this.player.radius * 0.5, this.player.radius * 0.35);
             this.ctx.stroke();
 
-            // Beak (Orange)
-            this.ctx.fillStyle = '#F1C40F';
-            this.ctx.beginPath();
-            this.ctx.moveTo(8, -3);
-            this.ctx.lineTo(16, 0);
-            this.ctx.lineTo(8, 3);
-            this.ctx.closePath();
-            this.ctx.fill();
-
-            // Army Helmet (Military green)
-            this.ctx.fillStyle = '#27AE60';
-            this.ctx.beginPath();
-            this.ctx.arc(-this.player.radius * 0.15, 0, this.player.radius * 1.05, Math.PI / 2, -Math.PI / 2);
-            this.ctx.fill();
-
-            // Weapon Barrel (glowing gun barrel)
-            const weaponColor = WEAPONS[this.selectedWeaponIndex].color;
-            this.ctx.fillStyle = '#2C3E50';
-            this.ctx.fillRect(8, -4, 18, 8);
-            this.ctx.fillStyle = weaponColor;
-            this.ctx.fillRect(23, -3, 5, 6);
+            // Weapon model
+            const weapon = WEAPONS[this.selectedWeaponIndex];
+            this.ctx.fillStyle = '#34495E';
+            if (weapon.id === 'rpegg') {
+                this.ctx.fillRect(this.player.radius * 0.4, -6, 22, 12);
+                this.ctx.fillStyle = '#E74C3C';
+                this.ctx.fillRect(this.player.radius * 0.4 + 20, -5, 4, 10);
+            } else if (weapon.id === 'scrambler') {
+                this.ctx.fillRect(this.player.radius * 0.4, -5, 18, 10);
+                this.ctx.strokeStyle = '#1B2631';
+                this.ctx.lineWidth = 1;
+                this.ctx.strokeRect(this.player.radius * 0.4, -5, 18, 10);
+            } else {
+                this.ctx.fillRect(this.player.radius * 0.4, -3, 20, 6);
+            }
 
             this.ctx.restore();
 
-            // HUD
+            // HUD overlay drawing
             this.drawHUD();
         }
 
         drawHUD() {
             const weapon = WEAPONS[this.selectedWeaponIndex];
 
-            // 1. Health Bar
+            // Health Bar
             this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
             this.ctx.fillRect(20, 20, 200, 16);
-            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.fillStyle = '#F1C40F';
             this.ctx.fillRect(20, 20, 200 * (this.playerHealth / 100), 16);
             this.ctx.strokeStyle = '#FFF';
             this.ctx.lineWidth = 1.5;
@@ -886,27 +941,27 @@
 
             this.ctx.fillStyle = '#FFF';
             this.ctx.font = 'bold 12px "Outfit", sans-serif';
-            this.ctx.fillText(`HP: ${Math.ceil(this.playerHealth)}%`, 30, 32);
+            this.ctx.fillText(`ARMOR: ${Math.ceil(this.playerHealth)}%`, 30, 32);
 
-            // 2. Score & Wave indicators
+            // Score & Wave info
             this.ctx.font = 'bold 16px "Outfit", sans-serif';
             this.ctx.fillText(`SCORE: ${this.score}`, 20, 60);
 
             this.ctx.textAlign = 'right';
             this.ctx.fillText(`WAVE: ${this.wave} / ${this.maxWaves}`, 780, 35);
             this.ctx.font = '13px "Outfit", sans-serif';
-            this.ctx.fillStyle = '#E74C3C';
-            this.ctx.fillText(`INCOMING: ${this.enemies.length + this.enemiesRemaining} PIGS`, 780, 55);
+            this.ctx.fillStyle = '#F1C40F';
+            this.ctx.fillText(`INCOMING EGGS: ${this.enemies.length + this.enemiesRemaining}`, 780, 55);
             this.ctx.textAlign = 'left';
 
-            // 3. Selected Weapon info
+            // Selected Weapon panel
             this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
             this.ctx.fillRect(20, 520, 250, 60);
-            this.ctx.strokeStyle = weapon.color;
+            this.ctx.strokeStyle = '#F1C40F';
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(20, 520, 250, 60);
 
-            this.ctx.fillStyle = weapon.color;
+            this.ctx.fillStyle = '#F1C40F';
             this.ctx.font = 'bold 16px "Outfit", sans-serif';
             this.ctx.fillText(weapon.name, 35, 545);
             this.ctx.fillStyle = '#94A3B8';
@@ -919,12 +974,12 @@
     function initGame() {
         const gameContainer = document.getElementById('game-container') || document.body;
         if (gameContainer) {
-            window.VoyagerGameInstance = new CallOfBirdsGame(gameContainer);
-            console.log("Call of Birds engine loaded successfully!");
+            window.VoyagerGameInstance = new ShellShockersGame(gameContainer);
+            console.log("Shell Shockers 2D engine loaded successfully!");
         }
     }
 
-    window.VoyagerEngine = CallOfBirdsGame;
+    window.VoyagerEngine = ShellShockersGame;
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initGame);
