@@ -5,10 +5,10 @@
             position: relative;
             width: 800px;
             height: 600px;
-            background-color: #0d1117;
-            border: 3px solid #F1C40F;
+            background-color: #0d0f14;
+            border: 3px solid #E74C3C;
             border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(241, 196, 15, 0.25);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(231, 76, 60, 0.3);
             font-family: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             overflow: hidden;
             user-select: none;
@@ -48,11 +48,11 @@
         .voyager-title {
             font-size: 2.6rem;
             font-weight: 950;
-            color: #F1C40F;
+            color: #E74C3C;
             margin-bottom: 5px;
             letter-spacing: 0.05em;
             text-transform: uppercase;
-            text-shadow: 0 0 15px rgba(241, 196, 15, 0.4);
+            text-shadow: 0 0 15px rgba(231, 76, 60, 0.4);
         }
 
         .voyager-subtitle {
@@ -84,15 +84,15 @@
         }
 
         .weapon-card:hover {
-            border-color: #F1C40F;
-            background: rgba(241, 196, 15, 0.03);
+            border-color: #E74C3C;
+            background: rgba(231, 76, 60, 0.03);
             transform: translateY(-2px);
         }
 
         .weapon-card.selected {
-            border-color: #F1C40F;
-            background: rgba(241, 196, 15, 0.12);
-            box-shadow: 0 0 15px rgba(241, 196, 15, 0.15);
+            border-color: #E74C3C;
+            background: rgba(231, 76, 60, 0.12);
+            box-shadow: 0 0 15px rgba(231, 76, 60, 0.15);
         }
 
         .weapon-name {
@@ -107,8 +107,8 @@
 
         .weapon-ammo-tag {
             font-size: 0.75rem;
-            background: #F1C40F;
-            color: #050811;
+            background: #E74C3C;
+            color: #FFF;
             padding: 2px 6px;
             border-radius: 4px;
             text-transform: uppercase;
@@ -131,7 +131,7 @@
         }
 
         .stat-item span {
-            color: #F1C40F;
+            color: #E74C3C;
         }
 
         .voyager-text {
@@ -148,22 +148,22 @@
             padding: 12px 32px;
             font-size: 1.1rem;
             font-weight: 800;
-            border: 2px solid #F1C40F;
+            border: 2px solid #E74C3C;
             border-radius: 8px;
             background-color: transparent;
-            color: #F1C40F;
+            color: #E74C3C;
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.1);
+            box-shadow: 0 4px 15px rgba(231, 76, 60, 0.1);
             transition: all 0.25s ease;
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
 
         .voyager-btn:hover {
-            background-color: #F1C40F;
-            color: #050811;
+            background-color: #E74C3C;
+            color: #FFF;
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.35);
+            box-shadow: 0 6px 20px rgba(231, 76, 60, 0.35);
         }
 
         .voyager-btn:active {
@@ -176,50 +176,58 @@
     styleEl.textContent = styles;
     document.head.appendChild(styleEl);
 
-    // 2. Weapon Intel & Skins configurations (Shell Shockers 3D layout)
+    // 2. Weapon Intel & Skins Configurations (Call of Duty / Fortnite Themed)
     const WEAPONS = [
         {
-            id: "cluck",
-            name: "Cluck 9mm",
-            skin: "Neon Chrome",
-            desc: "Rapid semi-automatic pistol. Very steady handling, quick reload, and infinite backup magazine.",
-            damage: 25,
-            fireRate: 180,
-            color: "#E2E8F0"
+            id: "m4",
+            name: "M4 Carbine",
+            skin: "Digital Camo",
+            desc: "Tactical fully automatic assault rifle. Extremely reliable fire rate, low recoil, and balanced mid-range damage.",
+            damage: 24,
+            fireRate: 100, // ms between shots
+            range: 800,
+            ammoType: "Auto",
+            color: "#2ECC71"
         },
         {
-            id: "scrambler",
-            name: "The Scrambler",
-            skin: "Gold Wood",
-            desc: "Tactical pump-action shotgun. Fires a wide spread of 8 shell fragments. Fatal at point-blank range.",
-            damage: 15,
-            fireRate: 900,
-            color: "#D35400"
+            id: "shotgun",
+            name: "Tactical Shotgun",
+            skin: "Neon Inferno",
+            desc: "Fires a wide spread of 8 high-impact buckshots. Devastating close-range punch that clears groups of zombies.",
+            damage: 16,
+            fireRate: 850,
+            range: 300,
+            ammoType: "Spread",
+            color: "#E67E22"
         },
         {
-            id: "eggk47",
-            name: "EggK-47",
-            skin: "Military Camo",
-            desc: "Fully automatic assault rifle. Fires armor-piercing bullets at high velocity. Excellent all-rounder.",
-            damage: 22,
-            fireRate: 90,
-            color: "#27AE60"
-        },
-        {
-            id: "rpegg",
-            name: "RPEGG Launcher",
+            id: "rpg",
+            name: "RPG-7 Launcher",
             skin: "Carbon Fiber",
-            desc: "Heavy RPG firing high-explosive yolks that detonate on contact, clearing all nearby enemies.",
-            damage: 90,
-            fireRate: 1500,
+            desc: "Fires a high-explosive rocket. Detonates on impact, dealing massive area-of-effect splash damage.",
+            damage: 120,
+            fireRate: 1600,
+            range: 1000,
+            ammoType: "Explosive",
             color: "#E74C3C",
             explosive: true,
-            explosionRadius: 100
+            explosionRadius: 120
+        },
+        {
+            id: "sniper",
+            name: "Barrett .50 Cal",
+            skin: "Golden Tiger",
+            desc: "Heavy bolt-action sniper rifle. Holding Z zooms in with a scope. Pierces through all zombies in its path.",
+            damage: 150,
+            fireRate: 1400,
+            range: 1200,
+            ammoType: "Sniper",
+            color: "#F1C40F"
         }
     ];
 
-    // 3. Main 3D Game Engine Class
-    class ShellShockers3DGame {
+    // 3. Main POV Game Engine Class
+    class POVZombieShooterGame {
         constructor(parent) {
             this.parent = parent;
             this.buildDOMElements();
@@ -235,27 +243,27 @@
             this.maxWaves = 5;
             this.enemiesRemaining = 0;
 
-            // Camera in 3D Space
+            // Camera / Character POV
             this.camera = {
-                x: 0,
-                y: 0, // Vertical position
-                z: 0,
-                yaw: -Math.PI / 2, // Rotational heading
-                bob: 0
+                x: 0, // Horizontal panning coordinate
+                y: 0, // Vertical bobbing coordinate
+                targetX: 0
             };
 
-            // Game loops structures
+            // Game Arrays
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
             this.explosions = [];
+            this.bloodSplats = []; // Splats on the character's lens
 
-            // Timing
+            // Timing & Recoil
             this.lastShotTime = 0;
             this.recoil = 0;
             this.recoilTarget = 0;
             this.loopId = null;
             this.keys = {};
+            this.mouse = { x: 400, y: 300 };
 
             this.showOverlay();
         }
@@ -282,6 +290,20 @@
         }
 
         bindInputEvents() {
+            this.canvas.addEventListener('mousemove', (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                this.mouse.x = e.clientX - rect.left;
+                this.mouse.y = e.clientY - rect.top;
+            });
+
+            this.canvas.addEventListener('mousedown', () => {
+                this.keys['Mouse'] = true;
+            });
+
+            window.addEventListener('mouseup', () => {
+                this.keys['Mouse'] = false;
+            });
+
             window.addEventListener('keydown', (e) => {
                 this.keys[e.key] = true;
                 this.keys[e.code] = true;
@@ -291,7 +313,7 @@
                     e.preventDefault();
                 }
 
-                // Cheat shortcut: Shift + D
+                // Win cheat: Shift + D
                 if ((this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) && 
                     (e.key === 'D' || e.key === 'd' || e.code === 'KeyD')) {
                     if (this.gameState === 'PLAYING') {
@@ -305,14 +327,6 @@
                 this.keys[e.key] = false;
                 this.keys[e.code] = false;
             });
-
-            this.canvas.addEventListener('mousedown', () => {
-                this.keys['Mouse'] = true;
-            });
-
-            window.addEventListener('mouseup', () => {
-                this.keys['Mouse'] = false;
-            });
         }
 
         showOverlay() {
@@ -321,8 +335,8 @@
 
             if (this.gameState === 'START') {
                 content = `
-                    <div class="voyager-title">Shell Shockers 3D</div>
-                    <div class="voyager-subtitle">Egg Warfare &bull; Arsenal Selection</div>
+                    <div class="voyager-title">Zombie Ops: Warzone</div>
+                    <div class="voyager-subtitle">First-Person Tactical Defense</div>
                     
                     <div class="weapon-grid">
                 `;
@@ -346,7 +360,7 @@
 
                 content += `
                     </div>
-                    <button class="voyager-btn" id="voyager-deploy-btn">Deploy In 3D</button>
+                    <button class="voyager-btn" id="voyager-deploy-btn">Deploy Operations</button>
                 `;
                 this.overlay.innerHTML = content;
 
@@ -363,18 +377,18 @@
 
             } else if (this.gameState === 'FAIL') {
                 content = `
-                    <div class="voyager-title" style="color: #E74C3C;">Scrambled!</div>
-                    <div class="voyager-text">Your shell was cracked by the bad eggs. Get back in the fight!</div>
-                    <button class="voyager-btn" id="voyager-restart-btn">Redeploy</button>
+                    <div class="voyager-title" style="color: #E74C3C;">K.I.A.</div>
+                    <div class="voyager-text">Your defenses were breached. The zombie horde scrambled your vitals. Redeploy!</div>
+                    <button class="voyager-btn" id="voyager-restart-btn">Redeploy Ops</button>
                 `;
                 this.overlay.innerHTML = content;
                 document.getElementById('voyager-restart-btn').addEventListener('click', () => this.restartGame());
 
             } else if (this.gameState === 'SUCCESS') {
                 content = `
-                    <div class="voyager-title" style="color: #2ECC71;">Splat Victory</div>
-                    <div class="voyager-text">Egg-cellent combat! All waves of Bad Eggs have been scrambled. Zarg congratulates you.</div>
-                    <button class="voyager-btn" id="voyager-close-btn">Return to Archives</button>
+                    <div class="voyager-title" style="color: #2ECC71;">VICTORY ROYALE</div>
+                    <div class="voyager-text">Outstanding survival! You cleared all waves of the tactical zombie swarm and secured the sector.</div>
+                    <button class="voyager-btn" id="voyager-close-btn">Return to Leaderboard</button>
                 `;
                 this.overlay.innerHTML = content;
                 document.getElementById('voyager-close-btn').addEventListener('click', () => this.triggerHandoff());
@@ -390,18 +404,17 @@
             this.score = 0;
             this.playerHealth = 100;
             this.wave = 1;
-            
-            // Clean arrays
+
             this.enemies = [];
             this.bullets = [];
             this.particles = [];
             this.explosions = [];
+            this.bloodSplats = [];
 
-            // Reset camera in 3D
+            // Panning Camera
             this.camera.x = 0;
-            this.camera.z = -200;
-            this.camera.yaw = Math.PI / 2;
-            this.camera.bob = 0;
+            this.camera.targetX = 0;
+            this.camera.y = 0;
 
             this.hideOverlay();
             this.startWave();
@@ -414,45 +427,48 @@
         }
 
         startWave() {
-            this.enemiesRemaining = this.wave * 5 + 3;
+            this.enemiesRemaining = this.wave * 5 + 5;
             this.enemies = [];
-            for (let i = 0; i < Math.min(this.enemiesRemaining, 6); i++) {
+            for (let i = 0; i < Math.min(this.enemiesRemaining, 5); i++) {
                 this.spawnEnemy();
             }
         }
 
         spawnEnemy() {
-            // Spawn in 3D radius around player
-            const angle = Math.random() * Math.PI * 2;
-            const dist = Math.random() * 500 + 400; // Far away
+            // Spawn far away in the background (Z represents distance from camera)
+            // Z starts at 1000 (very far) and runs to 0 (reaches player screen)
+            // X is horizontal offset (-400 to 400)
+            const angle = Math.random() * Math.PI - Math.PI / 2; // Fan in front
+            const dist = 1000;
 
             const dice = Math.random();
             let type = 'normal';
-            let hp = 40 + this.wave * 10;
-            let speed = 1.6 + (this.wave * 0.12);
-            let size = 25; // 3D billboard scale
+            let hp = 40 + this.wave * 12;
+            let speed = 2.2 + (this.wave * 0.15); // Z-axis approach speed
+            let size = 26; // Base rendering scale
 
-            if (dice > 0.75 && this.wave >= 2) {
+            if (dice > 0.8 && this.wave >= 2) {
                 type = 'speedy';
                 hp = 25;
-                speed = 2.8 + (this.wave * 0.15);
+                speed = 3.6 + (this.wave * 0.2);
                 size = 20;
-            } else if (dice > 0.9 && this.wave >= 3) {
+            } else if (dice > 0.92 && this.wave >= 3) {
                 type = 'brute';
-                hp = 120 + this.wave * 20;
-                speed = 0.8;
-                size = 38;
+                hp = 140 + this.wave * 20;
+                speed = 1.2;
+                size = 40;
             }
 
             this.enemies.push({
-                x: this.camera.x + Math.cos(angle) * dist,
-                z: this.camera.z + Math.sin(angle) * dist,
-                y: 10, // Height relative to floor
+                x: (Math.random() - 0.5) * 800, // Horizontal layout offset
+                z: dist,
+                y: 80, // Elevation above horizon
                 size: size,
                 type: type,
                 hp: hp,
                 maxHp: hp,
                 speed: speed,
+                bob: Math.random() * 100, // bobbing animation offset
                 damagedCooldown: 0
             });
             this.enemiesRemaining--;
@@ -493,117 +509,109 @@
         update() {
             const weapon = WEAPONS[this.selectedWeaponIndex];
 
-            // 1. Camera Rotations & 3D Movement (Keyboard controls)
-            // Rotate camera yaw (Horizontal look)
+            // 1. Move Camera Lens Panning (Left/Right to scan panorama)
+            let panSpeed = 6.5;
+            if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
+                panSpeed = 10.0; // Fast pan
+            } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
+                panSpeed = 2.5; // Steady sniper pan
+            }
+
             if (this.keys['ArrowLeft'] || this.keys['KeyA']) {
-                this.camera.yaw -= 0.04;
+                this.camera.targetX -= panSpeed;
             }
             if (this.keys['ArrowRight'] || this.keys['KeyD']) {
-                this.camera.yaw += 0.04;
+                this.camera.targetX += panSpeed;
             }
 
-            // Move forward/backward along view yaw
-            let moveX = 0;
-            let moveZ = 0;
-            if (this.keys['ArrowUp'] || this.keys['KeyW']) {
-                moveX += Math.cos(this.camera.yaw);
-                moveZ += Math.sin(this.camera.yaw);
-            }
-            if (this.keys['ArrowDown'] || this.keys['KeyS']) {
-                moveX -= Math.cos(this.camera.yaw);
-                moveZ -= Math.sin(this.camera.yaw);
-            }
+            // Limit panning to maintain focus on the sector
+            this.camera.targetX = Math.max(-500, Math.min(500, this.camera.targetX));
+            
+            // Interpolate camera for smooth glide panning
+            this.camera.x += (this.camera.targetX - this.camera.x) * 0.15;
 
-            if (moveX !== 0 || moveZ !== 0) {
-                const len = Math.sqrt(moveX * moveX + moveZ * moveZ);
-                let multiplier = 1.0;
-                if (this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) {
-                    multiplier = 1.8; // Sprint
-                } else if (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']) {
-                    multiplier = 0.4; // Aim walk
-                }
-
-                const moveSpeed = 2.8 * multiplier;
-                this.camera.x += (moveX / len) * moveSpeed;
-                this.camera.z += (moveZ / len) * moveSpeed;
-
-                // Bobbing camera
-                this.camera.bob += 0.15;
-                this.camera.y = Math.sin(this.camera.bob) * 1.5;
+            // Camera Bobbing
+            const isMoving = this.keys['ArrowLeft'] || this.keys['ArrowRight'] || this.keys['KeyA'] || this.keys['KeyD'];
+            if (isMoving) {
+                this.camera.y = Math.sin(Date.now() * 0.015) * 1.8;
             } else {
-                // Settle camera bobbing
-                this.camera.y = this.camera.y * 0.9;
+                this.camera.y = this.camera.y * 0.85;
             }
 
-            // Keep inside play field boundary limits (e.g. 800 width boundaries)
-            this.camera.x = Math.max(-600, Math.min(600, this.camera.x));
-            this.camera.z = Math.max(-600, Math.min(600, this.camera.z));
-
-            // 2. Weapons shooting
+            // 2. Shooting Firing
             const now = Date.now();
             if (this.keys['Mouse'] && now - this.lastShotTime >= weapon.fireRate) {
                 this.fireWeapon(weapon);
                 this.lastShotTime = now;
             }
 
-            // Recoil decay
-            this.recoil += (this.recoilTarget - this.recoil) * 0.2;
+            // Decay weapon recoil kick
+            this.recoil += (this.recoilTarget - this.recoil) * 0.18;
             this.recoilTarget *= 0.8;
 
-            // 3. Move Bullets in 3D Space
+            // 3. Move Bullets (in 3D screen space)
             this.bullets.forEach((b, idx) => {
+                b.z -= b.speed; // Flies forward (away from camera)
+                
+                // Keep bullet relative to player's shot heading
                 b.x += b.vx;
                 b.y += b.vy;
-                b.z += b.vz;
-                
-                // Bullet range check
-                b.life--;
-                if (b.life <= 0) {
+
+                // Out of range check
+                if (b.z <= 0 || b.z >= 1200) {
                     if (b.explosive) {
-                        this.explode3D(b.x, b.y, b.z, b.explosionRadius, b.damage);
+                        this.explodeExplosive(b.x, b.y, b.z, b.explosionRadius, b.damage);
                     }
                     this.bullets.splice(idx, 1);
                 }
             });
 
-            // 4. Update 3D Explosions
+            // 4. Update Explosions
             this.explosions.forEach((ex, idx) => {
                 ex.radius += ex.growthSpeed;
-                ex.alpha -= 0.05;
+                ex.alpha -= 0.04;
                 if (ex.alpha <= 0) {
                     this.explosions.splice(idx, 1);
                 }
             });
 
-            // 5. Update 3D Particles (Gravity physics)
+            // 5. Update Blood Splats on visor screen
+            this.bloodSplats.forEach((s, idx) => {
+                s.y += s.slideSpeed; // Drops slowly slide down
+                s.alpha -= 0.005; // Fade out slowly
+                if (s.alpha <= 0 || s.y > 620) {
+                    this.bloodSplats.splice(idx, 1);
+                }
+            });
+
+            // 6. Update Spark/Feather particles
             this.particles.forEach((p, idx) => {
                 p.x += p.vx;
                 p.y += p.vy;
-                p.z += p.vz;
-                
-                p.vy += 0.15; // Gravity
                 p.alpha -= 0.03;
-                if (p.alpha <= 0 || p.y > 40) { // Settle floor
+                if (p.alpha <= 0) {
                     this.particles.splice(idx, 1);
                 }
             });
 
-            // 6. Update 3D Enemies (Chase camera position)
+            // 7. Update Zombies (Scaling towards the screen)
             this.enemies.forEach((enemy, idx) => {
                 if (enemy.damagedCooldown > 0) enemy.damagedCooldown--;
 
-                const dx = this.camera.x - enemy.x;
-                const dz = this.camera.z - enemy.z;
-                const dist = Math.hypot(dx, dz);
+                // Move closer on Z axis
+                enemy.z -= enemy.speed;
 
-                if (dist > 18) {
-                    // Chase camera coordinates
-                    enemy.x += (dx / dist) * enemy.speed;
-                    enemy.z += (dz / dist) * enemy.speed;
-                } else {
-                    // Melee attack camera
-                    this.playerHealth -= 0.35; // Damage player
-                    this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 2);
+                // Bobbing height to simulate running
+                enemy.bob += 0.12;
+
+                // Check screen strike (Reached the camera lens!)
+                if (enemy.z <= 30) {
+                    this.playerHealth -= 12; // Striking damage
+                    this.spawnBloodSplatOnScreen();
+                    
+                    // Push zombie back on hit to let them charge again
+                    enemy.z = 250;
+                    enemy.x += (Math.random() - 0.5) * 200;
 
                     if (this.playerHealth <= 0) {
                         this.playerHealth = 0;
@@ -613,41 +621,41 @@
                     }
                 }
 
-                // Check standard bullet collisions in 3D Space
+                // Check bullet collisions (Bullet must intersect zombie projected size)
                 this.bullets.forEach((bullet, bIdx) => {
-                    const dist3D = Math.sqrt(
-                        Math.pow(bullet.x - enemy.x, 2) +
-                        Math.pow(bullet.z - enemy.z, 2)
-                    );
+                    // Check if bullet and enemy are at a similar Z distance
+                    const zDiff = Math.abs(bullet.z - enemy.z);
+                    if (zDiff < 60) {
+                        // Project enemy and bullet coordinates to check intersection
+                        const dist = Math.hypot(bullet.x - enemy.x, bullet.y - (enemy.y + Math.sin(enemy.bob) * 5));
+                        if (dist < enemy.size * 1.5) {
+                            if (bullet.explosive) {
+                                this.explodeExplosive(bullet.x, bullet.y, bullet.z, bullet.explosionRadius, bullet.damage);
+                            } else {
+                                enemy.hp -= bullet.damage;
+                                enemy.damagedCooldown = 6;
+                                this.spawnSparks(bullet.x, bullet.y, bullet.z, '#E74C3C', 6);
+                            }
 
-                    if (dist3D < (enemy.size * 0.7)) {
-                        if (bullet.explosive) {
-                            this.explode3D(bullet.x, bullet.y, bullet.z, bullet.explosionRadius, bullet.damage);
-                        } else {
-                            enemy.hp -= bullet.damage;
-                            enemy.damagedCooldown = 5;
-                            this.spawnYolkSplats3D(bullet.x, bullet.y, bullet.z, 5);
-                        }
+                            if (bullet.id !== 'sniper') {
+                                this.bullets.splice(bIdx, 1);
+                            }
 
-                        // Remove bullet (unless sniper pierces)
-                        if (bullet.id !== 'sniper') {
-                            this.bullets.splice(bIdx, 1);
-                        }
-
-                        if (enemy.hp <= 0) {
-                            this.scrambleEnemy3D(enemy);
-                            this.enemies.splice(idx, 1);
+                            if (enemy.hp <= 0) {
+                                this.scrambleZombie(enemy);
+                                this.enemies.splice(idx, 1);
+                            }
                         }
                     }
                 });
             });
 
-            // Spawner
+            // Spawn next enemies
             if (this.enemies.length < 5 && this.enemiesRemaining > 0) {
                 this.spawnEnemy();
             }
 
-            // Wave progress
+            // Check wave completion
             if (this.enemies.length === 0 && this.enemiesRemaining === 0) {
                 this.wave++;
                 if (this.wave > this.maxWaves) {
@@ -661,63 +669,60 @@
         }
 
         fireWeapon(w) {
-            // Shoot forward along view yaw heading
-            const pitch = 0; // Straight flat
-            const speed = 25.0;
-            const heading = this.camera.yaw;
+            // Shoots from weapon barrel towards the mouse crosshair center
+            // We calculate bullet trajectory vectors in screen/world coords
+            const targetX = this.camera.x + (this.mouse.x - 400);
+            const targetY = 15 + (this.mouse.y - 300); // vertical elevation offset
 
-            this.recoilTarget += 22; // Muzzle kick
+            this.recoilTarget += 24; // recoil kick back
 
-            if (w.id === 'scrambler') {
-                // Fan of 8 pellets
-                for (let i = -3; i <= 3; i++) {
-                    const devAngle = heading + (i * 0.05);
+            if (w.id === 'shotgun') {
+                // Wide shotgun spray of 6 pellets
+                for (let i = -2; i <= 2; i++) {
+                    const devX = targetX + (i * 25);
+                    const devY = targetY + (Math.random() - 0.5) * 40;
+
                     this.bullets.push({
                         id: w.id,
-                        x: this.camera.x,
-                        y: this.camera.y + 2,
-                        z: this.camera.z,
-                        vx: Math.cos(devAngle) * speed,
-                        vy: (Math.random() - 0.5) * 1.5,
-                        vz: Math.sin(devAngle) * speed,
+                        x: this.camera.x + 30, // fires slightly offset right
+                        y: 80,
+                        z: 100, // starts near screen
+                        vx: (devX - this.camera.x) / 12,
+                        vy: (devY - 80) / 12,
+                        speed: 35.0, // moving Z-axis step
                         damage: w.damage,
                         range: w.range,
-                        life: 15,
+                        color: w.color,
                         explosive: false
                     });
                 }
             } else {
                 this.bullets.push({
                     id: w.id,
-                    x: this.camera.x,
-                    y: this.camera.y + 2,
-                    z: this.camera.z,
-                    vx: Math.cos(heading) * speed,
-                    vy: 0,
-                    vz: Math.sin(heading) * speed,
+                    x: this.camera.x + 30,
+                    y: 80,
+                    z: 100,
+                    vx: (targetX - this.camera.x) / 15,
+                    vy: (targetY - 80) / 15,
+                    speed: 40.0,
                     damage: w.damage,
                     range: w.range,
-                    life: 25,
+                    color: w.color,
                     explosive: w.explosive || false,
                     explosionRadius: w.explosionRadius || 0
                 });
             }
 
-            // Muzzle sparks in front of camera
-            this.spawnYolkSplats3D(
-                this.camera.x + Math.cos(heading) * 15,
-                this.camera.y + 2,
-                this.camera.z + Math.sin(heading) * 15,
-                4
-            );
+            // Flash sparks
+            this.spawnSparks(this.camera.x + 30, 80, 100, '#F1C40F', 5);
         }
 
-        explode3D(x, y, z, radius, damage) {
+        explodeExplosive(x, y, z, radius, damage) {
             this.explosions.push({
                 x: x,
                 y: y,
                 z: z,
-                radius: 15,
+                radius: 10,
                 maxRadius: radius,
                 growthSpeed: radius / 12,
                 alpha: 1.0
@@ -726,333 +731,265 @@
             // Splash damage
             this.enemies.forEach((enemy, idx) => {
                 const dist = Math.hypot(enemy.x - x, enemy.z - z);
-                if (dist < (radius + enemy.size)) {
-                    const factor = 1 - (dist / (radius + enemy.size));
+                if (dist < (radius + enemy.size * 2)) {
+                    const factor = 1 - (dist / (radius + enemy.size * 2));
                     enemy.hp -= Math.round(damage * factor);
-                    enemy.damagedCooldown = 5;
-                    this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 5);
+                    enemy.damagedCooldown = 6;
+                    this.spawnSparks(enemy.x, enemy.y, enemy.z, '#E74C3C', 8);
 
                     if (enemy.hp <= 0) {
-                        this.scrambleEnemy3D(enemy);
+                        this.scrambleZombie(enemy);
                         this.enemies.splice(idx, 1);
                     }
                 }
             });
 
-            this.spawnYolkSplats3D(x, y, z, 20);
+            this.spawnSparks(x, y, z, '#E67E22', 15);
         }
 
-        scrambleEnemy3D(enemy) {
-            this.spawnYolkSplats3D(enemy.x, enemy.y, enemy.z, 25);
+        scrambleZombie(enemy) {
+            this.spawnSparks(enemy.x, enemy.y, enemy.z, '#2ECC71', 25); // blast green zombie sparks
             this.score += enemy.type === 'brute' ? 400 : (enemy.type === 'speedy' ? 200 : 100);
         }
 
-        spawnYolkSplats3D(x, y, z, count) {
+        spawnSparks(x, y, z, color, count) {
+            // Project world coordinate into screen coordinates to spawn flat screen-particle effects
+            const scale = 250 / z;
+            const screenX = 400 + (x - this.camera.x) * scale;
+            const screenY = 300 + (y - this.camera.y) * scale;
+
             for (let i = 0; i < count; i++) {
                 const angle = Math.random() * Math.PI * 2;
-                const speedH = Math.random() * 4 + 1;
-                const speedV = -(Math.random() * 4 + 1); // upwards jump
-
-                let color = '#FFF8E7';
-                let dice = Math.random();
-                if (dice > 0.45) color = '#F1C40F';
-                else if (dice > 0.25) color = '#E67E22';
-
+                const speed = Math.random() * 3 + 1;
                 this.particles.push({
-                    x: x,
-                    y: y,
-                    z: z,
-                    vx: Math.cos(angle) * speedH,
-                    vy: speedV,
-                    vz: Math.sin(angle) * speedH,
+                    x: screenX,
+                    y: screenY,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
                     alpha: 1.0,
                     color: color,
-                    size: Math.random() * 3 + 1
+                    size: Math.random() * 3 + 1.5
                 });
             }
         }
 
+        spawnBloodSplatOnScreen() {
+            // Add a blood splat at a random position on the screen
+            const bx = Math.random() * 600 + 100;
+            const by = Math.random() * 400 + 100;
+            this.bloodSplats.push({
+                x: bx,
+                y: by,
+                radius: Math.random() * 20 + 15,
+                alpha: 0.85,
+                slideSpeed: Math.random() * 0.4 + 0.15
+            });
+        }
+
         draw() {
-            // 1. Draw Sky (Dual Gradient)
-            this.ctx.fillStyle = '#05070c';
-            this.ctx.fillRect(0, 0, 800, 300); // Sky
-            this.ctx.fillStyle = '#0d1117';
-            this.ctx.fillRect(0, 300, 800, 300); // Floor base
+            // 1. Draw Panoramic Background (Destroyed City / COD Warzone style)
+            // Sky gradient (Sunset crimson/purple apocalypse)
+            const skyGrad = this.ctx.createLinearGradient(0, 0, 0, 300);
+            skyGrad.addColorStop(0, '#0c0714');
+            skyGrad.addColorStop(1, '#2c131d');
+            this.ctx.fillStyle = skyGrad;
+            this.ctx.fillRect(0, 0, 800, 600);
 
-            // Draw Horizon glow
-            const horizonGrad = this.ctx.createLinearGradient(0, 240, 0, 300);
-            horizonGrad.addColorStop(0, 'rgba(241, 196, 15, 0)');
-            horizonGrad.addColorStop(1, 'rgba(241, 196, 15, 0.06)');
-            this.ctx.fillStyle = horizonGrad;
-            this.ctx.fillRect(0, 240, 800, 60);
-
-            // 2. Project 3D floor grid lines (converges to horizon at 300px Y)
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.015)';
-            this.ctx.lineWidth = 1.5;
-
-            // Horizon line
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, 300);
-            this.ctx.lineTo(800, 300);
-            this.ctx.stroke();
-
-            // Perspective lines converging from camera
-            const fov = 400; // perspective focal scale
-            const floorY = 40; // Camera height offset
-
-            // Draw vertical longitudinal perspective lines
-            for (let x = -800; x <= 800; x += 100) {
-                // Project line from horizon (0 length) to bottom of screen
-                const startX = x - this.camera.x;
-                
-                // Let's project two points of the line
-                // Point 1 (near horizon): z = 300
-                // Point 2 (near bottom): z = 20
-                const px1 = 400 + (startX / 250) * fov;
-                const py1 = 300 + (floorY / 250) * fov;
-
-                const px2 = 400 + (startX / 25) * fov;
-                const py2 = 300 + (floorY / 25) * fov;
-
+            // Draw Ruined buildings silhouette (Scrolls horizontally relative to camera panning)
+            this.ctx.fillStyle = '#170c14';
+            const panOffset = -this.camera.x * 0.5; // Parallax effect
+            
+            // Render basic parallax silhouette buildings
+            for (let i = -1000; i < 1800; i += 240) {
+                const h = 180 + Math.sin(i * 0.05) * 80;
+                this.ctx.fillRect(i + panOffset, 300 - h, 180, h);
+                // Draw antennas
+                this.ctx.strokeStyle = '#170c14';
+                this.ctx.lineWidth = 2;
                 this.ctx.beginPath();
-                this.ctx.moveTo(px1, py1);
-                this.ctx.lineTo(px2, py2);
+                this.ctx.moveTo(i + panOffset + 90, 300 - h);
+                this.ctx.lineTo(i + panOffset + 90, 300 - h - 30);
                 this.ctx.stroke();
             }
 
-            // Draw horizontal transverse perspective lines
-            // Z coordinates spaces exponentially
-            for (let z = 20; z < 500; z *= 1.45) {
-                const screenZ = z;
-                const py = 300 + (floorY / screenZ) * fov;
+            // Draw Ground floor base
+            this.ctx.fillStyle = '#0f0e13';
+            this.ctx.fillRect(0, 300, 800, 300);
 
-                this.ctx.beginPath();
-                this.ctx.moveTo(0, py);
-                this.ctx.lineTo(800, py);
-                this.ctx.stroke();
+            // Draw road lanes/details scrolling parallax
+            this.ctx.fillStyle = '#18171f';
+            for (let i = -1000; i < 1800; i += 180) {
+                this.ctx.fillRect(i + -this.camera.x, 300, 100, 300);
             }
 
-            // 3. Project 3D elements (Enemies, Bullets, Explosions, Particles)
+            // 2. Project & Draw elements (Zombies, Explosions, Bullets)
             const renderQueue = [];
 
-            // Project Enemies
+            // Project Zombies
             this.enemies.forEach(e => {
-                const proj = this.project3D(e.x, e.y, e.z);
-                if (proj) {
-                    renderQueue.push({
-                        type: 'enemy',
-                        z: proj.rz,
-                        proj: proj,
-                        ref: e
-                    });
-                }
-            });
+                const scale = 220 / e.z;
+                const screenX = 400 + (e.x - this.camera.x) * scale;
+                const screenY = 300 + (e.y + Math.sin(e.bob) * 5 - this.camera.y) * scale;
 
-            // Project Bullets
-            this.bullets.forEach(b => {
-                const proj = this.project3D(b.x, b.y, b.z);
-                if (proj) {
-                    renderQueue.push({
-                        type: 'bullet',
-                        z: proj.rz,
-                        proj: proj,
-                        ref: b
-                    });
-                }
-            });
-
-            // Project Particles
-            this.particles.forEach(p => {
-                const proj = this.project3D(p.x, p.y, p.z);
-                if (proj) {
-                    renderQueue.push({
-                        type: 'particle',
-                        z: proj.rz,
-                        proj: proj,
-                        ref: p
-                    });
-                }
+                renderQueue.push({
+                    type: 'zombie',
+                    z: e.z,
+                    x: screenX,
+                    y: screenY,
+                    scale: scale,
+                    ref: e
+                });
             });
 
             // Project Explosions
             this.explosions.forEach(ex => {
-                const proj = this.project3D(ex.x, ex.y, ex.z);
-                if (proj) {
-                    renderQueue.push({
-                        type: 'explosion',
-                        z: proj.rz,
-                        proj: proj,
-                        ref: ex
-                    });
-                }
+                const scale = 220 / ex.z;
+                const screenX = 400 + (ex.x - this.camera.x) * scale;
+                const screenY = 300 + (ex.y - this.camera.y) * scale;
+
+                renderQueue.push({
+                    type: 'explosion',
+                    z: ex.z,
+                    x: screenX,
+                    y: screenY,
+                    scale: scale,
+                    ref: ex
+                });
             });
 
-            // Sort render queue by distance (Back-to-Front painter's algorithm)
+            // Project Bullets
+            this.bullets.forEach(b => {
+                const scale = 220 / b.z;
+                const screenX = 400 + (b.x - this.camera.x) * scale;
+                const screenY = 300 + (b.y - this.camera.y) * scale;
+
+                renderQueue.push({
+                    type: 'bullet',
+                    z: b.z,
+                    x: screenX,
+                    y: screenY,
+                    scale: scale,
+                    ref: b
+                });
+            });
+
+            // Sort Back-to-Front
             renderQueue.sort((a, b) => b.z - a.z);
 
-            // Draw projected queue
+            // Draw Queue
             renderQueue.forEach(item => {
-                if (item.type === 'enemy') {
-                    this.drawEnemy3D(item.proj, item.ref);
-                } else if (item.type === 'bullet') {
-                    this.drawBullet3D(item.proj, item.ref);
-                } else if (item.type === 'particle') {
-                    this.drawParticle3D(item.proj, item.ref);
+                if (item.type === 'zombie') {
+                    this.drawZombiePOV(item);
                 } else if (item.type === 'explosion') {
-                    this.drawExplosion3D(item.proj, item.ref);
+                    this.drawExplosionPOV(item);
+                } else if (item.type === 'bullet') {
+                    this.drawBulletPOV(item);
                 }
             });
 
-            // 4. First-Person Weapons HUD overlay
-            this.drawFirstPersonWeapon();
+            // 3. Draw Flat Particles (Blood sparks/flashes on screen layer)
+            this.particles.forEach(p => {
+                this.ctx.fillStyle = p.color;
+                this.ctx.globalAlpha = p.alpha;
+                this.ctx.beginPath();
+                this.ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                this.ctx.fill();
+            });
+            this.ctx.globalAlpha = 1.0;
 
-            // Screen damage vignette
-            if (this.playerHealth < 40) {
-                const vigGrad = this.ctx.createRadialGradient(400, 300, 200, 400, 300, 500);
-                vigGrad.addColorStop(0, 'rgba(231, 76, 60, 0)');
-                vigGrad.addColorStop(1, `rgba(231, 76, 60, ${0.4 * (1 - this.playerHealth/40)})`);
-                this.ctx.fillStyle = vigGrad;
-                this.ctx.fillRect(0, 0, 800, 600);
-            }
+            // 4. Draw First-Person Gun Overlay
+            this.drawFirstPersonGun();
 
-            // HUD
+            // 5. Draw Blood Splats on the camera lens/visor
+            this.drawBloodSplatsOnScreen();
+
+            // 6. Draw HUD overlays
             this.drawHUD();
         }
 
-        project3D(ox, oy, oz) {
-            // Translate relative to camera position
-            const dx = ox - this.camera.x;
-            const dy = oy - this.camera.y;
-            const dz = oz - this.camera.z;
-
-            // Rotate based on Camera Heading Yaw
-            const rx = dx * Math.cos(-this.camera.yaw) - dz * Math.sin(-this.camera.yaw);
-            const rz = dx * Math.sin(-this.camera.yaw) + dz * Math.cos(-this.camera.yaw);
-            const ry = dy + 15; // height offset
-
-            // Don't draw if behind camera or too close
-            if (rz <= 4.0) return null;
-
-            const fov = 400; // perspective focal scale
-            const scale = fov / rz;
-
-            return {
-                x: 400 + rx * scale,
-                y: 300 + ry * scale,
-                scale: scale,
-                rz: rz
-            };
-        }
-
-        drawEnemy3D(p, enemy) {
-            const size = enemy.size * p.scale * 0.75;
-            if (size <= 0) return;
+        drawZombiePOV(p) {
+            const size = p.ref.size * p.scale * 0.9;
+            if (size <= 0 || p.x < -size || p.x > 800 + size) return; // Cull off-screen
 
             this.ctx.save();
             this.ctx.translate(p.x, p.y);
 
-            // Shading based on distance (Atmospheric fog)
-            const fogFactor = Math.min(1.0, p.rz / 900);
-            const baseColor = enemy.damagedCooldown > 0 ? '#E74C3C' : (enemy.type === 'brute' ? '#7F8C8D' : (enemy.type === 'speedy' ? '#E2E8F0' : '#F1C40F'));
+            // Fog / Distance shading
+            const fogFactor = Math.min(0.9, p.z / 1000);
             
-            // Draw Billboard Egg
+            // Draw Zombie (Angry rot-green face with glowing eyes)
+            const headColor = p.ref.damagedCooldown > 0 ? '#E74C3C' : (p.ref.type === 'brute' ? '#1E6B37' : '#2ECC71');
+            
             this.ctx.beginPath();
-            this.ctx.moveTo(0, -size * 1.35);
-            this.ctx.bezierCurveTo(size * 1.0, -size * 1.35, size * 1.15, size, 0, size);
-            this.ctx.bezierCurveTo(-size * 1.15, size, -size * 1.0, -size * 1.35, 0, -size * 1.35);
-            this.ctx.closePath();
-
-            this.ctx.fillStyle = baseColor;
+            this.ctx.arc(0, 0, size, 0, Math.PI * 2);
+            this.ctx.fillStyle = headColor;
             this.ctx.fill();
-            this.ctx.strokeStyle = '#95A5A6';
-            this.ctx.lineWidth = Math.max(1, 2.5 * p.scale * 0.015);
+            this.ctx.strokeStyle = '#27AE60';
+            this.ctx.lineWidth = Math.max(1, 2.5 * p.scale * 0.012);
             this.ctx.stroke();
 
-            // Cracks on egg
-            this.ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+            // Glowing Green/Yellow Eyes (Undead look!)
+            this.ctx.fillStyle = '#F1C40F';
+            this.ctx.shadowBlur = size * 0.4;
+            this.ctx.shadowColor = '#F1C40F';
             this.ctx.beginPath();
-            this.ctx.moveTo(-size*0.2, -size*0.2);
-            this.ctx.lineTo(0, 0);
-            this.ctx.lineTo(-size*0.3, size*0.3);
-            this.ctx.stroke();
-
-            // Determined Red Eyes
-            this.ctx.fillStyle = '#E74C3C';
-            this.ctx.beginPath();
-            this.ctx.arc(-size * 0.3, -size * 0.35, Math.max(1, size * 0.15), 0, Math.PI * 2);
-            this.ctx.arc(size * 0.3, -size * 0.35, Math.max(1, size * 0.15), 0, Math.PI * 2);
+            this.ctx.arc(-size * 0.35, -size * 0.25, Math.max(1.5, size * 0.15), 0, Math.PI * 2);
+            this.ctx.arc(size * 0.35, -size * 0.25, Math.max(1.5, size * 0.15), 0, Math.PI * 2);
             this.ctx.fill();
+            this.ctx.shadowBlur = 0; // reset
 
-            // Eyebrows
+            // Rotten mouth / Snarl
             this.ctx.strokeStyle = '#000';
-            this.ctx.lineWidth = Math.max(1, size * 0.1);
+            this.ctx.lineWidth = Math.max(1, size * 0.08);
             this.ctx.beginPath();
-            this.ctx.moveTo(-size * 0.5, -size * 0.5);
-            this.ctx.lineTo(-size * 0.1, -size * 0.4);
-            this.ctx.moveTo(size * 0.5, -size * 0.5);
-            this.ctx.lineTo(size * 0.1, -size * 0.4);
+            this.ctx.arc(0, size * 0.3, size * 0.4, Math.PI, 0);
             this.ctx.stroke();
 
-            // Military Accessories (Shell Shockers style cosmetics)
-            if (enemy.type === 'brute') {
-                // Soldier Helmet
+            // Military Vest / Tactical skins (COD Theme)
+            this.ctx.fillStyle = p.ref.type === 'brute' ? '#2C3E50' : '#4E5A44'; // camo military vest
+            this.ctx.fillRect(-size * 0.65, size * 0.8, size * 1.3, size * 1.5);
+            this.ctx.strokeStyle = '#1B2631';
+            this.ctx.lineWidth = 1.5;
+            this.ctx.strokeRect(-size * 0.65, size * 0.8, size * 1.3, size * 1.5);
+
+            // Draw military tactical helmet on standard/brute zombies
+            if (p.ref.type === 'brute') {
                 this.ctx.fillStyle = '#34495E';
                 this.ctx.beginPath();
-                this.ctx.arc(0, -size * 0.5, size * 1.1, Math.PI, 0);
+                this.ctx.arc(0, -size * 0.4, size * 1.15, Math.PI, 0);
                 this.ctx.fill();
-            } else if (enemy.type === 'speedy') {
-                // Red bandana band
-                this.ctx.fillStyle = '#E74C3C';
-                this.ctx.fillRect(-size*0.8, -size*0.5, size*1.6, size*0.2);
+            } else if (p.ref.type === 'normal') {
+                // Helmet straps/cover
+                this.ctx.fillStyle = '#5D6D7E';
+                this.ctx.beginPath();
+                this.ctx.arc(0, -size * 0.3, size * 1.1, Math.PI, 0);
+                this.ctx.fill();
             }
 
-            // Health bar 3D
-            if (enemy.hp < enemy.maxHp) {
+            // Health bar above zombie
+            if (p.ref.hp < p.ref.maxHp) {
                 const barW = size * 1.5;
                 this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
                 this.ctx.fillRect(-barW/2, -size * 1.6, barW, 4);
-                this.ctx.fillStyle = '#2ECC71';
-                this.ctx.fillRect(-barW/2, -size * 1.6, barW * (enemy.hp / enemy.maxHp), 4);
+                this.ctx.fillStyle = '#E74C3C';
+                this.ctx.fillRect(-barW/2, -size * 1.6, barW * (p.ref.hp / p.ref.maxHp), 4);
             }
 
-            // Fog layer overlay
-            this.ctx.fillStyle = `rgba(13, 17, 23, ${fogFactor * 0.8})`;
+            // Apply Fog shading relative to Z distance
+            this.ctx.fillStyle = `rgba(13, 17, 23, ${fogFactor * 0.82})`;
             this.ctx.beginPath();
-            this.ctx.moveTo(0, -size * 1.35);
-            this.ctx.bezierCurveTo(size * 1.0, -size * 1.35, size * 1.15, size, 0, size);
-            this.ctx.bezierCurveTo(-size * 1.15, size, -size * 1.0, -size * 1.35, 0, -size * 1.35);
+            this.ctx.arc(0, 0, size, 0, Math.PI * 2);
             this.ctx.fill();
 
             this.ctx.restore();
         }
 
-        drawBullet3D(p, bullet) {
-            const size = Math.max(1.5, 6 * p.scale * 0.02);
-            this.ctx.fillStyle = bullet.color;
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-            this.ctx.shadowBlur = size * 3;
-            this.ctx.shadowColor = bullet.color;
-            this.ctx.fill();
-            this.ctx.shadowBlur = 0; // Reset
-        }
-
-        drawParticle3D(p, particle) {
-            const size = Math.max(1, particle.size * p.scale * 0.02);
-            this.ctx.fillStyle = particle.color;
-            this.ctx.globalAlpha = particle.alpha;
-            this.ctx.beginPath();
-            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
-            this.ctx.fill();
-            this.ctx.globalAlpha = 1.0;
-        }
-
-        drawExplosion3D(p, ex) {
-            const size = ex.radius * p.scale * 0.055;
+        drawExplosionPOV(p) {
+            const size = p.ref.radius * p.scale * 0.055;
             if (size <= 0) return;
 
             this.ctx.save();
-            this.ctx.globalAlpha = ex.alpha * 0.55;
+            this.ctx.globalAlpha = p.ref.alpha * 0.55;
 
             const grad = this.ctx.createRadialGradient(p.x, p.y, 2, p.x, p.y, size);
             grad.addColorStop(0, '#FFFFFF');
@@ -1068,33 +1005,46 @@
             this.ctx.restore();
         }
 
-        drawFirstPersonWeapon() {
+        drawBulletPOV(p, bullet) {
+            const size = Math.max(1.5, 5 * p.scale * 0.02);
+            this.ctx.fillStyle = bullet.color;
+            this.ctx.beginPath();
+            this.ctx.arc(p.x, p.y, size, 0, Math.PI * 2);
+            this.ctx.shadowBlur = size * 2.5;
+            this.ctx.shadowColor = bullet.color;
+            this.ctx.fill();
+            this.ctx.shadowBlur = 0; // Reset
+        }
+
+        drawFirstPersonGun() {
             const weapon = WEAPONS[this.selectedWeaponIndex];
             const recoilOffset = this.recoil;
             
-            // Bobbing movement offset when sprinting
-            const isMoving = this.keys['ArrowUp'] || this.keys['ArrowDown'] || this.keys['ArrowLeft'] || this.keys['ArrowRight'] ||
-                             this.keys['KeyW'] || this.keys['KeyS'] || this.keys['KeyA'] || this.keys['KeyD'];
-            const bobX = isMoving ? Math.sin(this.camera.bob) * 12 : 0;
-            const bobY = isMoving ? Math.abs(Math.cos(this.camera.bob)) * 8 : 0;
+            // Panning recoil displacement
+            const panDev = (this.camera.targetX - this.camera.x) * 0.6;
+            
+            // Bobbing movement when scanning/running
+            const isMoving = this.keys['ArrowLeft'] || this.keys['ArrowRight'] || this.keys['KeyA'] || this.keys['KeyD'];
+            const bobX = isMoving ? Math.sin(Date.now() * 0.015) * 12 : 0;
+            const bobY = isMoving ? Math.abs(Math.cos(Date.now() * 0.015)) * 8 : 0;
 
-            const isSniperScope = (weapon.id === 'cluck' || weapon.id === 'cluck') ? false : (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']);
+            const isSniperZoom = (weapon.id === 'sniper') && (this.keys['z'] || this.keys['KeyZ'] || this.keys['Z']);
 
-            if (isSniperScope) {
-                // RENDER SNIPER SCOPE VIEW (Aiming down sights zoom)
+            if (isSniperZoom) {
+                // RENDER SNIPER SCOPE VIEW OVERLAY (Call of Duty Style Zoom)
                 this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
                 this.ctx.fillRect(0, 0, 800, 600);
 
-                // Scope black bounds
+                // Scope black circle border
                 this.ctx.strokeStyle = '#000';
-                this.ctx.lineWidth = 140;
+                this.ctx.lineWidth = 150;
                 this.ctx.beginPath();
-                this.ctx.arc(400, 300, 380, 0, Math.PI * 2);
+                this.ctx.arc(400, 300, 390, 0, Math.PI * 2);
                 this.ctx.stroke();
 
-                // Crosshair lines
-                this.ctx.strokeStyle = 'rgba(255, 0, 0, 0.4)';
-                this.ctx.lineWidth = 2;
+                // Scope reticle grid lines
+                this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.8)';
+                this.ctx.lineWidth = 2.5;
                 this.ctx.beginPath();
                 this.ctx.moveTo(400, 50);
                 this.ctx.lineTo(400, 550);
@@ -1102,106 +1052,170 @@
                 this.ctx.lineTo(750, 300);
                 this.ctx.stroke();
 
-                // Center red dot
+                // Tick markings
+                this.ctx.strokeStyle = 'rgba(0, 0, 0, 0.7)';
+                this.ctx.lineWidth = 2;
+                for (let i = 100; i < 500; i += 50) {
+                    if (i === 300) continue;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(400 - 10, i); this.ctx.lineTo(400 + 10, i);
+                    this.ctx.moveTo(i, 300 - 10); this.ctx.lineTo(i, 300 + 10);
+                    this.ctx.stroke();
+                }
+
+                // Center red hot dot
                 this.ctx.fillStyle = 'red';
                 this.ctx.beginPath();
-                this.ctx.arc(400, 300, 3, 0, Math.PI * 2);
+                this.ctx.arc(400, 300, 3.5, 0, Math.PI * 2);
                 this.ctx.fill();
                 return;
             }
 
-            // Normal First Person Weapon Drawing (Call of Duty / Shell Shockers perspective)
+            // Draw Weapon in First-Person hands (Military / Fortnite skins)
             this.ctx.save();
-            this.ctx.translate(560 + bobX, 480 + bobY + recoilOffset);
+            this.ctx.translate(450 - panDev + bobX, 470 + bobY + recoilOffset);
 
-            // Draw Player Hands (Cute white egg shells holding weapon)
-            this.ctx.fillStyle = '#FFF8E7';
-            this.ctx.strokeStyle = '#D5C5A1';
+            // Left/Right character hands (wearing black combat gloves)
+            this.ctx.fillStyle = '#2C3E50'; // Glove color
+            this.ctx.strokeStyle = '#1A252F';
             this.ctx.lineWidth = 3;
+            
+            // Draw weapon models
+            if (weapon.id === 'm4') {
+                // M4 Rifle (Digital Camo green skin)
+                this.ctx.fillStyle = '#27AE60'; // Camo green body
+                this.ctx.fillRect(-60, 10, 100, 30);
+                this.ctx.fillStyle = '#212F3D'; // carbon stock
+                this.ctx.fillRect(-110, 15, 50, 24);
+                
+                // Camo prints
+                this.ctx.fillStyle = '#1E8449';
+                this.ctx.fillRect(-40, 15, 30, 20);
+                this.ctx.fillRect(10, 15, 20, 20);
+                
+                this.ctx.fillStyle = '#2C3E50'; // long barrel
+                this.ctx.fillRect(40, 20, 110, 12);
+                this.ctx.fillStyle = '#000'; // iron sight
+                this.ctx.fillRect(140, 10, 6, 10);
+                this.ctx.fillStyle = '#BDC3C7'; // magazine
+                this.ctx.fillRect(-20, 40, 22, 45);
+
+            } else if (weapon.id === 'shotgun') {
+                // Tactical Shotgun (Neon Inferno skin)
+                this.ctx.fillStyle = '#D35400'; // Neon orange body
+                this.ctx.fillRect(-70, 10, 120, 32);
+                this.ctx.fillStyle = '#E67E22';
+                this.ctx.fillRect(-20, 13, 50, 26);
+
+                // Glow lines
+                this.ctx.fillStyle = '#FF5733';
+                this.ctx.fillRect(-60, 23, 100, 3);
+                
+                this.ctx.fillStyle = '#566573'; // Dual shotgun barrel
+                this.ctx.fillRect(50, 16, 120, 10);
+                this.ctx.fillRect(50, 26, 120, 10);
+
+            } else if (weapon.id === 'rpg') {
+                // RPG Launcher (Carbon Fiber skin)
+                this.ctx.fillStyle = '#1F242D'; // Carbon black body tube
+                this.ctx.fillRect(-90, 0, 170, 45);
+                this.ctx.fillStyle = '#E74C3C'; // Warning label stripe
+                this.ctx.fillRect(-50, 0, 8, 45);
+                this.ctx.fillRect(30, 0, 8, 45);
+
+                this.ctx.fillStyle = '#34495E'; // launcher barrel
+                this.ctx.fillRect(80, 5, 60, 35);
+
+                // Loaded rocket tip
+                this.ctx.fillStyle = '#2ECC71';
+                this.ctx.beginPath();
+                this.ctx.moveTo(140, 5);
+                this.ctx.lineTo(165, 22);
+                this.ctx.lineTo(140, 40);
+                this.ctx.closePath();
+                this.ctx.fill();
+
+            } else if (weapon.id === 'sniper') {
+                // Barrett .50 Cal (Golden Tiger skin)
+                this.ctx.fillStyle = '#F1C40F'; // Golden frame
+                this.ctx.fillRect(-80, 8, 120, 34);
+                this.ctx.fillStyle = '#D4AC0D';
+                this.ctx.fillRect(-30, 11, 60, 28);
+                
+                // Black tiger stripes
+                this.ctx.fillStyle = '#000';
+                this.ctx.fillRect(-60, 8, 8, 34);
+                this.ctx.fillRect(-20, 8, 8, 34);
+                this.ctx.fillRect(20, 8, 8, 34);
+
+                this.ctx.fillStyle = '#34495E'; // long sniper barrel
+                this.ctx.fillRect(40, 19, 140, 10);
+                this.ctx.fillStyle = '#000'; // muzzle brake
+                this.ctx.fillRect(180, 15, 12, 18);
+
+                // Scope mounted on top
+                this.ctx.fillStyle = '#2C3E50';
+                this.ctx.fillRect(-20, -14, 45, 16);
+                this.ctx.fillStyle = '#1F242D';
+                this.ctx.fillRect(-35, -17, 15, 22);
+                this.ctx.fillRect(25, -17, 15, 22);
+            }
+
+            // Draw player's gloves holding the weapon
+            this.ctx.fillStyle = '#1C2833';
             this.ctx.beginPath();
-            this.ctx.arc(-40, 80, 26, 0, Math.PI * 2);
+            this.ctx.arc(-20, 42, 22, 0, Math.PI * 2);
             this.ctx.fill();
             this.ctx.stroke();
 
-            // Draw Weapon based on Skin
-            if (weapon.id === 'cluck') {
-                // Pistol (Neon Chrome skin)
-                this.ctx.fillStyle = '#7F8C8D';
-                this.ctx.fillRect(-25, -20, 20, 50); // grip
-                this.ctx.fillStyle = '#BDC3C7';
-                this.ctx.fillRect(-25, -20, 60, 22);  // slide
-                this.ctx.fillStyle = '#00F3FF'; // Neon glow lines
-                this.ctx.fillRect(-10, -10, 40, 3);
-            } else if (weapon.id === 'scrambler') {
-                // Shotgun (Gold Wood skin)
-                this.ctx.fillStyle = '#873600'; // wooden butt stock
-                this.ctx.beginPath();
-                this.ctx.moveTo(-70, 60);
-                this.ctx.lineTo(-40, 20);
-                this.ctx.lineTo(-10, 10);
-                this.ctx.lineTo(-50, 60);
-                this.ctx.fill();
-                
-                this.ctx.fillStyle = '#F39C12'; // golden receiver
-                this.ctx.fillRect(-30, 0, 50, 28);
-                
-                this.ctx.fillStyle = '#1A252F'; // dual iron barrels
-                this.ctx.fillRect(20, 4, 110, 10);
-                this.ctx.fillRect(20, 14, 110, 10);
-            } else if (weapon.id === 'eggk47') {
-                // Assault Rifle (Military Camo skin)
-                this.ctx.fillStyle = '#2E4053'; // frame
-                this.ctx.fillRect(-40, -10, 80, 32);
-                
-                // Camo barrel
-                this.ctx.fillStyle = '#27AE60';
-                this.ctx.fillRect(40, -5, 110, 16);
-                this.ctx.fillStyle = '#1E8449';
-                this.ctx.fillRect(60, -5, 30, 16);
-                
-                this.ctx.fillStyle = '#85929E'; // magazine clip
-                this.ctx.beginPath();
-                this.ctx.moveTo(-10, 22);
-                this.ctx.lineTo(-5, 65);
-                this.ctx.lineTo(15, 60);
-                this.ctx.lineTo(10, 22);
-                this.ctx.fill();
-            } else if (weapon.id === 'rpegg') {
-                // Heavy Rocket (Carbon fiber skin)
-                this.ctx.fillStyle = '#1F242D'; // Carbon black body
-                this.ctx.fillRect(-50, -25, 120, 50);
-                
-                this.ctx.fillStyle = '#E74C3C'; // Red stripes
-                this.ctx.fillRect(-30, -25, 8, 50);
-                this.ctx.fillRect(20, -25, 8, 50);
-
-                this.ctx.fillStyle = '#2C3E50'; // Launcher tube front
-                this.ctx.fillRect(70, -18, 45, 36);
-
-                // Load rocket yolk head
-                this.ctx.fillStyle = '#F1C40F';
-                this.ctx.beginPath();
-                this.ctx.arc(115, 0, 14, -Math.PI/2, Math.PI/2);
-                this.ctx.fill();
-            }
-
             this.ctx.restore();
 
-            // Crosshair in center
-            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
-            this.ctx.lineWidth = 2;
+            // Tactile Crosshair (Call of Duty dot reticle)
+            this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+            this.ctx.lineWidth = 1.5;
             this.ctx.beginPath();
-            this.ctx.arc(400, 300, 6, 0, Math.PI * 2);
+            this.ctx.arc(400, 300, 5, 0, Math.PI * 2);
             this.ctx.stroke();
+            this.ctx.fillStyle = 'red';
+            this.ctx.beginPath();
+            this.ctx.arc(400, 300, 1.8, 0, Math.PI * 2);
+            this.ctx.fill();
+        }
+
+        drawBloodSplatsOnScreen() {
+            // Draw red blood splats splattered on the lens/visor
+            this.bloodSplats.forEach(s => {
+                this.ctx.save();
+                this.ctx.globalAlpha = s.alpha;
+
+                // Radial gradient to make the blood drop look 3D and liquid
+                const grad = this.ctx.createRadialGradient(s.x, s.y, 2, s.x, s.y, s.radius);
+                grad.addColorStop(0, '#C0392B'); // dark blood core
+                grad.addColorStop(0.6, '#922B21');
+                grad.addColorStop(1.0, 'rgba(120, 40, 40, 0)');
+                
+                this.ctx.fillStyle = grad;
+                this.ctx.beginPath();
+                this.ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                // Draw secondary sliding drops
+                this.ctx.fillStyle = '#922B21';
+                this.ctx.beginPath();
+                this.ctx.arc(s.x, s.y - s.radius * 0.8, s.radius * 0.25, 0, Math.PI * 2);
+                this.ctx.fill();
+
+                this.ctx.restore();
+            });
         }
 
         drawHUD() {
             const weapon = WEAPONS[this.selectedWeaponIndex];
 
-            // Health Bar
+            // Vitals health bar
             this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
             this.ctx.fillRect(20, 20, 200, 16);
-            this.ctx.fillStyle = '#F1C40F';
+            this.ctx.fillStyle = '#E74C3C';
             this.ctx.fillRect(20, 20, 200 * (this.playerHealth / 100), 16);
             this.ctx.strokeStyle = '#FFF';
             this.ctx.lineWidth = 1.5;
@@ -1209,7 +1223,7 @@
 
             this.ctx.fillStyle = '#FFF';
             this.ctx.font = 'bold 12px "Outfit", sans-serif';
-            this.ctx.fillText(`ARMOR: ${Math.ceil(this.playerHealth)}%`, 30, 32);
+            this.ctx.fillText(`VITALS: ${Math.ceil(this.playerHealth)}%`, 30, 32);
 
             // Score & Wave info
             this.ctx.font = 'bold 16px "Outfit", sans-serif';
@@ -1218,23 +1232,23 @@
             this.ctx.textAlign = 'right';
             this.ctx.fillText(`WAVE: ${this.wave} / ${this.maxWaves}`, 780, 35);
             this.ctx.font = '13px "Outfit", sans-serif';
-            this.ctx.fillStyle = '#F1C40F';
-            this.ctx.fillText(`INCOMING EGGS: ${this.enemies.length + this.enemiesRemaining}`, 780, 55);
+            this.ctx.fillStyle = '#E74C3C';
+            this.ctx.fillText(`ZOMBIES REMAINING: ${this.enemies.length + this.enemiesRemaining}`, 780, 55);
             this.ctx.textAlign = 'left';
 
             // Selected Weapon panel
             this.ctx.fillStyle = 'rgba(0,0,0,0.6)';
             this.ctx.fillRect(20, 520, 250, 60);
-            this.ctx.strokeStyle = '#F1C40F';
+            this.ctx.strokeStyle = '#E74C3C';
             this.ctx.lineWidth = 2;
             this.ctx.strokeRect(20, 520, 250, 60);
 
-            this.ctx.fillStyle = '#F1C40F';
+            this.ctx.fillStyle = '#E74C3C';
             this.ctx.font = 'bold 16px "Outfit", sans-serif';
             this.ctx.fillText(weapon.name, 35, 545);
             this.ctx.fillStyle = '#94A3B8';
             this.ctx.font = '12px "Outfit", sans-serif';
-            this.ctx.fillText(`SKIN: ${weapon.skin}  |  DAMAGE: ${weapon.damage}`, 35, 565);
+            this.ctx.fillText(`SKIN: ${weapon.skin}  |  POWER: ${weapon.damage}`, 35, 565);
         }
     }
 
@@ -1242,12 +1256,12 @@
     function initGame() {
         const gameContainer = document.getElementById('game-container') || document.body;
         if (gameContainer) {
-            window.VoyagerGameInstance = new ShellShockers3DGame(gameContainer);
-            console.log("Shell Shockers 3D engine loaded successfully!");
+            window.VoyagerGameInstance = new POVZombieShooterGame(gameContainer);
+            console.log("Zombie Ops: Warzone engine loaded successfully!");
         }
     }
 
-    window.VoyagerEngine = ShellShockers3DGame;
+    window.VoyagerEngine = POVZombieShooterGame;
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initGame);
