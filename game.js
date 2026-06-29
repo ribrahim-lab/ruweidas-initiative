@@ -463,6 +463,11 @@ Good luck, and bon voyage!`,
                 this.keys[e.key] = true;
                 this.keys[e.code] = true; // Support standard codes like 'ShiftLeft', 'KeyZ'
                 
+                // Prevent browser window from scrolling when using arrow keys or space bar
+                if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space', 'Spacebar', ' '].includes(e.key)) {
+                    e.preventDefault();
+                }
+
                 // Dev skip cheat: Shift + D
                 if ((this.keys['Shift'] || this.keys['ShiftLeft'] || this.keys['ShiftRight']) && 
                     (e.key === 'D' || e.key === 'd' || e.code === 'KeyD')) {
