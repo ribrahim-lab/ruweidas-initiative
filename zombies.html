@@ -243,6 +243,18 @@
             box-shadow: 0 0 20px rgba(57, 255, 20, 0.15);
         }
 
+        .char-card.selected#char-black-bird {
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.05);
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.15);
+        }
+
+        .char-card.selected#char-sonic {
+            border-color: #00F3FF;
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+        }
+
         .char-icon-preview {
             width: 50px;
             height: 50px;
@@ -904,6 +916,30 @@
                         </div>
                     </div>
 
+                    <!-- Card 4: Black Bird -->
+                    <div class="char-card" id="char-black-bird" onclick="selectChar('black-bird')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-black" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Black Bird</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The volatile explosive expert of the flock. Adds kinetic explosive payloads to standard ammunition.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(255, 165, 0, 0.12); border: 1px solid rgba(255, 165, 0, 0.25); border-radius: 6px; font-size: 0.75rem; color: #ffa500; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            💥 Volatile Force: 25% mini explosive chance & +40% blast radius
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Sonic -->
+                    <div class="char-card" id="char-sonic" onclick="selectChar('sonic')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-sonic" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Sonic</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The blue blur. Equipped with ring shielding technology that negates damage and creates kinetic space.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(0, 243, 255, 0.12); border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 6px; font-size: 0.75rem; color: #00F3FF; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            🌀 Ring Shield: Negates first enemy hit (Regens after 10s of safety)
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1292,6 +1328,8 @@
             drawRedBirdPreview('canvas-preview-red');
             drawHelloKittyPreview('canvas-preview-kitty');
             drawIsabellePreview('canvas-preview-isabelle');
+            drawBlackBirdPreview('canvas-preview-black');
+            drawSonicPreview('canvas-preview-sonic');
             
             // Console log animation simulate
             runIntroLogs();
@@ -1304,6 +1342,8 @@
             "LOADING ASSETS: RED BIRD VECTORS DETECTED.",
             "LOADING ASSETS: HELLO KITTY COGNITIVE MATRICES DETECTED.",
             "LOADING ASSETS: ISABELLE PARADIGM DEPLOYED.",
+            "LOADING ASSETS: BLACK BIRD ORDNANCE INTEGRATED.",
+            "LOADING ASSETS: SONIC VELOCITY VECTOR ESTABLISHED.",
             "WEAPON CHECK: RED BIRD CARBINE CONNECTED.",
             "WEAPON CHECK: HELLO KITTY SMG BUBBLE ENGINE ONLINE.",
             "WEAPON CHECK: EXPLOSIVE SLING-SHOT BAZOOKA INTEGRATED.",
@@ -1361,6 +1401,8 @@
             drawRedBirdPreview('canvas-preview-red');
             drawHelloKittyPreview('canvas-preview-kitty');
             drawIsabellePreview('canvas-preview-isabelle');
+            drawBlackBirdPreview('canvas-preview-black');
+            drawSonicPreview('canvas-preview-sonic');
         }
 
         function goToWeaponSelect() {
@@ -1501,6 +1543,10 @@
                 drawHelloKittyPreview('hud-avatar-canvas');
             } else if (selectedCharacter === 'isabelle') {
                 drawIsabellePreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'black-bird') {
+                drawBlackBirdPreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'sonic') {
+                drawSonicPreview('hud-avatar-canvas');
             }
         }
 
@@ -1528,6 +1574,10 @@
             player.reloading = false;
             
             // Set base stats and passive modifiers based on selected operative
+            player.hasRingShield = false;
+            player.ringShieldRegenTimer = 0;
+            player.invincibilityFrames = 0;
+
             if (selectedCharacter === 'red-bird') {
                 player.speed = 3.5;
             } else if (selectedCharacter === 'hello-kitty') {
@@ -1535,6 +1585,11 @@
             } else if (selectedCharacter === 'isabelle') {
                 player.speed = 4.3; // Town Support: +20% movement speed (approx 3.6 * 1.2)
                 player.activeWeapon.reloadTime *= 0.85; // Town Support: +15% reload speed (15% faster reload duration)
+            } else if (selectedCharacter === 'black-bird') {
+                player.speed = 3.3; // Volatile Force: slightly slower base speed
+            } else if (selectedCharacter === 'sonic') {
+                player.speed = 4.4; // Sonic: high base speed
+                player.hasRingShield = true; // Ring Shield active
             }
 
             // Setup Wave 1
@@ -1626,6 +1681,13 @@
             const by = player.y + Math.sin(angle) * muzzleOffset;
             
             const speed = player.activeWeapon.bulletSpeed;
+            let bulletColor = player.activeWeapon.color;
+            let isMiniExplosive = false;
+            if (selectedCharacter === 'black-bird' && selectedWeapon !== 'bazooka' && Math.random() < 0.25) {
+                isMiniExplosive = true;
+                bulletColor = '#ffa500'; // orange glowing bullet
+            }
+
             bullets.push({
                 x: bx,
                 y: by,
@@ -1634,7 +1696,8 @@
                 radius: 4,
                 damage: player.activeWeapon.damage,
                 type: selectedWeapon,
-                color: player.activeWeapon.color
+                color: bulletColor,
+                isMiniExplosive: isMiniExplosive
             });
 
             // Play Synth audio
@@ -1771,6 +1834,23 @@
         function updatePhysics() {
             if (gameState !== 'PLAYING') return;
 
+            // Invincibility frames update
+            if (player.invincibilityFrames && player.invincibilityFrames > 0) {
+                player.invincibilityFrames--;
+            }
+
+            // Ring Shield regeneration check
+            if (selectedCharacter === 'sonic' && !player.hasRingShield) {
+                if (player.ringShieldRegenTimer > 0) {
+                    player.ringShieldRegenTimer--;
+                    if (player.ringShieldRegenTimer <= 0) {
+                        player.hasRingShield = true;
+                        audio.playPowerUp(); // chime sound on shield recharge
+                        spawnExplosiveSparks(player.x, player.y, '#ffd700', 15);
+                    }
+                }
+            }
+
             // 1. Reload Timer Check
             if (player.reloading) {
                 const elapsed = Date.now() - reloadStartTime;
@@ -1869,17 +1949,36 @@
 
                 // Zombie hits Player
                 if (dist < (player.radius + z.radius)) {
-                    // Deduct vitals
-                    player.health -= 0.35; // Continuous damage
-                    
-                    // Push player back slightly
-                    player.x += z.vx * 1.5;
-                    player.y += z.vy * 1.5;
-                    
-                    updateHUD();
+                    if (!player.invincibilityFrames || player.invincibilityFrames <= 0) {
+                        if (selectedCharacter === 'sonic' && player.hasRingShield) {
+                            // Ring Shield negates hit
+                            player.hasRingShield = false;
+                            player.ringShieldRegenTimer = 600; // 10 seconds regen (600 frames at 60fps)
+                            player.invincibilityFrames = 60; // 1 second invincibility
+                            
+                            audio.playPowerUp(); // chime sound for shield loss
+                            spawnExplosiveSparks(player.x, player.y, '#ffd700', 25); // yellow ring sparks
+                            
+                            // Push zombie back significantly
+                            z.x -= z.vx * 15;
+                            z.y -= z.vy * 15;
+                        } else {
+                            // Take damage
+                            player.health -= 15; // Flat damage (instead of continuous melting)
+                            player.invincibilityFrames = 45; // 0.75 seconds invincibility
+                            
+                            audio.playHit();
+                            
+                            // Push player back slightly
+                            player.x += z.vx * 10;
+                            player.y += z.vy * 10;
+                            
+                            updateHUD();
 
-                    if (player.health <= 0) {
-                        triggerGameOver();
+                            if (player.health <= 0) {
+                                triggerGameOver();
+                            }
+                        }
                     }
                 }
             });
@@ -1915,6 +2014,8 @@
                         // If bazooka type weapon, trigger explosion burst
                         if (b.type === 'bazooka') {
                             triggerBazookaExplosion(b.x, b.y);
+                        } else if (b.isMiniExplosive) {
+                            triggerMiniExplosion(b.x, b.y);
                         }
 
                         // Remove bullet
@@ -2015,12 +2116,18 @@
 
         // Bazooka explosion event trigger
         function triggerBazookaExplosion(x, y) {
+            let maxRad = 75;
+            let dmg = 150;
+            if (selectedCharacter === 'black-bird') {
+                maxRad = 110; // Volatile Force: +40% blast radius
+                dmg = 185;
+            }
             explosions.push({
                 x: x,
                 y: y,
                 radius: 10,
-                maxRadius: 75,
-                damage: 150,
+                maxRadius: maxRad,
+                damage: dmg,
                 alpha: 1.0,
                 damagedIds: [] // Track which zombies took damage from this explosion
             });
@@ -2028,6 +2135,23 @@
             // Play explosion audio
             audio.playShoot('bazooka');
             spawnExplosiveSparks(x, y, '#ffcc00', 35);
+        }
+
+        // Mini explosion for Black Bird volatile bullets
+        function triggerMiniExplosion(x, y) {
+            explosions.push({
+                x: x,
+                y: y,
+                radius: 5,
+                maxRadius: 35,
+                damage: 60,
+                alpha: 1.0,
+                damagedIds: []
+            });
+
+            // Short explosion audio
+            audio.playShoot('carbine');
+            spawnExplosiveSparks(x, y, '#ffaa00', 15);
         }
 
         function spawnExplosiveSparks(x, y, color, count) {
@@ -2278,6 +2402,191 @@
             ctx.restore();
         }
 
+        function drawBlackBirdHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Fuse on top
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, -radius);
+            ctx.lineTo(0, -radius - 8);
+            ctx.stroke();
+
+            // Fuse tip (yellow)
+            ctx.fillStyle = '#ffcc00';
+            ctx.beginPath();
+            ctx.arc(0, -radius - 10, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Main round black body
+            ctx.fillStyle = '#1e293b'; // dark grey/black
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Grey belly (ellipse at bottom)
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath();
+            ctx.ellipse(0, radius * 0.45, radius * 0.65, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Yellow spot on forehead
+            ctx.fillStyle = '#ffaa00';
+            ctx.beginPath();
+            ctx.arc(0, -radius * 0.5, radius * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.28, -radius * 0.15, radius * 0.2, 0, Math.PI * 2);
+            ctx.arc(radius * 0.28, -radius * 0.15, radius * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.22, -radius * 0.15, radius * 0.08, 0, Math.PI * 2);
+            ctx.arc(radius * 0.22, -radius * 0.15, radius * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Angry red eyebrows
+            ctx.strokeStyle = '#ff3344';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.55, -radius * 0.35); ctx.lineTo(-radius * 0.1, -radius * 0.2);
+            ctx.moveTo(radius * 0.55, -radius * 0.35); ctx.lineTo(radius * 0.1, -radius * 0.2);
+            ctx.stroke();
+
+            // Beak (yellow)
+            ctx.fillStyle = '#ffcc00';
+            ctx.strokeStyle = '#d4aa00';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, -radius * 0.05);
+            ctx.lineTo(radius * 0.22, radius * 0.25);
+            ctx.lineTo(-radius * 0.22, radius * 0.25);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawSonicHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Spikes pointing backwards (drawn to the left/back of the character relative to facing)
+            ctx.fillStyle = '#1e40af'; // Sonic blue
+            ctx.strokeStyle = '#1e3a8a';
+            ctx.lineWidth = 1.5;
+
+            // We can draw 3 sharp spikes pointing backwards
+            const drawSpike = (ax, ay, bx, by, cx, cy) => {
+                ctx.beginPath();
+                ctx.moveTo(ax, ay);
+                ctx.lineTo(bx, by);
+                ctx.lineTo(cx, cy);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+            
+            // Left-back spikes
+            drawSpike(-radius * 0.7, -radius * 0.4, -radius * 1.3, -radius * 0.8, -radius * 0.9, -radius * 0.1);
+            drawSpike(-radius * 0.9, radius * 0.0, -radius * 1.4, radius * 0.1, -radius * 0.8, radius * 0.4);
+            drawSpike(-radius * 0.7, radius * 0.4, -radius * 1.2, radius * 0.8, -radius * 0.5, radius * 0.7);
+
+            // Ears
+            // Left ear
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.5, -radius * 0.7);
+            ctx.lineTo(-radius * 0.8, -radius * 1.2);
+            ctx.lineTo(-radius * 0.1, -radius * 0.9);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            // Peach inner ear
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.45, -radius * 0.75);
+            ctx.lineTo(-radius * 0.68, -radius * 1.05);
+            ctx.lineTo(-radius * 0.2, -radius * 0.85);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right ear
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.moveTo(radius * 0.2, -radius * 0.9);
+            ctx.lineTo(radius * 0.6, -radius * 1.3);
+            ctx.lineTo(radius * 0.5, -radius * 0.7);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            // Right inner ear
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.moveTo(radius * 0.25, -radius * 0.9);
+            ctx.lineTo(radius * 0.5, -radius * 1.15);
+            ctx.lineTo(radius * 0.42, -radius * 0.75);
+            ctx.closePath();
+            ctx.fill();
+
+            // Main head circle
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Peach Muzzle/mouth patch (ellipse at front/bottom)
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.1, radius * 0.3, radius * 0.65, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Black nose tip
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.65, radius * 0.15, radius * 0.12, radius * 0.08, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White eyes (fused in center like Sonic)
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            // Left eye part
+            ctx.ellipse(-radius * 0.15, -radius * 0.2, radius * 0.2, radius * 0.35, 0, 0, Math.PI * 2);
+            // Right eye part
+            ctx.ellipse(radius * 0.15, -radius * 0.2, radius * 0.2, radius * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+
+            // Green pupils
+            ctx.fillStyle = '#10b981'; // Emerald green
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.08, -radius * 0.15, radius * 0.08, radius * 0.18, 0, 0, Math.PI * 2);
+            ctx.ellipse(radius * 0.18, -radius * 0.15, radius * 0.08, radius * 0.18, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupil black centers
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.08, -radius * 0.15, radius * 0.04, radius * 0.09, 0, 0, Math.PI * 2);
+            ctx.ellipse(radius * 0.18, -radius * 0.15, radius * 0.04, radius * 0.09, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
         // Draw active frame
         function drawFrame() {
             // Clear Arena
@@ -2515,6 +2824,10 @@
                 drawHelloKittyHead(ctx, 0, 0, player.radius);
             } else if (selectedCharacter === 'isabelle') {
                 drawIsabelleHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'black-bird') {
+                drawBlackBirdHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'sonic') {
+                drawSonicHead(ctx, 0, 0, player.radius);
             }
 
             // Draw muzzle tip or gun bar
@@ -2525,6 +2838,22 @@
             ctx.strokeRect(player.radius - 2, -3, 14, 6);
 
             ctx.restore();
+
+            // Draw Ring Shield around player
+            if (selectedCharacter === 'sonic' && player.hasRingShield) {
+                ctx.save();
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ffd700';
+                
+                // Pulsing ring effect
+                const ringPulse = Math.sin(Date.now() * 0.01) * 2 + 5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius + ringPulse, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
         }
 
         // Main match loop
