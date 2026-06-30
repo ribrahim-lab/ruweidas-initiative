@@ -3,458 +3,2884 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Ascent Learning Initiative - Empowering youth through coding, math tutoring, and financial literacy workshops.">
-    <title>Ascent Learning Initiative</title>
+    <title>Z-Day: Cute & Chaotic - COD Zombies Edition</title>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --bg-dark: #05080c;
+            --bg-panel: rgba(12, 18, 30, 0.82);
+            --accent-red: #ff3344;
+            --accent-green: #39ff14;
+            --accent-gold: #c5a059;
+            --accent-pink: #ff69b4;
+            --text-light: #f1f5f9;
+            --text-muted: #64748b;
+            --border-color: rgba(255, 51, 68, 0.15);
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow: hidden;
+            user-select: none;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(255, 51, 68, 0.03) 0%, transparent 80%),
+                radial-gradient(circle at 10% 90%, rgba(57, 255, 20, 0.02) 0%, transparent 60%);
+        }
+
+        /* Screen States */
+        .screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+            box-sizing: border-box;
+        }
+
+        .screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* 1. LOADING SCREEN */
+        #loading-screen {
+            background-color: #030508;
+            padding: 30px;
+        }
+
+        .loading-title-glow {
+            font-size: 3.5rem;
+            font-weight: 900;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            margin: 0 0 10px 0;
+            color: #FFF;
+            text-shadow: 0 0 20px rgba(255, 51, 68, 0.6);
+            text-align: center;
+        }
+
+        .loading-subtitle {
+            font-size: 1rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: var(--accent-green);
+            margin: 0 0 40px 0;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.4);
+            font-weight: 700;
+        }
+
+        .loader-container {
+            width: 450px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 4px;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            margin-bottom: 25px;
+        }
+
+        .loader-fill {
+            height: 12px;
+            width: 0%;
+            background: linear-gradient(90deg, var(--accent-red), var(--accent-pink));
+            border-radius: 4px;
+            box-shadow: 0 0 12px var(--accent-red);
+            transition: width 0.1s linear;
+        }
+
+        .console-log {
+            width: 450px;
+            height: 100px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 51, 68, 0.1);
+            border-radius: 6px;
+            padding: 10px 15px;
+            box-sizing: border-box;
+            font-family: monospace;
+            font-size: 0.75rem;
+            color: #a3b8cc;
+            overflow-y: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .console-line {
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .console-line.green {
+            color: var(--accent-green);
+        }
+
+        /* 2. ARSENAL SELECTOR SCREEN */
+        #selector-screen, #char-select-screen {
+            background-color: rgba(3, 5, 8, 0.96);
+            overflow-y: auto;
+            justify-content: flex-start;
+            padding: 40px 20px;
+        }
+
+        .selector-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .selector-header h2 {
+            font-size: 2.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 0;
+            color: #FFF;
+            text-shadow: 0 0 15px rgba(255,51,68,0.3);
+        }
+
+        .selector-header p {
+            color: var(--text-muted);
+            margin: 8px 0 0 0;
+            font-size: 0.95rem;
+        }
+
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            width: 100%;
+            max-width: 950px;
+            margin-bottom: 35px;
+        }
+
+        @media (min-width: 768px) {
+            .selection-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .selection-section {
+            background: var(--bg-panel);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .section-title-tag {
+            font-size: 0.72rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--accent-gold);
+            border-bottom: 1px dashed rgba(197, 160, 89, 0.2);
+            padding-bottom: 8px;
+            margin: 0;
+        }
+
+        /* Characters display */
+        .char-options {
+            display: flex;
+            gap: 16px;
+        }
+
+        .char-card {
+            flex: 1;
+            background: rgba(0, 0, 0, 0.4);
+            border: 1.5px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 16px;
+            cursor: pointer;
+            text-align: center;
+            transition: var(--transition-smooth);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .char-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .char-card.selected#char-red-bird {
+            border-color: var(--accent-red);
+            background: rgba(255, 51, 68, 0.05);
+            box-shadow: 0 0 20px rgba(255, 51, 68, 0.15);
+        }
+
+        .char-card.selected#char-hello-kitty {
+            border-color: var(--accent-pink);
+            background: rgba(255, 105, 180, 0.05);
+            box-shadow: 0 0 20px rgba(255, 105, 180, 0.15);
+        }
+
+        .char-card.selected#char-isabelle {
+            border-color: var(--accent-green);
+            background: rgba(57, 255, 20, 0.05);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.15);
+        }
+
+        .char-card.selected#char-black-bird {
+            border-color: #ffa500;
+            background: rgba(255, 165, 0, 0.05);
+            box-shadow: 0 0 20px rgba(255, 165, 0, 0.15);
+        }
+
+        .char-card.selected#char-sonic {
+            border-color: #00F3FF;
+            background: rgba(0, 243, 255, 0.05);
+            box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
+        }
+
+        .char-icon-preview {
+            width: 50px;
+            height: 50px;
+            position: relative;
+        }
+
+        .char-name {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #FFF;
+        }
+
+        .char-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            line-height: 1.4;
+            margin: 0;
+        }
+
+        /* Weapons options */
+        .weapon-card {
+            background: rgba(0, 0, 0, 0.4);
+            border: 1.5px solid rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 14px 18px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .weapon-card:hover {
+            border-color: rgba(255, 255, 255, 0.2);
+            background: rgba(255,255,255,0.02);
+        }
+
+        .weapon-card.selected {
+            border-color: var(--accent-green);
+            background: rgba(57, 255, 20, 0.04);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.1);
+        }
+
+        .weapon-info-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .weapon-title {
+            font-weight: 700;
+            font-size: 0.95rem;
+            color: #FFF;
+            margin: 0;
+        }
+
+        .weapon-tagline {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin: 0;
+        }
+
+        .weapon-stat-visuals {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            width: 140px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 6px;
+            padding: 8px 10px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .weapon-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .weapon-stat-bar-container {
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            width: 100%;
+            margin-top: 2px;
+            overflow: hidden;
+        }
+
+        .weapon-stat-bar-fill {
+            height: 100%;
+            background-color: var(--accent-gold);
+            border-radius: 2px;
+        }
+
+        .weapon-card.selected .weapon-stat-bar-fill {
+            background-color: var(--accent-green);
+        }
+
+        /* Action Launch Button */
+        .launch-btn {
+            background: var(--accent-red);
+            color: #030508;
+            border: none;
+            padding: 16px 50px;
+            font-size: 1.1rem;
+            font-weight: 800;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 6px 25px rgba(255, 51, 68, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .launch-btn:hover {
+            background: #ff5566;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(255, 51, 68, 0.5);
+        }
+
+        .launch-btn:active {
+            transform: translateY(0);
+        }
+
+        /* 3. GAMEPLAY SCREEN */
+        #game-screen {
+            background-color: #030406;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+
+        .game-layout {
+            display: grid;
+            grid-template-columns: 800px;
+            gap: 20px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .arena-container {
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+            border-radius: 12px;
+            overflow: hidden;
+            width: 800px;
+            height: 600px;
+            position: relative;
+        }
+
+        #game-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: crosshair;
+        }
+
+        /* Gameplay Top HUD */
+        .hud-overlay {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .hud-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: rgba(8, 12, 20, 0.75);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+        }
+
+        .hud-avatar {
+            width: 40px;
+            height: 40px;
+            position: relative;
+        }
+
+        .hud-health-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hud-health-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+        }
+
+        .health-bar-container {
+            width: 160px;
+            height: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .health-bar-fill {
+            height: 100%;
+            width: 100%;
+            background: linear-gradient(90deg, #ff3344, #ff5566);
+            box-shadow: 0 0 10px var(--accent-red);
+            border-radius: 4px;
+            transition: width 0.15s ease;
+        }
+
+        .hud-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 8px;
+        }
+
+        .hud-stat-box {
+            background: rgba(8, 12, 20, 0.75);
+            border: 1px solid var(--border-color);
+            padding: 10px 16px;
+            border-radius: 8px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            min-width: 100px;
+        }
+
+        .hud-stat-label {
+            font-size: 0.6rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            color: var(--text-muted);
+        }
+
+        .hud-stat-value {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .hud-stat-value.digital {
+            font-family: monospace;
+            color: var(--accent-green);
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.35);
+        }
+
+        /* Gameplay bottom HUD elements */
+        .hud-bottom-overlay {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .hud-weapon-box {
+            background: rgba(8, 12, 20, 0.75);
+            border: 1px solid var(--border-color);
+            padding: 12px 20px;
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .hud-weapon-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hud-weapon-name {
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: #FFF;
+            text-transform: uppercase;
+            letter-spacing: 0.02em;
+        }
+
+        .hud-ammo {
+            font-family: monospace;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--accent-green);
+            text-shadow: 0 0 8px rgba(57, 255, 20, 0.4);
+            margin-top: 2px;
+        }
+
+        .hud-reload-warning {
+            font-size: 0.75rem;
+            font-weight: 700;
+            color: var(--accent-red);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            animation: warningPulse 0.5s infinite alternate;
+        }
+
+        @keyframes warningPulse {
+            from { opacity: 0.3; }
+            to { opacity: 1; }
+        }
+
+        .hud-wave-indicator {
+            background: rgba(231, 76, 60, 0.1);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+            border-radius: 10px;
+            padding: 12px 24px;
+            backdrop-filter: blur(8px);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 110px;
+        }
+
+        .hud-wave-title {
+            font-size: 0.65rem;
+            font-weight: 800;
+            color: var(--accent-red);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+        }
+
+        .hud-wave-number {
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            text-shadow: 0 0 15px rgba(255, 51, 68, 0.5);
+            line-height: 1;
+            margin-top: 4px;
+        }
+
+        /* Power Up Announcer Notification */
+        .powerup-announcer {
+            position: absolute;
+            top: 130px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(57, 255, 20, 0.12);
+            border: 1.5px solid var(--accent-green);
+            box-shadow: 0 0 20px rgba(57, 255, 20, 0.15);
+            color: var(--accent-green);
+            padding: 8px 24px;
+            border-radius: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.15em;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 8;
+        }
+
+        .powerup-announcer.active {
+            opacity: 1;
+        }
+
+        /* Intermission HUD countdown */
+        .hud-intermission {
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            pointer-events: none;
+            z-index: 4;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .hud-intermission.active {
+            opacity: 1;
+        }
+
+        .intermission-label {
+            font-size: 0.85rem;
+            color: var(--accent-green);
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+        }
+
+        .intermission-timer {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--text-light);
+            text-shadow: 0 0 25px rgba(255,255,255,0.4);
+            line-height: 1;
+            margin-top: 5px;
+        }
+
+        /* Game Over overlay screen */
+        .gameover-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(3, 5, 8, 0.95);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .gameover-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .gameover-title {
+            font-size: 4rem;
+            font-weight: 900;
+            color: var(--accent-red);
+            text-shadow: 0 0 30px rgba(255, 51, 68, 0.85);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin: 0 0 5px 0;
+        }
+
+        .gameover-subtitle {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            margin: 0 0 35px 0;
+        }
+
+        .gameover-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            width: 320px;
+            margin-bottom: 40px;
+        }
+
+        .gameover-stat-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .gameover-stat-lbl {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            margin-bottom: 4px;
+        }
+
+        .gameover-stat-val {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: #FFF;
+        }
+
+        .gameover-stat-val.gold {
+            color: var(--accent-gold);
+            text-shadow: 0 0 8px rgba(197, 160, 89, 0.4);
+        }
+
+        .gameover-actions {
+            display: flex;
+            gap: 15px;
+        }
+
+        .gameover-btn {
+            background: transparent;
+            border: 2px solid var(--accent-red);
+            color: var(--accent-red);
+            padding: 12px 30px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--transition-smooth);
+        }
+
+        .gameover-btn:hover {
+            background: var(--accent-red);
+            color: #030508;
+            box-shadow: 0 0 15px rgba(255, 51, 68, 0.4);
+        }
+
+        .gameover-btn.gold {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .gameover-btn.gold:hover {
+            background: var(--accent-gold);
+            color: #030508;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.4);
+        }
+    </style>
 </head>
 <body>
-    <!-- Premium background ambient shapes -->
-    <div class="background-glow top-left"></div>
-    <div class="background-glow bottom-right"></div>
 
-    <header class="navbar">
-        <div class="nav-container">
-            <a href="#home" class="logo" id="nav-logo">
-                <span class="logo-accent">Ascent</span> Initiative
-            </a>
-            <nav class="nav-links">
-                <a href="#home" class="nav-item active" data-target="home">Home</a>
-                <a href="#about" class="nav-item" data-target="about">About</a>
-                <a href="#projects" class="nav-item" data-target="projects">Projects</a>
-                <a href="#pathfinder" class="nav-item" data-target="pathfinder">Pathfinder</a>
-                <a href="#resources" class="nav-item" data-target="resources">Resources</a>
-                <a href="#donate" class="nav-item" data-target="donate">Donate</a>
-                <a href="#contact" class="nav-item" data-target="contact">Contact</a>
-            </nav>
+    <!-- 1. LOADING SCREEN -->
+    <div class="screen" id="loading-screen">
+        <h1 class="loading-title-glow">Z-DAY</h1>
+        <p class="loading-subtitle">Cute & Chaotic Protocol</p>
+        
+        <div class="loader-container">
+            <div class="loader-fill" id="loader-fill"></div>
         </div>
-    </header>
 
-    <main class="main-content">
-        <!-- Home Section -->
-        <section class="page-section" id="home-section">
-            <div class="hero-block">
-                <span class="hero-tag">Empowering the Next Generation</span>
-                <h1 class="hero-title">Bridging Tech, Math, & Quantitative Finance</h1>
-                <p class="hero-subtitle">
-                    Ascent Learning Initiative provides youth and young adults with free, high-impact workshops in software engineering, mathematical thinking, and modern financial literacy.
-                </p>
-                <div class="hero-actions">
-                    <button class="btn btn-primary" id="explore-projects-btn">Explore Projects</button>
-                    <button class="btn btn-secondary" id="support-mission-btn">Support Our Mission</button>
-                </div>
-            </div>
-
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-num">100%</div>
-                    <div class="stat-label">Free Education</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-num">8+</div>
-                    <div class="stat-label">Outreach Projects</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-num">1-on-1</div>
-                    <div class="stat-label">Youth Mentorship</div>
-                </div>
-            </div>
-        </section>
-
-        <!-- About / Founder Section -->
-        <section class="page-section" id="about-section">
-            <div class="about-container">
-                <div class="about-image-column">
-                    <div class="avatar-card">
-                        <div class="avatar-placeholder">
-                            <svg viewBox="0 0 24 24" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
-                                <circle cx="12" cy="7" r="4"></circle>
-                            </svg>
-                        </div>
-                        <span class="avatar-name">Ruweida Ibrahim</span>
-                    </div>
-                </div>
-                <div class="about-text-column">
-                    <span class="sub-heading">About the Founder</span>
-                    <h2 class="about-title">Meet the Founder</h2>
-                    <p class="about-paragraph">
-                        Hi, I'm Ruweida Ibrahim, the founder. I started Ascent Learning Initiative to open doors for youth into the fast-growing worlds of technology, advanced math, and quantitative finance. Growing up, I saw how access to these topics can shape careers, yet they are rarely taught in standard school programs.
-                    </p>
-                    <p class="about-paragraph">
-                        Our mission is simple: to make coding, budgeting, algorithms, and mathematical logic approachable and free for every student. Whether you are building your first game in Python or learning how trading models work, we are here to support your journey.
-                    </p>
-                    <div class="founder-signature">
-                        <span class="founder-name">Ruweida Ibrahim</span>
-                        <span class="founder-title">Founder</span>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Projects Section -->
-        <section class="page-section" id="projects-section">
-            <div class="section-header">
-                <h2 class="section-title">Our Programs & Workshops</h2>
-                <p class="section-subtitle">A curated suite of projects designed to foster analytical thinking, financial wisdom, and technical mastery.</p>
-            </div>
-
-            <div class="projects-grid">
-                <!-- Program 1 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="16 18 22 12 16 6"></polyline>
-                            <polyline points="8 6 2 12 8 18"></polyline>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">5-Day Coding Program</h3>
-                    <p class="project-card-desc">An immersive, hands-on workshop introducing programming logic, web development basics, and software design principles.</p>
-                </div>
-
-                <!-- Program 2 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="12" y1="1" x2="12" y2="23"></line>
-                            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Financial Literacy</h3>
-                    <p class="project-card-desc">Practical skills for the real world. Covering personal budgeting, compound interest, smart saving habits, and investment basics.</p>
-                </div>
-
-                <!-- Program 3 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                            <line x1="9" y1="9" x2="15" y2="15"></line>
-                            <line x1="15" y1="9" x2="9" y2="15"></line>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Youth Math Tutoring</h3>
-                    <p class="project-card-desc">Strengthening mathematical foundations. Direct academic coaching in algebra, geometry, trigonometry, and calculus.</p>
-                </div>
-
-                <!-- Program 4 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                            <path d="M22 12A10 10 0 0 0 12 2v10z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Quant Finance & Tech</h3>
-                    <p class="project-card-desc">An introduction to quantitative analysis. Bridging mathematical algorithms, Python scripts, and stock market modeling.</p>
-                </div>
-
-                <!-- Program 5 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M3 3v18h18"></path>
-                            <path d="m18.7 8-5.1 5.2-2.8-2.7L7 14.3"></path>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Algorithmic Trading</h3>
-                    <p class="project-card-desc">Learn how math rules Wall Street. Introduce students to writing simple algorithms that analyze historical stock prices and make decisions.</p>
-                </div>
-
-                <!-- Program 6 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <line x1="18" y1="20" x2="18" y2="10"></line>
-                            <line x1="12" y1="20" x2="12" y2="4"></line>
-                            <line x1="6" y1="20" x2="6" y2="14"></line>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Data Science for Youth</h3>
-                    <p class="project-card-desc">Discover the story behind numbers. Gather, clean, and visualize real-world datasets using charts and Python analysis libraries.</p>
-                </div>
-
-                <!-- Program 7 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Python Game Dev</h3>
-                    <p class="project-card-desc">Use math to build games! Program game physics, keyboard movement, and collision detection to create interactive 2D projects.</p>
-                    <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
-                        <a href="game.html" class="project-cta-link" style="color: var(--accent-gold); text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition-smooth); cursor: pointer;">
-                            Launch Voyager Demo &rarr;
-                        </a>
-                        <a href="zombies.html" class="project-cta-link" style="color: #ff3344; text-decoration: none; font-weight: 700; font-size: 0.95rem; display: inline-flex; align-items: center; gap: 6px; transition: var(--transition-smooth); cursor: pointer;">
-                            Launch Z-Day Zombies &rarr;
-                        </a>
-                    </div>
-                </div>
-
-                <!-- Program 8 -->
-                <div class="project-card">
-                    <div class="project-icon">
-                        <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
-                            <path d="M10 10H6v4h4v-4z"></path>
-                            <path d="M18 10h-4v4h4v-4z"></path>
-                        </svg>
-                    </div>
-                    <h3 class="project-card-title">Fintech Foundations</h3>
-                    <p class="project-card-desc">Explore the future of money. A kid-friendly introduction to digital banking systems, smart contracts, and finance technologies.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Program Pathfinder Section -->
-        <section class="page-section" id="pathfinder-section">
-            <div class="section-header">
-                <h2 class="section-title">Interactive Pathfinder</h2>
-                <p class="section-subtitle">Not sure where to begin? Answer one quick question to find the best project recommendations for you or your youth.</p>
-            </div>
-
-            <div class="pathfinder-container">
-                <div class="pathfinder-card">
-                    <h3 class="pathfinder-question">What are you most excited to learn?</h3>
-                    <div class="pathfinder-options">
-                        <button class="pathfinder-opt-btn" data-interest="tech">
-                            <span class="opt-emoji">💻</span>
-                            <span class="opt-text">Building websites, games, and writing code</span>
-                        </button>
-                        <button class="pathfinder-opt-btn" data-interest="finance">
-                            <span class="opt-emoji">📈</span>
-                            <span class="opt-text">Managing money, savings, and stock trading models</span>
-                        </button>
-                        <button class="pathfinder-opt-btn" data-interest="math">
-                            <span class="opt-emoji">🔢</span>
-                            <span class="opt-text">Solving logic puzzles, algebra, and calculus</span>
-                        </button>
-                    </div>
-
-                    <!-- Dynamic Recommendation Card -->
-                    <div class="pathfinder-results hidden" id="pathfinder-results-box">
-                        <span class="result-badge">Our Recommendation</span>
-                        <h4 class="result-title" id="result-title-text">Python Game Dev</h4>
-                        <p class="result-desc" id="result-desc-text">We recommend our Python Game Development program to turn math into coding action!</p>
-                        <button class="btn btn-secondary btn-sm" id="pathfinder-reset-btn">Start Over</button>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Free Resource Library Section -->
-        <section class="page-section" id="resources-section">
-            <div class="section-header">
-                <h2 class="section-title">Free Learning Resources</h2>
-                <p class="section-subtitle">Start learning immediately with these highly recommended, completely free platforms and tools.</p>
-            </div>
-
-            <div class="resources-grid">
-                <a href="https://www.codecademy.com" target="_blank" class="resource-link-card">
-                    <h4 class="resource-title">Codecademy (Free Tier)</h4>
-                    <p class="resource-desc">Interactive, browser-based coding tutorials covering Python, HTML, and web foundations.</p>
-                    <span class="resource-action">Visit Platform &rarr;</span>
-                </a>
-                <a href="https://www.khanacademy.org" target="_blank" class="resource-link-card">
-                    <h4 class="resource-title">Khan Academy Math</h4>
-                    <p class="resource-desc">Excellent, comprehensive step-by-step tutoring in arithmetic, algebra, trigonometry, and calculus.</p>
-                    <span class="resource-action">Visit Platform &rarr;</span>
-                </a>
-                <a href="https://www.investopedia.com" target="_blank" class="resource-link-card">
-                    <h4 class="resource-title">Investopedia Education</h4>
-                    <p class="resource-desc">The world's largest dictionary of financial terms, stock market strategies, and money lessons.</p>
-                    <span class="resource-action">Visit Platform &rarr;</span>
-                </a>
-                <a href="https://www.kaggle.com" target="_blank" class="resource-link-card">
-                    <h4 class="resource-title">Kaggle Learn</h4>
-                    <p class="resource-desc">Short, practical courses in Python data science, machine learning models, and SQL scripting.</p>
-                    <span class="resource-action">Visit Platform &rarr;</span>
-                </a>
-            </div>
-        </section>
-
-        <!-- FAQs Accordion Section -->
-        <section class="page-section" id="faqs-section">
-            <div class="section-header">
-                <h2 class="section-title">Frequently Asked Questions</h2>
-                <p class="section-subtitle">Quick answers to typical questions about our workshops, tutoring schedules, and volunteer opportunities.</p>
-            </div>
-
-            <div class="faq-accordion-container">
-                <div class="faq-item">
-                    <button class="faq-question-btn">
-                        <span>Are the programs completely free?</span>
-                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Yes, all our workshops, tutoring sessions, and study booklets are 100% free of charge. We believe money should never be a barrier to high-quality education in tech and finance.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question-btn">
-                        <span>Who is eligible to participate?</span>
-                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Our programs are primarily designed for youth, students, and young adults curious about tech, math, and finance. However, we welcome anyone who wants to learn the foundations!</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question-btn">
-                        <span>How do I register for a workshop?</span>
-                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>You can send us a message through the contact form at the bottom of this website. Our team will get in touch with you to send schedules and link details.</p>
-                    </div>
-                </div>
-
-                <div class="faq-item">
-                    <button class="faq-question-btn">
-                        <span>Can I volunteer or mentor?</span>
-                        <svg class="faq-icon-arrow" viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="6 9 12 15 18 9"></polyline>
-                        </svg>
-                    </button>
-                    <div class="faq-answer">
-                        <p>Absolutely! If you have a background in software development, finance, economics, or math, we would love to have you join as a mentor. Please reach out via email.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Donate Section -->
-        <section class="page-section" id="donate-section">
-            <div class="section-header">
-                <h2 class="section-title">Support Our Initiative</h2>
-                <p class="section-subtitle">Your generous contribution directly funds educational workshops, teaching materials, and tools for the youth.</p>
-            </div>
-
-            <div class="donation-container">
-                <div class="donation-form-card">
-                    <h3 class="donation-card-title">Choose Donation Amount</h3>
-                    <div class="donation-tiers">
-                        <div class="tier-card" data-amount="25">
-                            <div class="tier-amount">$25</div>
-                            <div class="tier-info">Sponsors supplies & booklets for 1 student</div>
-                        </div>
-                        <div class="tier-card active" data-amount="50">
-                            <div class="tier-amount">$50</div>
-                            <div class="tier-info">Sponsors software tools & coding licenses</div>
-                        </div>
-                        <div class="tier-card" data-amount="100">
-                            <div class="tier-amount">$100</div>
-                            <div class="tier-info">Sponsors a full workspace or workshop event</div>
-                        </div>
-                        <div class="tier-card custom-tier" id="custom-tier-btn">
-                            <div class="tier-amount">Custom</div>
-                            <div class="tier-info">Support with any preferred contribution amount</div>
-                        </div>
-                    </div>
-
-                    <div class="custom-amount-input-wrapper hidden" id="custom-amount-container">
-                        <label for="custom-donation-input" class="input-label">Enter Custom Amount ($)</label>
-                        <input type="number" id="custom-donation-input" min="1" placeholder="Enter amount..." class="form-input">
-                    </div>
-
-                    <button class="btn btn-primary btn-block" id="donate-submit-btn">
-                        <span>Donate <span id="donate-amount-label">$50</span></span>
-                    </button>
-                </div>
-            </div>
-        </section>
-
-        <!-- Contact Section -->
-        <section class="page-section" id="contact-section">
-            <div class="section-header">
-                <h2 class="section-title">Get in Touch</h2>
-                <p class="section-subtitle">Have questions about our programs, volunteering opportunities, or hosting a workshop? We'd love to hear from you.</p>
-            </div>
-
-            <div class="contact-layout">
-                <div class="contact-info-card">
-                    <h3 class="contact-card-title">Contact Information</h3>
-                    <p class="contact-info-desc">Reach out directly through email, phone, or by submitting the contact form.</p>
-                    
-                    <div class="contact-details">
-                        <div class="contact-detail-item">
-                            <div class="detail-icon">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
-                                    <polyline points="22,6 12,13 2,6"></polyline>
-                                </svg>
-                            </div>
-                            <div class="detail-text">
-                                <span class="detail-label">Email Us</span>
-                                <a href="mailto:ruweydaibrahim03@gmail.com" class="detail-link">ruweydaibrahim03@gmail.com</a>
-                            </div>
-                        </div>
-
-                        <div class="contact-detail-item">
-                            <div class="detail-icon">
-                                <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                                </svg>
-                            </div>
-                            <div class="detail-text">
-                                <span class="detail-label">Call Us</span>
-                                <a href="tel:6122006234" class="detail-link">612-200-6234</a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="contact-form-card">
-                    <h3 class="contact-card-title">Send a Message</h3>
-                    <form id="contact-form" class="form-grid">
-                        <div class="form-group">
-                            <label for="form-name" class="input-label">Name</label>
-                            <input type="text" id="form-name" required placeholder="Your name" class="form-input">
-                        </div>
-                        <div class="form-group">
-                            <label for="form-email" class="input-label">Email</label>
-                            <input type="email" id="form-email" required placeholder="Your email address" class="form-input">
-                        </div>
-                        <div class="form-group full-width">
-                            <label for="form-message" class="input-label">Message</label>
-                            <textarea id="form-message" rows="5" required placeholder="Tell us how you would like to get involved..." class="form-textarea"></textarea>
-                        </div>
-                        <div class="full-width">
-                            <button type="submit" class="btn btn-primary" id="contact-submit-btn">Send Message</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <!-- Interactive notifications -->
-    <div class="toast-notification hidden" id="toast-notify">
-        <div class="toast-content">
-            <svg class="toast-icon" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="20 6 9 17 4 12"></polyline>
-            </svg>
-            <span class="toast-message" id="toast-message-text">Thank you! Message sent.</span>
+        <div class="console-log" id="console-log">
+            <!-- Populated dynamically via JS -->
         </div>
     </div>
 
-    <!-- Scripts -->
-    <script src="app.js"></script>
+    <!-- 2. WEAPON SELECTOR SCREEN -->
+    <div class="screen hidden" id="selector-screen">
+        <div class="selector-header">
+            <h2>Select Your Firepower</h2>
+            <p>Establish primary weapon payload and core ballistic profile</p>
+        </div>
+
+        <div style="max-width: 500px; width: 100%; margin-bottom: 35px;">
+            <div class="selection-section">
+                <h3 class="section-title-tag">Weapon Arsenal</h3>
+                <div class="control-group" style="display: flex; flex-direction: column; gap: 12px;">
+                    
+                    <!-- Weapon 1: Carbine -->
+                    <div class="weapon-card selected" id="weap-carbine" onclick="selectWeapon('carbine')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Red Bird Carbine</h4>
+                            <p class="weapon-tagline">Semi-Automatic. Heavy impact bullets.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">80</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 80%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">3/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 35%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 2: SMG Blaster -->
+                    <div class="weapon-card" id="weap-blaster" onclick="selectWeapon('blaster')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Kitty Bubble SMG</h4>
+                            <p class="weapon-tagline">Fully Automatic. Rapid bubble bursts.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">30</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 30%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">10/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 90%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 3: Bazooka -->
+                    <div class="weapon-card" id="weap-bazooka" onclick="selectWeapon('bazooka')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Sling-Shot Bazooka</h4>
+                            <p class="weapon-tagline">Volatile Explosives. Slow reload.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">250</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 100%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">0.8/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 10%;"></div></div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <button class="launch-btn" onclick="goToCharacterSelect()">Select Operative &rarr;</button>
+    </div>
+
+    <!-- 2.5. CHARACTER SELECTOR SCREEN -->
+    <div class="screen hidden" id="char-select-screen">
+        <div class="selector-header">
+            <h2>Select Your Operative</h2>
+            <p>Establish tactical character signature and passive combat power-ups</p>
+        </div>
+
+        <div style="max-width: 950px; width: 100%; margin-bottom: 35px; box-sizing: border-box; padding: 0 10px;">
+            <div class="selection-section">
+                <h3 class="section-title-tag">Operative Registry</h3>
+                <div class="char-options" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 20px;">
+                    
+                    <!-- Card 1: Red Bird -->
+                    <div class="char-card selected" id="char-red-bird" onclick="selectChar('red-bird')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-red" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Red Bird</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">Furious leader of the flock. Channeling raw intensity and battle-hardened resolve.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(255, 51, 68, 0.12); border: 1px solid rgba(255, 51, 68, 0.25); border-radius: 6px; font-size: 0.75rem; color: #ff3344; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            ⚡ Anger Boost: Fire rate +35% below 50% HP
+                        </div>
+                    </div>
+
+                    <!-- Card 2: Hello Kitty -->
+                    <div class="char-card" id="char-hello-kitty" onclick="selectChar('hello-kitty')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-kitty" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Hello Kitty</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">Spreads happiness and friendship. Keeps her absolute composure in chaotic environments.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(255, 105, 180, 0.12); border: 1px solid rgba(255, 105, 180, 0.25); border-radius: 6px; font-size: 0.75rem; color: #ff69b4; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            💖 Sweet Healing: +20% HP drop rate & +15% heal amount
+                        </div>
+                    </div>
+
+                    <!-- Card 3: Isabelle -->
+                    <div class="char-card" id="char-isabelle" onclick="selectChar('isabelle')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-isabelle" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Isabelle</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The helpful secretary from Animal Crossing. Highly organized and exceptionally nimble in a pinch.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(57, 255, 20, 0.12); border: 1px solid rgba(57, 255, 20, 0.25); border-radius: 6px; font-size: 0.75rem; color: #39ff14; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            🎒 Town Support: Speed +20% & Reload +15%
+                        </div>
+                    </div>
+
+                    <!-- Card 4: Black Bird -->
+                    <div class="char-card" id="char-black-bird" onclick="selectChar('black-bird')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-black" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Black Bird</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The volatile explosive expert of the flock. Adds kinetic explosive payloads to standard ammunition.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(255, 165, 0, 0.12); border: 1px solid rgba(255, 165, 0, 0.25); border-radius: 6px; font-size: 0.75rem; color: #ffa500; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            💥 Volatile Force: 25% mini explosive chance & +40% blast radius
+                        </div>
+                    </div>
+
+                    <!-- Card 5: Sonic -->
+                    <div class="char-card" id="char-sonic" onclick="selectChar('sonic')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-sonic" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Sonic</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The blue blur. Equipped with ring shielding technology that negates damage and creates kinetic space.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(0, 243, 255, 0.12); border: 1px solid rgba(0, 243, 255, 0.25); border-radius: 6px; font-size: 0.75rem; color: #00F3FF; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            🌀 Ring Shield: Negates first enemy hit (Regens after 10s of safety)
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 20px;">
+            <button class="launch-btn" style="background: rgba(255,255,255,0.05); color: #FFF; border: 1.5px solid rgba(255,255,255,0.15); box-shadow: none;" onclick="goToWeaponSelect()">&larr; Back</button>
+            <button class="launch-btn" onclick="startGame()">Deploy to Arena &rarr;</button>
+        </div>
+    </div>
+
+    <!-- 3. GAMEPLAY SCREEN -->
+    <div class="screen hidden" id="game-screen">
+        <div class="game-layout">
+            
+            <div class="arena-container">
+                <canvas id="game-canvas"></canvas>
+
+                <!-- HUD TOP Overlay -->
+                <div class="hud-overlay">
+                    <div class="hud-left">
+                        <div class="hud-avatar">
+                            <canvas id="hud-avatar-canvas" width="40" height="40"></canvas>
+                        </div>
+                        <div class="hud-health-block">
+                            <span class="hud-health-label">Vitals Health</span>
+                            <div class="health-bar-container">
+                                <div class="health-bar-fill" id="health-bar-fill"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="hud-right">
+                        <div class="hud-stat-box">
+                            <span class="hud-stat-label">Total Score</span>
+                            <span class="hud-stat-value digital" id="hud-score-value">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Power Up Announcer Notification -->
+                <div class="powerup-announcer" id="powerup-announcer">DOUBLE POINTS!</div>
+
+                <!-- Intermission counter -->
+                <div class="hud-intermission" id="hud-intermission">
+                    <span class="intermission-label">Next Wave Spawning</span>
+                    <div class="intermission-timer" id="intermission-timer">5</div>
+                </div>
+
+                <!-- HUD BOTTOM Overlay -->
+                <div class="hud-bottom-overlay">
+                    <div class="hud-weapon-box">
+                        <div class="hud-weapon-details">
+                            <span class="hud-weapon-name" id="hud-weapon-name">Red Bird Carbine</span>
+                            <div class="hud-ammo" id="hud-ammo">15 / 120</div>
+                        </div>
+                    </div>
+
+                    <div class="hud-wave-indicator">
+                        <span class="hud-wave-title">Z-Wave</span>
+                        <span class="hud-wave-number" id="hud-wave-number">1</span>
+                    </div>
+                </div>
+
+                <!-- Game Over Overlay Screen -->
+                <div class="gameover-overlay" id="gameover-screen">
+                    <h2 class="gameover-title">Decimated</h2>
+                    <p class="gameover-subtitle">Zombie Biomass Overwhelmed Your Coordinates</p>
+                    
+                    <div class="gameover-stats-grid">
+                        <div class="gameover-stat-card">
+                            <span class="gameover-stat-lbl">Final Wave Survived</span>
+                            <span class="gameover-stat-val" id="go-wave">1</span>
+                        </div>
+                        <div class="gameover-stat-card">
+                            <span class="gameover-stat-lbl">Points Transmitted</span>
+                            <span class="gameover-stat-val gold" id="go-score">0</span>
+                        </div>
+                    </div>
+
+                    <div class="gameover-actions">
+                        <button class="gameover-btn gold" onclick="relaunchSelector()">Arsenal Options</button>
+                        <button class="gameover-btn" onclick="restartMatch()">Deploy Again</button>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Gameplay Controller Script -->
+    <script>
+        // --- Web Audio Synthesizer Engine ---
+        class SoundEngine {
+            constructor() {
+                this.ctx = null;
+                this.enabled = false;
+            }
+
+            init() {
+                if (this.ctx) return;
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContextClass();
+                this.enabled = true;
+            }
+
+            playShoot(type) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                if (type === 'carbine') {
+                    // Snap snap
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(80, now + 0.12);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.15);
+                } else if (type === 'blaster') {
+                    // Cute pop
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(250, now + 0.08);
+                    gain.gain.setValueAtTime(0.18, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.1);
+                } else if (type === 'bazooka') {
+                    // Deep boom explosion rumble
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(20, now + 0.45);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                    
+                    // Lowpass filter for muffled explosion
+                    const lp = this.ctx.createBiquadFilter();
+                    lp.type = 'lowpass';
+                    lp.frequency.setValueAtTime(200, now);
+                    
+                    osc.connect(lp);
+                    lp.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    
+                    osc.start();
+                    osc.stop(now + 0.5);
+                }
+            }
+
+            playHit() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                // Slurpy squish hit
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(200, now);
+                osc.frequency.linearRampToValueAtTime(50, now + 0.1);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.15);
+            }
+
+            playReload() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                // Double click
+                const makeClick = (delay, pitch) => {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(pitch, now + delay);
+                    gain.gain.setValueAtTime(0.1, now + delay);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + delay + 0.05);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start(now + delay);
+                    osc.stop(now + delay + 0.06);
+                }
+                makeClick(0, 300);
+                makeClick(0.15, 450);
+            }
+
+            playPowerUp() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                // Arpeggio chime
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(440, now);
+                osc.frequency.setValueAtTime(554.37, now + 0.1);
+                osc.frequency.setValueAtTime(659.25, now + 0.2);
+                osc.frequency.setValueAtTime(880, now + 0.3);
+                gain.gain.setValueAtTime(0.15, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                osc.stop(now + 0.5);
+            }
+
+            playGameOver() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                // Low pitched descending sweep
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(30, now + 1.2);
+                gain.gain.setValueAtTime(0.3, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 1.2);
+                
+                const lp = this.ctx.createBiquadFilter();
+                lp.type = 'lowpass';
+                lp.frequency.setValueAtTime(150, now);
+                
+                osc.connect(lp);
+                lp.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(now + 1.3);
+            }
+        }
+
+        const audio = new SoundEngine();
+
+        // --- Character Canvas Previews ---
+        function drawRedBirdPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            
+            // Red head body
+            ctx.fillStyle = '#ff3344';
+            ctx.beginPath();
+            ctx.arc(25, 25, 18, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // Belly (white)
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.ellipse(25, 33, 12, 8, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(19, 21, 4, 0, Math.PI * 2);
+            ctx.arc(31, 21, 4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(20, 21, 1.8, 0, Math.PI * 2);
+            ctx.arc(30, 21, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyebrows (V-shape angry)
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(14, 16); ctx.lineTo(23, 20);
+            ctx.moveTo(36, 16); ctx.lineTo(27, 20);
+            ctx.stroke();
+
+            // Beak
+            ctx.fillStyle = '#ffcc00';
+            ctx.strokeStyle = '#d4aa00';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(25, 23);
+            ctx.lineTo(29, 29);
+            ctx.lineTo(21, 29);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawHelloKittyPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            
+            ctx.save();
+            ctx.translate(25, 25);
+
+            // Ears
+            ctx.fillStyle = '#FFF';
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 1.5;
+            
+            ctx.beginPath();
+            ctx.moveTo(-16, -5); ctx.lineTo(-17, -18); ctx.lineTo(-6, -11); // Left ear
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(6, -11); ctx.lineTo(17, -18); ctx.lineTo(16, -5); // Right ear
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // White oval head
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, 18, 13, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Eyes (black dots)
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-7, 0, 2, 0, Math.PI * 2);
+            ctx.arc(7, 0, 2, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose (yellow dot)
+            ctx.fillStyle = '#ffcc00';
+            ctx.beginPath();
+            ctx.arc(0, 4, 1.8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Whiskers
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            // Left whiskers
+            ctx.moveTo(-12, 1); ctx.lineTo(-19, 0);
+            ctx.moveTo(-12, 4); ctx.lineTo(-20, 5);
+            // Right whiskers
+            ctx.moveTo(12, 1); ctx.lineTo(19, 0);
+            ctx.moveTo(12, 4); ctx.lineTo(20, 5);
+            ctx.stroke();
+
+            // Red bow on left ear
+            ctx.fillStyle = '#ff3344';
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(-11, -10, 2.5, 0, Math.PI * 2); // Center knot
+            ctx.fill();
+            ctx.stroke();
+            // Left bow wing
+            ctx.beginPath();
+            ctx.ellipse(-15, -12, 4, 2.5, Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.stroke();
+            // Right bow wing
+            ctx.beginPath();
+            ctx.ellipse(-7, -8, 4, 2.5, Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawIsabellePreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawIsabelleHead(ctx, 25, 25, 16);
+        }
+
+        function drawBlackBirdPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawBlackBirdHead(ctx, 25, 25, 16);
+        }
+
+        function drawSonicPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawSonicHead(ctx, 25, 25, 16);
+        }
+
+        // Initialize previews on load
+        window.addEventListener('load', () => {
+            drawRedBirdPreview('canvas-preview-red');
+            drawHelloKittyPreview('canvas-preview-kitty');
+            drawIsabellePreview('canvas-preview-isabelle');
+            drawBlackBirdPreview('canvas-preview-black');
+            drawSonicPreview('canvas-preview-sonic');
+            
+            // Console log animation simulate
+            runIntroLogs();
+        });
+
+        // --- Animated Intro Console logs ---
+        const logLines = [
+            "Z-DAY TERMINAL CONSOLE STACK VERIFIED.",
+            "CONNECTING ORBITAL SAT-LINK PROTOCOL...",
+            "LOADING ASSETS: RED BIRD VECTORS DETECTED.",
+            "LOADING ASSETS: HELLO KITTY COGNITIVE MATRICES DETECTED.",
+            "LOADING ASSETS: ISABELLE PARADIGM DEPLOYED.",
+            "LOADING ASSETS: BLACK BIRD ORDNANCE INTEGRATED.",
+            "LOADING ASSETS: SONIC VELOCITY VECTOR ESTABLISHED.",
+            "WEAPON CHECK: RED BIRD CARBINE CONNECTED.",
+            "WEAPON CHECK: HELLO KITTY SMG BUBBLE ENGINE ONLINE.",
+            "WEAPON CHECK: EXPLOSIVE SLING-SHOT BAZOOKA INTEGRATED.",
+            "DANGER: OUTPOST INFESTATION DETECTED.",
+            "LOADOUT PROFILE AUTHORIZATION REQUIRED..."
+        ];
+
+        function runIntroLogs() {
+            const logBox = document.getElementById('console-log');
+            const fill = document.getElementById('loader-fill');
+            let idx = 0;
+            let percent = 0;
+
+            const printLine = () => {
+                if (idx < logLines.length) {
+                    const el = document.createElement('p');
+                    el.className = 'console-line';
+                    if (idx > 4) el.classList.add('green');
+                    el.textContent = `> ${logLines[idx]}`;
+                    logBox.appendChild(el);
+                    logBox.scrollTop = logBox.scrollHeight;
+                    idx++;
+                    
+                    // Increment loader bar
+                    percent = (idx / logLines.length) * 100;
+                    fill.style.width = `${percent}%`;
+                    
+                    setTimeout(printLine, Math.random() * 400 + 200);
+                } else {
+                    // Switch screen
+                    setTimeout(() => {
+                        document.getElementById('loading-screen').classList.add('hidden');
+                        document.getElementById('selector-screen').classList.remove('hidden');
+                    }, 500);
+                }
+            };
+            setTimeout(printLine, 300);
+        }
+
+        // --- Selection Variables & Logic ---
+        let selectedCharacter = 'red-bird';
+        let selectedWeapon = 'carbine';
+
+        function selectChar(charId) {
+            selectedCharacter = charId;
+            document.querySelectorAll('.char-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`char-${charId}`).classList.add('selected');
+        }
+
+        function goToCharacterSelect() {
+            document.getElementById('selector-screen').classList.add('hidden');
+            document.getElementById('char-select-screen').classList.remove('hidden');
+            
+            // Draw selector previews to ensure canvas frames render
+            drawRedBirdPreview('canvas-preview-red');
+            drawHelloKittyPreview('canvas-preview-kitty');
+            drawIsabellePreview('canvas-preview-isabelle');
+            drawBlackBirdPreview('canvas-preview-black');
+            drawSonicPreview('canvas-preview-sonic');
+        }
+
+        function goToWeaponSelect() {
+            document.getElementById('char-select-screen').classList.add('hidden');
+            document.getElementById('selector-screen').classList.remove('hidden');
+        }
+
+        function selectWeapon(weapId) {
+            selectedWeapon = weapId;
+            document.querySelectorAll('.weapon-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`weap-${weapId}`).classList.add('selected');
+        }
+
+        // --- Game Setup & Loop ---
+        const canvas = document.getElementById('game-canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 800;
+        canvas.height = 600;
+
+        // Weapon Arsenal Specifications
+        const WEAPONS = {
+            carbine: {
+                name: "Red Bird Carbine",
+                damage: 80,
+                fireDelay: 330, // ms
+                capacity: 15,
+                reloadTime: 1200, // ms
+                reserve: 90,
+                type: 'semi',
+                bulletSpeed: 10,
+                color: '#ff3344'
+            },
+            blaster: {
+                name: "Kitty Bubble SMG",
+                damage: 30,
+                fireDelay: 100, // ms (fully auto)
+                capacity: 45,
+                reloadTime: 1500, // ms
+                reserve: 240,
+                type: 'auto',
+                bulletSpeed: 12,
+                color: '#ff69b4'
+            },
+            bazooka: {
+                name: "Sling-Shot Bazooka",
+                damage: 250,
+                fireDelay: 1200,
+                capacity: 5,
+                reloadTime: 2200,
+                reserve: 15,
+                type: 'heavy',
+                bulletSpeed: 6.5,
+                color: '#ffcc00'
+            }
+        };
+
+        // Game State Variables
+        let gameState = 'SELECTOR';
+        let player = {
+            x: 400,
+            y: 300,
+            radius: 18,
+            speed: 3.5,
+            health: 100,
+            maxHealth: 100,
+            angle: 0,
+            activeWeapon: null,
+            ammoInMag: 0,
+            ammoReserve: 0,
+            reloading: false,
+            reloadProgress: 0,
+            score: 0,
+            kills: 0
+        };
+
+        let keys = {};
+        let mouse = { x: 0, y: 0, down: false };
+        let bullets = [];
+        let zombies = [];
+        let particles = [];
+        let drops = [];
+        let explosions = [];
+
+        let waveNumber = 1;
+        let waveZombiesToSpawn = 8;
+        let waveZombiesSpawned = 0;
+        let waveZombiesRemaining = 8;
+        let waveIntermission = false;
+        let intermissionTimer = 5;
+        let lastZombieSpawnTime = 0;
+        let lastShotTime = 0;
+        let reloadStartTime = 0;
+
+        let doublePointsActive = false;
+        let doublePointsEndTime = 0;
+        let instaKillActive = false;
+        let instaKillEndTime = 0;
+
+        // Input Bindings
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            keys[e.code] = true;
+            if (e.key === 'r' || e.key === 'R' || e.code === 'KeyR') {
+                triggerManualReload();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+            keys[e.code] = false;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            // Scale coordinate maps
+            mouse.x = (e.clientX - rect.left) * (canvas.width / rect.width);
+            mouse.y = (e.clientY - rect.top) * (canvas.height / rect.height);
+        });
+
+        window.addEventListener('mousedown', (e) => {
+            if (gameState === 'PLAYING') {
+                mouse.down = true;
+                if (player.activeWeapon && player.activeWeapon.type === 'semi') {
+                    shootActiveWeapon();
+                }
+            }
+        });
+
+        window.addEventListener('mouseup', () => {
+            mouse.down = false;
+        });
+
+        function selectCharPreviewHUD() {
+            // Draw thumbnail in HUD avatar canvas
+            if (selectedCharacter === 'red-bird') {
+                drawRedBirdPreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'hello-kitty') {
+                drawHelloKittyPreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'isabelle') {
+                drawIsabellePreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'black-bird') {
+                drawBlackBirdPreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'sonic') {
+                drawSonicPreview('hud-avatar-canvas');
+            }
+        }
+
+        // Start match
+        function startGame() {
+            audio.init();
+            
+            gameState = 'PLAYING';
+            document.getElementById('selector-screen').classList.add('hidden');
+            document.getElementById('char-select-screen').classList.add('hidden');
+            document.getElementById('game-screen').classList.remove('hidden');
+
+            // Set up player
+            player.x = 400;
+            player.y = 300;
+            player.health = 100;
+            player.maxHealth = 100;
+            player.score = 0;
+            player.kills = 0;
+            
+            const spec = WEAPONS[selectedWeapon];
+            player.activeWeapon = JSON.parse(JSON.stringify(spec)); // Deep copy weapon spec
+            player.ammoInMag = player.activeWeapon.capacity;
+            player.ammoReserve = player.activeWeapon.reserve;
+            player.reloading = false;
+            
+            // Set base stats and passive modifiers based on selected operative
+            player.hasRingShield = false;
+            player.ringShieldRegenTimer = 0;
+            player.invincibilityFrames = 0;
+
+            if (selectedCharacter === 'red-bird') {
+                player.speed = 3.5;
+            } else if (selectedCharacter === 'hello-kitty') {
+                player.speed = 3.8;
+            } else if (selectedCharacter === 'isabelle') {
+                player.speed = 4.3; // Town Support: +20% movement speed (approx 3.6 * 1.2)
+                player.activeWeapon.reloadTime *= 0.85; // Town Support: +15% reload speed (15% faster reload duration)
+            } else if (selectedCharacter === 'black-bird') {
+                player.speed = 3.3; // Volatile Force: slightly slower base speed
+            } else if (selectedCharacter === 'sonic') {
+                player.speed = 4.4; // Sonic: high base speed
+                player.hasRingShield = true; // Ring Shield active
+            }
+
+            // Setup Wave 1
+            waveNumber = 1;
+            setupWave();
+            selectCharPreviewHUD();
+
+            // Clear entities
+            bullets = [];
+            zombies = [];
+            particles = [];
+            drops = [];
+            explosions = [];
+
+            // Spawn first particle sparks
+            spawnExplosiveSparks(400, 300, '#ff3344', 15);
+            
+            // Sync HUD initial
+            updateHUD();
+
+            // Run loop
+            lastShotTime = 0;
+            requestAnimationFrame(gameLoop);
+        }
+
+        function restartMatch() {
+            document.getElementById('gameover-screen').classList.remove('active');
+            startGame();
+        }
+
+        function relaunchSelector() {
+            document.getElementById('gameover-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('hidden');
+            document.getElementById('selector-screen').classList.remove('hidden');
+            gameState = 'SELECTOR';
+        }
+
+        function setupWave() {
+            waveZombiesToSpawn = 6 + (waveNumber * 4);
+            waveZombiesSpawned = 0;
+            waveZombiesRemaining = waveZombiesToSpawn;
+            waveIntermission = false;
+            document.getElementById('hud-intermission').classList.remove('active');
+            updateHUD();
+        }
+
+        function startIntermission() {
+            waveIntermission = true;
+            intermissionTimer = 5;
+            document.getElementById('hud-intermission').classList.add('active');
+            document.getElementById('intermission-timer').textContent = intermissionTimer;
+            
+            const countTimer = setInterval(() => {
+                if (gameState !== 'PLAYING') {
+                    clearInterval(countTimer);
+                    return;
+                }
+                intermissionTimer--;
+                document.getElementById('intermission-timer').textContent = intermissionTimer;
+                
+                if (intermissionTimer <= 0) {
+                    clearInterval(countTimer);
+                    waveNumber++;
+                    setupWave();
+                }
+            }, 1000);
+        }
+
+        // --- Weapon shoot logic ---
+        function shootActiveWeapon() {
+            if (player.reloading) return;
+            
+            const now = Date.now();
+            let effectiveFireDelay = player.activeWeapon.fireDelay;
+            if (selectedCharacter === 'red-bird' && player.health < 50) {
+                effectiveFireDelay *= 0.65; // Anger Boost: 35% faster fire rate (reduces delay)
+            }
+            if (now - lastShotTime < effectiveFireDelay) return;
+            
+            if (player.ammoInMag <= 0) {
+                triggerManualReload();
+                return;
+            }
+
+            // Create bullet
+            const angle = player.angle;
+            const muzzleOffset = player.radius + 8;
+            const bx = player.x + Math.cos(angle) * muzzleOffset;
+            const by = player.y + Math.sin(angle) * muzzleOffset;
+            
+            const speed = player.activeWeapon.bulletSpeed;
+            let bulletColor = player.activeWeapon.color;
+            let isMiniExplosive = false;
+            if (selectedCharacter === 'black-bird' && selectedWeapon !== 'bazooka' && Math.random() < 0.25) {
+                isMiniExplosive = true;
+                bulletColor = '#ffa500'; // orange glowing bullet
+            }
+
+            bullets.push({
+                x: bx,
+                y: by,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                radius: 4,
+                damage: player.activeWeapon.damage,
+                type: selectedWeapon,
+                color: bulletColor,
+                isMiniExplosive: isMiniExplosive
+            });
+
+            // Play Synth audio
+            audio.playShoot(selectedWeapon);
+
+            player.ammoInMag--;
+            lastShotTime = now;
+            updateHUD();
+        }
+
+        function triggerManualReload() {
+            if (player.reloading || player.ammoInMag === player.activeWeapon.capacity) return;
+            if (player.ammoReserve <= 0) return;
+
+            player.reloading = true;
+            reloadStartTime = Date.now();
+            audio.playReload();
+            updateHUD();
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-score-value').textContent = player.score;
+            document.getElementById('hud-wave-number').textContent = waveNumber;
+            document.getElementById('hud-weapon-name').textContent = player.activeWeapon.name;
+            
+            const healthPercent = Math.max(0, (player.health / player.maxHealth) * 100);
+            document.getElementById('health-bar-fill').style.width = `${healthPercent}%`;
+
+            const ammoEl = document.getElementById('hud-ammo');
+            if (player.reloading) {
+                ammoEl.innerHTML = '<span class="hud-reload-warning">RELOADING...</span>';
+            } else {
+                ammoEl.textContent = `${player.ammoInMag} / ${player.ammoReserve}`;
+            }
+        }
+
+        // --- Spawns Space Zombies ---
+        function spawnZombie() {
+            if (waveZombiesSpawned >= waveZombiesToSpawn) return;
+            
+            // Randomly choose an outer edge border position
+            let zx, zy;
+            if (Math.random() > 0.5) {
+                zx = Math.random() > 0.5 ? -30 : canvas.width + 30;
+                zy = Math.random() * canvas.height;
+            } else {
+                zx = Math.random() * canvas.width;
+                zy = Math.random() > 0.5 ? -30 : canvas.height + 30;
+            }
+
+            // Zombie type toggle: Hello Kitty style zombie or Angry Bird zombie
+            const type = Math.random() > 0.5 ? 'evil-kitty' : 'evil-bird';
+            const baseHp = 100 + (waveNumber * 15);
+            const speed = 1.0 + (Math.random() * 0.4) + (waveNumber * 0.08);
+
+            zombies.push({
+                x: zx,
+                y: zy,
+                radius: 17,
+                health: baseHp,
+                maxHealth: baseHp,
+                speed: speed,
+                vx: 0,
+                vy: 0,
+                type: type,
+                flashTime: 0
+            });
+
+            waveZombiesSpawned++;
+            lastZombieSpawnTime = Date.now();
+        }
+
+        // Spawns power-up drop
+        function spawnDrop(x, y) {
+            let dropChance = 0.18;
+            if (selectedCharacter === 'hello-kitty') {
+                dropChance = 0.22; // Sweet Healing: higher drop rate
+            }
+            if (Math.random() > dropChance) return;
+            
+            const types = ['health', 'ammo', 'double-points', 'instakill'];
+            let chosenType;
+            if (selectedCharacter === 'hello-kitty' && Math.random() < 0.4) {
+                chosenType = 'health'; // Sweet Healing: higher chance for health kits
+            } else {
+                chosenType = types[Math.floor(Math.random() * types.length)];
+            }
+            
+            drops.push({
+                x: x,
+                y: y,
+                radius: 14,
+                type: chosenType,
+                timeCreated: Date.now(),
+                duration: 12000 // 12 seconds flash limit
+            });
+        }
+
+        function triggerPowerUp(type) {
+            audio.playPowerUp();
+            const announcer = document.getElementById('powerup-announcer');
+
+            if (type === 'health') {
+                let healAmt = 35;
+                if (selectedCharacter === 'hello-kitty') {
+                    healAmt = 40; // Sweet Healing restores 40 HP
+                }
+                player.health = Math.min(player.maxHealth, player.health + healAmt);
+                announcer.textContent = `VITALS INJECTED (+${healAmt} HP)`;
+            } else if (type === 'ammo') {
+                player.ammoReserve = player.activeWeapon.reserve;
+                player.ammoInMag = player.activeWeapon.capacity;
+                announcer.textContent = "MAX AMMO RESTORED";
+            } else if (type === 'double-points') {
+                doublePointsActive = true;
+                doublePointsEndTime = Date.now() + 15000; // 15 seconds
+                announcer.textContent = "DOUBLE POINTS ACTIVE (15S)";
+            } else if (type === 'instakill') {
+                instaKillActive = true;
+                instaKillEndTime = Date.now() + 15000;
+                announcer.textContent = "INSTA-KILL ACTIVE (15S)";
+            }
+
+            // Display HUD banner
+            announcer.classList.add('active');
+            setTimeout(() => {
+                announcer.classList.remove('active');
+            }, 3000);
+
+            updateHUD();
+        }
+
+        // --- Game Update Logic ---
+        function updatePhysics() {
+            if (gameState !== 'PLAYING') return;
+
+            // Invincibility frames update
+            if (player.invincibilityFrames && player.invincibilityFrames > 0) {
+                player.invincibilityFrames--;
+            }
+
+            // Ring Shield regeneration check
+            if (selectedCharacter === 'sonic' && !player.hasRingShield) {
+                if (player.ringShieldRegenTimer > 0) {
+                    player.ringShieldRegenTimer--;
+                    if (player.ringShieldRegenTimer <= 0) {
+                        player.hasRingShield = true;
+                        audio.playPowerUp(); // chime sound on shield recharge
+                        spawnExplosiveSparks(player.x, player.y, '#ffd700', 15);
+                    }
+                }
+            }
+
+            // 1. Reload Timer Check
+            if (player.reloading) {
+                const elapsed = Date.now() - reloadStartTime;
+                if (elapsed >= player.activeWeapon.reloadTime) {
+                    // Refill mag
+                    const needed = player.activeWeapon.capacity - player.ammoInMag;
+                    const transfer = Math.min(needed, player.ammoReserve);
+                    player.ammoInMag += transfer;
+                    player.ammoReserve -= transfer;
+                    player.reloading = false;
+                    updateHUD();
+                }
+            }
+
+            // Auto-fire automatic guns
+            if (mouse.down && player.activeWeapon && player.activeWeapon.type === 'auto') {
+                shootActiveWeapon();
+            }
+
+            // 2. Active power-up timers
+            const now = Date.now();
+            if (doublePointsActive && now > doublePointsEndTime) doublePointsActive = false;
+            if (instaKillActive && now > instaKillEndTime) instaKillActive = false;
+
+            // 3. Player Movement WASD/Arrows
+            let moveX = 0;
+            let moveY = 0;
+            if (keys['w'] || keys['W'] || keys['ArrowUp']) moveY -= 1;
+            if (keys['s'] || keys['S'] || keys['ArrowDown']) moveY += 1;
+            if (keys['a'] || keys['A'] || keys['ArrowLeft']) moveX -= 1;
+            if (keys['d'] || keys['D'] || keys['ArrowRight']) moveX += 1;
+
+            if (moveX !== 0 || moveY !== 0) {
+                // Diagonal speed normalize
+                const len = Math.sqrt(moveX * moveX + moveY * moveY);
+                let currentSpeed = player.speed;
+                if (keys['Shift']) {
+                    currentSpeed *= 1.45; // Sprint modifier
+                }
+                moveX = (moveX / len) * currentSpeed;
+                moveY = (moveY / len) * currentSpeed;
+                
+                player.x += moveX;
+                player.y += moveY;
+            }
+
+            // Aiming angle towards mouse
+            player.angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
+
+            // Screen bounds clamp
+            player.x = Math.max(player.radius, Math.min(canvas.width - player.radius, player.x));
+            player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
+
+            // 4. Spawns Wave Zombies
+            if (!waveIntermission && waveZombiesSpawned < waveZombiesToSpawn) {
+                const zDelay = Math.max(500, 2000 - (waveNumber * 100)); // Spawn faster on higher waves
+                if (now - lastZombieSpawnTime > zDelay) {
+                    spawnZombie();
+                }
+            }
+
+            // 5. Update space zombie tracking
+            zombies.forEach((z, zIdx) => {
+                let dx = player.x - z.x;
+                let dy = player.y - z.y;
+                let dist = Math.hypot(dx, dy);
+
+                if (dist > 1) {
+                    z.vx = (dx / dist) * z.speed;
+                    z.vy = (dy / dist) * z.speed;
+                }
+                
+                z.x += z.vx;
+                z.y += z.vy;
+
+                if (z.flashTime > 0) z.flashTime--;
+
+                // Elastic collision avoidance between zombies
+                zombies.forEach((other, oIdx) => {
+                    if (zIdx !== oIdx) {
+                        const odx = other.x - z.x;
+                        const ody = other.y - z.y;
+                        const odist = Math.hypot(odx, ody);
+                        const min = z.radius + other.radius;
+                        if (odist < min) {
+                            // push away slightly
+                            const pushAngle = Math.atan2(ody, odx);
+                            const overlap = min - odist;
+                            z.x -= Math.cos(pushAngle) * overlap * 0.5;
+                            z.y -= Math.sin(pushAngle) * overlap * 0.5;
+                            other.x += Math.cos(pushAngle) * overlap * 0.5;
+                            other.y += Math.sin(pushAngle) * overlap * 0.5;
+                        }
+                    }
+                });
+
+                // Zombie hits Player
+                if (dist < (player.radius + z.radius)) {
+                    if (!player.invincibilityFrames || player.invincibilityFrames <= 0) {
+                        if (selectedCharacter === 'sonic' && player.hasRingShield) {
+                            // Ring Shield negates hit
+                            player.hasRingShield = false;
+                            player.ringShieldRegenTimer = 600; // 10 seconds regen (600 frames at 60fps)
+                            player.invincibilityFrames = 60; // 1 second invincibility
+                            
+                            audio.playPowerUp(); // chime sound for shield loss
+                            spawnExplosiveSparks(player.x, player.y, '#ffd700', 25); // yellow ring sparks
+                            
+                            // Push zombie back significantly
+                            z.x -= z.vx * 15;
+                            z.y -= z.vy * 15;
+                        } else {
+                            // Take damage
+                            player.health -= 15; // Flat damage (instead of continuous melting)
+                            player.invincibilityFrames = 45; // 0.75 seconds invincibility
+                            
+                            audio.playHit();
+                            
+                            // Push player back slightly
+                            player.x += z.vx * 10;
+                            player.y += z.vy * 10;
+                            
+                            updateHUD();
+
+                            if (player.health <= 0) {
+                                triggerGameOver();
+                            }
+                        }
+                    }
+                }
+            });
+
+            // 6. Update Bullets movement
+            bullets.forEach(b => {
+                b.x += b.vx;
+                b.y += b.vy;
+
+                // Out of bounds check
+                if (b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height) {
+                    b.toRemove = true;
+                    return;
+                }
+
+                // Check collision with zombies
+                zombies.forEach((z, zIdx) => {
+                    if (z.toRemove) return;
+                    const bDist = Math.hypot(z.x - b.x, z.y - b.y);
+                    if (bDist < (z.radius + b.radius)) {
+                        // Bullet hits zombie!
+                        let damageDealt = b.damage;
+                        if (instaKillActive) damageDealt = z.maxHealth; // Instant death
+
+                        z.health -= damageDealt;
+                        z.flashTime = 5;
+                        audio.playHit();
+
+                        // Sparks/blood bursts
+                        const sparkColor = z.type === 'evil-kitty' ? '#ff69b4' : '#ff3344';
+                        spawnExplosiveSparks(b.x, b.y, sparkColor, 8);
+
+                        // If bazooka type weapon, trigger explosion burst
+                        if (b.type === 'bazooka') {
+                            triggerBazookaExplosion(b.x, b.y);
+                        } else if (b.isMiniExplosive) {
+                            triggerMiniExplosion(b.x, b.y);
+                        }
+
+                        // Remove bullet
+                        b.toRemove = true;
+
+                        // Check if zombie dead
+                        if (z.health <= 0) {
+                            z.toRemove = true;
+                            
+                            // Calculate points
+                            let points = 50;
+                            if (doublePointsActive) points = 100;
+                            player.score += points;
+                            player.kills++;
+                            
+                            spawnDrop(z.x, z.y);
+                            waveZombiesRemaining--;
+                            
+                            updateHUD();
+
+                            // Trigger wave end checks
+                            if (waveZombiesRemaining <= 0) {
+                                startIntermission();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // 7. Update Explosion area of effects
+            explosions.forEach(exp => {
+                exp.radius += 4;
+                exp.alpha -= 0.05;
+                if (exp.alpha <= 0) {
+                    exp.toRemove = true;
+                    return;
+                }
+
+                // Damage surrounding zombies inside radius (AOE logic)
+                zombies.forEach((z, zIdx) => {
+                    if (z.toRemove) return;
+                    const distToExp = Math.hypot(z.x - exp.x, z.y - exp.y);
+                    if (distToExp < (exp.radius + z.radius) && !exp.damagedIds.includes(zIdx)) {
+                        z.health -= exp.damage;
+                        z.flashTime = 5;
+                        exp.damagedIds.push(zIdx);
+
+                        if (z.health <= 0) {
+                            z.toRemove = true;
+                            let points = 50;
+                            if (doublePointsActive) points = 100;
+                            player.score += points;
+                            player.kills++;
+                            spawnDrop(z.x, z.y);
+                            waveZombiesRemaining--;
+                            updateHUD();
+                            
+                            if (waveZombiesRemaining <= 0) {
+                                startIntermission();
+                            }
+                        }
+                    }
+                });
+            });
+
+            // 8. Collect power-up drops
+            drops.forEach(d => {
+                const distToPlayer = Math.hypot(player.x - d.x, player.y - d.y);
+                if (distToPlayer < (player.radius + d.radius)) {
+                    triggerPowerUp(d.type);
+                    d.toRemove = true;
+                    return;
+                }
+
+                // Expire drops over time
+                if (Date.now() - d.timeCreated > d.duration) {
+                    d.toRemove = true;
+                }
+            });
+
+            // 9. Update particles alpha decay
+            particles.forEach(p => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.02;
+                if (p.alpha <= 0) {
+                    p.toRemove = true;
+                }
+            });
+
+            // Clean up entities marked for removal
+            bullets = bullets.filter(b => !b.toRemove);
+            zombies = zombies.filter(z => !z.toRemove);
+            explosions = explosions.filter(exp => !exp.toRemove);
+            drops = drops.filter(d => !d.toRemove);
+            particles = particles.filter(p => !p.toRemove);
+        }
+
+        // Bazooka explosion event trigger
+        function triggerBazookaExplosion(x, y) {
+            let maxRad = 75;
+            let dmg = 150;
+            if (selectedCharacter === 'black-bird') {
+                maxRad = 110; // Volatile Force: +40% blast radius
+                dmg = 185;
+            }
+            explosions.push({
+                x: x,
+                y: y,
+                radius: 10,
+                maxRadius: maxRad,
+                damage: dmg,
+                alpha: 1.0,
+                damagedIds: [] // Track which zombies took damage from this explosion
+            });
+
+            // Play explosion audio
+            audio.playShoot('bazooka');
+            spawnExplosiveSparks(x, y, '#ffcc00', 35);
+        }
+
+        // Mini explosion for Black Bird volatile bullets
+        function triggerMiniExplosion(x, y) {
+            explosions.push({
+                x: x,
+                y: y,
+                radius: 5,
+                maxRadius: 35,
+                damage: 60,
+                alpha: 1.0,
+                damagedIds: []
+            });
+
+            // Short explosion audio
+            audio.playShoot('carbine');
+            spawnExplosiveSparks(x, y, '#ffaa00', 15);
+        }
+
+        function spawnExplosiveSparks(x, y, color, count) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 1.5;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1.0,
+                    color: color,
+                    size: Math.random() * 3 + 1.5
+                });
+            }
+        }
+
+        function triggerGameOver() {
+            gameState = 'GAMEOVER';
+            audio.playGameOver();
+
+            // Populate gameover metrics screen
+            document.getElementById('go-wave').textContent = waveNumber;
+            document.getElementById('go-score').textContent = player.score;
+            document.getElementById('gameover-screen').classList.add('active');
+        }
+
+        // --- Render Functions on Canvas ---
+
+        function drawRedBirdHead(ctx, x, y, radius) {
+            // Main round red head
+            ctx.fillStyle = '#ff3344';
+            ctx.beginPath();
+            ctx.arc(x, y, radius, 0, Math.PI * 2);
+            ctx.fill();
+            
+            // White belly
+            ctx.fillStyle = '#f8fafc';
+            ctx.beginPath();
+            ctx.ellipse(x, y + radius * 0.45, radius * 0.7, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(x - radius * 0.3, y - radius * 0.2, radius * 0.22, 0, Math.PI * 2);
+            ctx.arc(x + radius * 0.3, y - radius * 0.2, radius * 0.22, 0, Math.PI * 2);
+            ctx.fill();
+            
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(x - radius * 0.25, y - radius * 0.2, radius * 0.1, 0, Math.PI * 2);
+            ctx.arc(x + radius * 0.25, y - radius * 0.2, radius * 0.1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Angry eyebrows (angled down)
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 2.5;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(x - radius * 0.6, y - radius * 0.45); ctx.lineTo(x - radius * 0.1, y - radius * 0.25);
+            ctx.moveTo(x + radius * 0.6, y - radius * 0.45); ctx.lineTo(x + radius * 0.1, y - radius * 0.25);
+            ctx.stroke();
+
+            // Beak
+            ctx.fillStyle = '#ffcc00';
+            ctx.strokeStyle = '#d4aa00';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, y - radius * 0.1);
+            ctx.lineTo(x + radius * 0.25, y + radius * 0.22);
+            ctx.lineTo(x - radius * 0.25, y + radius * 0.22);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+        }
+
+        function drawHelloKittyHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Ears
+            ctx.fillStyle = '#FFF';
+            ctx.strokeStyle = '#334155';
+            ctx.lineWidth = 2;
+            
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.9, -radius * 0.3); 
+            ctx.lineTo(-radius * 0.95, -radius * 1.35); 
+            ctx.lineTo(-radius * 0.3, -radius * 0.85); 
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.moveTo(radius * 0.3, -radius * 0.85); 
+            ctx.lineTo(radius * 0.95, -radius * 1.35); 
+            ctx.lineTo(radius * 0.9, -radius * 0.3); 
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            // Main oval head
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, radius, radius * 0.75, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Whiskers
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1.5;
+            ctx.beginPath();
+            // Left whiskers
+            ctx.moveTo(-radius * 0.6, radius * 0.05); ctx.lineTo(-radius * 1.1, 0);
+            ctx.moveTo(-radius * 0.6, radius * 0.25); ctx.lineTo(-radius * 1.15, radius * 0.3);
+            // Right whiskers
+            ctx.moveTo(radius * 0.6, radius * 0.05); ctx.lineTo(radius * 1.1, 0);
+            ctx.moveTo(radius * 0.6, radius * 0.25); ctx.lineTo(radius * 1.15, radius * 0.3);
+            ctx.stroke();
+
+            // Eyes
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.38, 0, radius * 0.11, 0, Math.PI * 2);
+            ctx.arc(radius * 0.38, 0, radius * 0.11, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Yellow nose
+            ctx.fillStyle = '#ffcc00';
+            ctx.beginPath();
+            ctx.arc(0, radius * 0.22, radius * 0.1, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Red bow on top-right ear
+            ctx.fillStyle = '#ff3344';
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1.2;
+            ctx.beginPath();
+            ctx.arc(-radius * 0.6, -radius * 0.7, radius * 0.18, 0, Math.PI * 2); // Center knot
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.9, -radius * 0.85, radius * 0.25, radius * 0.18, Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.stroke();
+            
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.3, -radius * 0.55, radius * 0.25, radius * 0.18, Math.PI/4, 0, Math.PI*2);
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawIsabelleHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Floppy ears on the sides
+            ctx.fillStyle = '#fce38a'; // yellow hair/fur
+            ctx.strokeStyle = '#c5a059';
+            ctx.lineWidth = 1.5;
+            
+            // Left ear
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.9, radius * 0.1, radius * 0.4, radius * 0.7, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Right ear
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.9, radius * 0.1, radius * 0.4, radius * 0.7, -Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Red hair band and top bun
+            // Hair bun on top
+            ctx.fillStyle = '#fce38a';
+            ctx.beginPath();
+            ctx.arc(0, -radius * 1.0, radius * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Hair band
+            ctx.fillStyle = '#ff3344'; // Red band
+            ctx.beginPath();
+            ctx.ellipse(0, -radius * 0.75, radius * 0.35, radius * 0.1, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Gold bell on top hair bun
+            ctx.fillStyle = '#ffcc00'; // gold
+            ctx.beginPath();
+            ctx.arc(radius * 0.2, -radius * 1.0, radius * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Main head shape (slightly pear-shaped, wider at bottom cheeks)
+            ctx.fillStyle = '#fce38a';
+            ctx.beginPath();
+            ctx.ellipse(0, 0, radius, radius * 0.85, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // White snout/muzzle patch
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.ellipse(0, radius * 0.25, radius * 0.5, radius * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Eyes
+            ctx.fillStyle = '#2d3748'; // dark grey
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.35, -radius * 0.1, radius * 0.12, radius * 0.2, 0, 0, Math.PI * 2);
+            ctx.ellipse(radius * 0.35, -radius * 0.1, radius * 0.12, radius * 0.2, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White eye highlights
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.32, -radius * 0.18, radius * 0.04, 0, Math.PI * 2);
+            ctx.arc(radius * 0.38, -radius * 0.18, radius * 0.04, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pink cheeks
+            ctx.fillStyle = '#ff8da1'; // pink cheeks
+            ctx.beginPath();
+            ctx.arc(-radius * 0.65, radius * 0.2, radius * 0.12, 0, Math.PI * 2);
+            ctx.arc(radius * 0.65, radius * 0.2, radius * 0.12, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(0, radius * 0.1, radius * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Smile line under nose
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(0, radius * 0.18, radius * 0.1, 0, Math.PI);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawBlackBirdHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Fuse on top
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 3;
+            ctx.beginPath();
+            ctx.moveTo(0, -radius);
+            ctx.lineTo(0, -radius - 8);
+            ctx.stroke();
+
+            // Fuse tip (yellow)
+            ctx.fillStyle = '#ffcc00';
+            ctx.beginPath();
+            ctx.arc(0, -radius - 10, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Main round black body
+            ctx.fillStyle = '#1e293b'; // dark grey/black
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Grey belly (ellipse at bottom)
+            ctx.fillStyle = '#64748b';
+            ctx.beginPath();
+            ctx.ellipse(0, radius * 0.45, radius * 0.65, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Yellow spot on forehead
+            ctx.fillStyle = '#ffaa00';
+            ctx.beginPath();
+            ctx.arc(0, -radius * 0.5, radius * 0.15, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eyes
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.28, -radius * 0.15, radius * 0.2, 0, Math.PI * 2);
+            ctx.arc(radius * 0.28, -radius * 0.15, radius * 0.2, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.22, -radius * 0.15, radius * 0.08, 0, Math.PI * 2);
+            ctx.arc(radius * 0.22, -radius * 0.15, radius * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Angry red eyebrows
+            ctx.strokeStyle = '#ff3344';
+            ctx.lineWidth = 2;
+            ctx.lineCap = 'round';
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.55, -radius * 0.35); ctx.lineTo(-radius * 0.1, -radius * 0.2);
+            ctx.moveTo(radius * 0.55, -radius * 0.35); ctx.lineTo(radius * 0.1, -radius * 0.2);
+            ctx.stroke();
+
+            // Beak (yellow)
+            ctx.fillStyle = '#ffcc00';
+            ctx.strokeStyle = '#d4aa00';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(0, -radius * 0.05);
+            ctx.lineTo(radius * 0.22, radius * 0.25);
+            ctx.lineTo(-radius * 0.22, radius * 0.25);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
+        function drawSonicHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Spikes pointing backwards (drawn to the left/back of the character relative to facing)
+            ctx.fillStyle = '#1e40af'; // Sonic blue
+            ctx.strokeStyle = '#1e3a8a';
+            ctx.lineWidth = 1.5;
+
+            // We can draw 3 sharp spikes pointing backwards
+            const drawSpike = (ax, ay, bx, by, cx, cy) => {
+                ctx.beginPath();
+                ctx.moveTo(ax, ay);
+                ctx.lineTo(bx, by);
+                ctx.lineTo(cx, cy);
+                ctx.closePath();
+                ctx.fill();
+                ctx.stroke();
+            }
+            
+            // Left-back spikes
+            drawSpike(-radius * 0.7, -radius * 0.4, -radius * 1.3, -radius * 0.8, -radius * 0.9, -radius * 0.1);
+            drawSpike(-radius * 0.9, radius * 0.0, -radius * 1.4, radius * 0.1, -radius * 0.8, radius * 0.4);
+            drawSpike(-radius * 0.7, radius * 0.4, -radius * 1.2, radius * 0.8, -radius * 0.5, radius * 0.7);
+
+            // Ears
+            // Left ear
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.5, -radius * 0.7);
+            ctx.lineTo(-radius * 0.8, -radius * 1.2);
+            ctx.lineTo(-radius * 0.1, -radius * 0.9);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            // Peach inner ear
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.moveTo(-radius * 0.45, -radius * 0.75);
+            ctx.lineTo(-radius * 0.68, -radius * 1.05);
+            ctx.lineTo(-radius * 0.2, -radius * 0.85);
+            ctx.closePath();
+            ctx.fill();
+
+            // Right ear
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.moveTo(radius * 0.2, -radius * 0.9);
+            ctx.lineTo(radius * 0.6, -radius * 1.3);
+            ctx.lineTo(radius * 0.5, -radius * 0.7);
+            ctx.closePath();
+            ctx.fill();
+            ctx.stroke();
+            // Right inner ear
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.moveTo(radius * 0.25, -radius * 0.9);
+            ctx.lineTo(radius * 0.5, -radius * 1.15);
+            ctx.lineTo(radius * 0.42, -radius * 0.75);
+            ctx.closePath();
+            ctx.fill();
+
+            // Main head circle
+            ctx.fillStyle = '#1e40af';
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Peach Muzzle/mouth patch (ellipse at front/bottom)
+            ctx.fillStyle = '#fed7aa';
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.1, radius * 0.3, radius * 0.65, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Black nose tip
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(radius * 0.65, radius * 0.15, radius * 0.12, radius * 0.08, Math.PI / 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // White eyes (fused in center like Sonic)
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            // Left eye part
+            ctx.ellipse(-radius * 0.15, -radius * 0.2, radius * 0.2, radius * 0.35, 0, 0, Math.PI * 2);
+            // Right eye part
+            ctx.ellipse(radius * 0.15, -radius * 0.2, radius * 0.2, radius * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 0.8;
+            ctx.stroke();
+
+            // Green pupils
+            ctx.fillStyle = '#10b981'; // Emerald green
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.08, -radius * 0.15, radius * 0.08, radius * 0.18, 0, 0, Math.PI * 2);
+            ctx.ellipse(radius * 0.18, -radius * 0.15, radius * 0.08, radius * 0.18, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Pupil black centers
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.ellipse(-radius * 0.08, -radius * 0.15, radius * 0.04, radius * 0.09, 0, 0, Math.PI * 2);
+            ctx.ellipse(radius * 0.18, -radius * 0.15, radius * 0.04, radius * 0.09, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.restore();
+        }
+
+        // Draw active frame
+        function drawFrame() {
+            // Clear Arena
+            ctx.fillStyle = '#080c14';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw grid lines
+            ctx.strokeStyle = 'rgba(255, 51, 68, 0.03)';
+            ctx.lineWidth = 1.5;
+            for (let i = 0; i < canvas.width; i += 40) {
+                ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i, canvas.height); ctx.stroke();
+            }
+            for (let i = 0; i < canvas.height; i += 40) {
+                ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
+            }
+
+            // 1. Draw power up drops
+            drops.forEach(d => {
+                ctx.save();
+                
+                // Pulsing glow outer outline
+                const pulse = Math.sin(Date.now() * 0.008) * 3 + 4;
+                ctx.shadowBlur = pulse + 10;
+                
+                if (d.type === 'health') {
+                    ctx.shadowColor = '#2ecc71';
+                    ctx.fillStyle = '#2ecc71';
+                } else if (d.type === 'ammo') {
+                    ctx.shadowColor = '#f1c40f';
+                    ctx.fillStyle = '#f1c40f';
+                } else {
+                    ctx.shadowColor = '#39ff14';
+                    ctx.fillStyle = '#39ff14';
+                }
+                
+                // Draw circle drop pedestal
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                // Draw icon label
+                ctx.fillStyle = '#030508';
+                ctx.font = 'bold 11px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                let iconText = 'P';
+                if (d.type === 'health') iconText = '+';
+                else if (d.type === 'ammo') iconText = 'A';
+                else if (d.type === 'double-points') iconText = '2x';
+                else if (d.type === 'instakill') iconText = 'K';
+                
+                ctx.fillText(iconText, d.x, d.y);
+                ctx.restore();
+            });
+
+            // 2. Draw space zombies (Decaying/evil birds and cats)
+            zombies.forEach(z => {
+                if (z.type === 'evil-kitty') {
+                    // Decayed Hello Kitty zombie rendering
+                    ctx.save();
+                    ctx.translate(z.x, z.y);
+                    
+                    // Rotting green head patch logic
+                    if (z.flashTime > 0) {
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#ff3344';
+                    }
+
+                    // Zombie Ears
+                    ctx.fillStyle = '#4a5d4e'; // Decaying grey-green ears
+                    ctx.strokeStyle = '#39ff14'; // neon radioactive glow outline
+                    ctx.lineWidth = 1.8;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(-z.radius * 0.9, -z.radius * 0.3); ctx.lineTo(-z.radius * 0.95, -z.radius * 1.35); ctx.lineTo(-z.radius * 0.3, -z.radius * 0.85); 
+                    ctx.closePath();
+                    ctx.fill(); ctx.stroke();
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(z.radius * 0.3, -z.radius * 0.85); ctx.lineTo(z.radius * 0.95, -z.radius * 1.35); ctx.lineTo(z.radius * 0.9, -z.radius * 0.3); 
+                    ctx.closePath();
+                    ctx.fill(); ctx.stroke();
+
+                    // main head structure
+                    ctx.fillStyle = z.flashTime > 0 ? '#ff3344' : '#5C7461'; // Rotting green-grey skin
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, z.radius, z.radius * 0.75, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Rotten skin patches
+                    ctx.fillStyle = '#2C3B2F';
+                    ctx.beginPath();
+                    ctx.arc(-8, 3, 4, 0, Math.PI * 2);
+                    ctx.arc(8, -4, 3, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Glowing Red Zombie Eyes
+                    ctx.fillStyle = '#FF0000';
+                    ctx.shadowBlur = 8;
+                    ctx.shadowColor = '#FF0000';
+                    ctx.beginPath();
+                    ctx.arc(-z.radius * 0.38, 0, 3.5, 0, Math.PI * 2);
+                    ctx.arc(z.radius * 0.38, 0, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    
+                    // Stitch mouth
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1.5;
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.moveTo(-6, 5); ctx.lineTo(6, 5);
+                    ctx.moveTo(-3, 3); ctx.lineTo(-3, 7);
+                    ctx.moveTo(2, 3); ctx.lineTo(2, 7);
+                    ctx.stroke();
+
+                    // Torn purple bow on top-right ear
+                    ctx.fillStyle = '#800080'; // Dark decaying purple
+                    ctx.beginPath();
+                    ctx.arc(-z.radius * 0.6, -z.radius * 0.7, z.radius * 0.15, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.restore();
+                } else {
+                    // Decayed/evil Angry Bird zombie rendering
+                    ctx.save();
+                    ctx.translate(z.x, z.y);
+
+                    if (z.flashTime > 0) {
+                        ctx.shadowBlur = 15;
+                        ctx.shadowColor = '#ff3344';
+                    }
+
+                    // Rotting decaying red-grey body
+                    ctx.fillStyle = z.flashTime > 0 ? '#ff3344' : '#8A2D35'; // Dark dried blood red
+                    ctx.strokeStyle = '#39ff14'; // Toxic green glow
+                    ctx.lineWidth = 1.8;
+                    ctx.shadowBlur = 5;
+                    ctx.shadowColor = '#39ff14';
+                    
+                    ctx.beginPath();
+                    ctx.arc(0, 0, z.radius, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+
+                    // Rotting green spots
+                    ctx.fillStyle = '#324e39';
+                    ctx.beginPath();
+                    ctx.arc(0, -z.radius * 0.4, 6, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Radioactive green eyes
+                    ctx.fillStyle = '#39ff14';
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = '#39ff14';
+                    ctx.beginPath();
+                    ctx.arc(-z.radius * 0.3, -z.radius * 0.2, 3.5, 0, Math.PI * 2);
+                    ctx.arc(z.radius * 0.3, -z.radius * 0.2, 3.5, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    // Cracked angry eyebrows
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2.5;
+                    ctx.shadowBlur = 0;
+                    ctx.beginPath();
+                    ctx.moveTo(-z.radius * 0.6, -z.radius * 0.45); ctx.lineTo(-z.radius * 0.1, -z.radius * 0.25);
+                    ctx.moveTo(z.radius * 0.6, -z.radius * 0.45); ctx.lineTo(z.radius * 0.1, -z.radius * 0.25);
+                    ctx.stroke();
+
+                    // Broken cracked yellow beak
+                    ctx.fillStyle = '#B8A44F';
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(0, -z.radius * 0.1);
+                    ctx.lineTo(z.radius * 0.25, z.radius * 0.22);
+                    ctx.lineTo(-z.radius * 0.25, z.radius * 0.22);
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.restore();
+                }
+            });
+            ctx.shadowBlur = 0;
+
+            // 3. Draw Bullets
+            bullets.forEach(b => {
+                ctx.fillStyle = b.color;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = b.color;
+                
+                ctx.beginPath();
+                ctx.arc(b.x, b.y, b.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.shadowBlur = 0;
+
+            // 4. Draw Bazooka AOE explosions
+            explosions.forEach(exp => {
+                ctx.save();
+                
+                const grad = ctx.createRadialGradient(exp.x, exp.y, exp.radius * 0.2, exp.x, exp.y, exp.radius);
+                grad.addColorStop(0, 'rgba(255, 204, 0, ' + exp.alpha + ')');
+                grad.addColorStop(0.3, 'rgba(255, 51, 68, ' + (exp.alpha * 0.8) + ')');
+                grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+                
+                ctx.fillStyle = grad;
+                ctx.beginPath();
+                ctx.arc(exp.x, exp.y, exp.radius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            });
+
+            // 5. Draw Particles (feathers/blood/debris)
+            particles.forEach(p => {
+                ctx.fillStyle = p.color;
+                ctx.globalAlpha = p.alpha;
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                ctx.fill();
+            });
+            ctx.globalAlpha = 1.0;
+
+            // 6. Draw Player Skin (facing angle)
+            ctx.save();
+            ctx.translate(player.x, player.y);
+            ctx.rotate(player.angle);
+
+            if (selectedCharacter === 'red-bird') {
+                drawRedBirdHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'hello-kitty') {
+                drawHelloKittyHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'isabelle') {
+                drawIsabelleHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'black-bird') {
+                drawBlackBirdHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'sonic') {
+                drawSonicHead(ctx, 0, 0, player.radius);
+            }
+
+            // Draw muzzle tip or gun bar
+            ctx.fillStyle = '#475569';
+            ctx.strokeStyle = '#0f172a';
+            ctx.lineWidth = 1;
+            ctx.fillRect(player.radius - 2, -3, 14, 6);
+            ctx.strokeRect(player.radius - 2, -3, 14, 6);
+
+            ctx.restore();
+
+            // Draw Ring Shield around player
+            if (selectedCharacter === 'sonic' && player.hasRingShield) {
+                ctx.save();
+                ctx.strokeStyle = '#ffd700';
+                ctx.lineWidth = 2;
+                ctx.shadowBlur = 8;
+                ctx.shadowColor = '#ffd700';
+                
+                // Pulsing ring effect
+                const ringPulse = Math.sin(Date.now() * 0.01) * 2 + 5;
+                ctx.beginPath();
+                ctx.arc(player.x, player.y, player.radius + ringPulse, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.restore();
+            }
+        }
+
+        // Main match loop
+        function gameLoop() {
+            if (gameState !== 'PLAYING') return;
+
+            updatePhysics();
+            drawFrame();
+
+            requestAnimationFrame(gameLoop);
+        }
+    </script>
 </body>
 </html>
