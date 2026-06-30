@@ -1,0 +1,1870 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voyager - Idea Lab & Interactive Sandbox</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #03050c;
+            --bg-panel: rgba(10, 15, 30, 0.75);
+            --accent-gold: #C5A059;
+            --accent-gold-hover: #e5be75;
+            --accent-cyan: #00F3FF;
+            --accent-green: #2ecc71;
+            --accent-red: #e74c3c;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(197, 160, 89, 0.2);
+            --transition-smooth: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Outfit', sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(155, 89, 182, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(197, 160, 89, 0.05) 0%, transparent 50%),
+                linear-gradient(rgba(255, 255, 255, 0.007) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.007) 1px, transparent 1px);
+            background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Ambient Nebulas */
+        .nebula-purple {
+            position: fixed;
+            top: -10%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(155, 89, 182, 0.06) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .nebula-gold {
+            position: fixed;
+            bottom: -10%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(197, 160, 89, 0.05) 0%, transparent 70%);
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px 20px 20px;
+            box-sizing: border-box;
+        }
+
+        .brand {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .brand h1 {
+            margin: 0;
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            background: linear-gradient(135deg, #FFF 30%, #C5A059 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 2px 15px rgba(197, 160, 89, 0.25));
+        }
+
+        .brand .subtitle {
+            margin: 4px 0 0 0;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 500;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--text-light);
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            letter-spacing: 0.05em;
+            transition: var(--transition-smooth);
+            text-transform: uppercase;
+            text-decoration: none;
+        }
+
+        .nav-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            color: #FFF;
+        }
+
+        .nav-btn.btn-gold {
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+            background: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 0 10px rgba(197, 160, 89, 0.1);
+        }
+
+        .nav-btn.btn-gold:hover {
+            background: var(--accent-gold);
+            color: #03050c;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+
+        /* Dashboard layout */
+        .dashboard-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px 40px 20px;
+            box-sizing: border-box;
+            display: grid;
+            grid-template-columns: 800px 1fr;
+            gap: 24px;
+        }
+
+        @media (max-width: 1200px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+                justify-items: center;
+            }
+            .header {
+                max-width: 800px;
+            }
+        }
+
+        /* Sandbox pedestal */
+        .sandbox-pedestal {
+            background: rgba(5, 8, 17, 0.5);
+            border: 1px solid rgba(197, 160, 89, 0.1);
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            position: relative;
+        }
+
+        .sandbox-canvas-wrapper {
+            position: relative;
+            width: 800px;
+            height: 600px;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: #050811;
+            border: 2px solid var(--accent-gold);
+        }
+
+        #sandbox-canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Canvas HUD elements */
+        .canvas-hud {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            pointer-events: none;
+            font-family: monospace;
+            font-size: 0.85rem;
+            color: var(--text-light);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .canvas-hud span {
+            background: rgba(3, 5, 12, 0.6);
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            width: fit-content;
+        }
+
+        .canvas-instructions {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(8, 12, 26, 0.85);
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            pointer-events: none;
+            backdrop-filter: blur(4px);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .canvas-instructions kbd {
+            background: rgba(255, 255, 255, 0.1);
+            color: #FFF;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: inherit;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Controls Panel */
+        .controls-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .space-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.03);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .space-card h2 {
+            margin: 0 0 16px 0;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            font-weight: 700;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            border-bottom: 1px dashed rgba(197, 160, 89, 0.2);
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-icon {
+            font-size: 1.1rem;
+            color: var(--accent-gold);
+            opacity: 0.8;
+        }
+
+        /* Control Switch & Slider Layouts */
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .switch-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+        }
+
+        .switch-label-block {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .switch-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            letter-spacing: 0.02em;
+            color: #FFF;
+        }
+
+        .switch-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Custom Toggle Switch */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 3px;
+            bottom: 3px;
+            background-color: var(--text-muted);
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: rgba(0, 243, 255, 0.12);
+            border-color: var(--accent-cyan);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(22px);
+            background-color: var(--accent-cyan);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.8);
+        }
+
+        /* Custom Slider styles */
+        .slider-block {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 10px 12px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            margin-top: 4px;
+        }
+
+        .slider-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.72rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .slider-value {
+            color: var(--accent-cyan);
+            font-family: monospace;
+        }
+
+        .slider-input {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 4px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            outline: none;
+            margin: 8px 0 4px 0;
+        }
+
+        .slider-input::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            cursor: pointer;
+            border: 2.5px solid #03050c;
+            transition: transform 0.1s ease;
+        }
+
+        .slider-input::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+            background: var(--accent-gold-hover);
+        }
+
+        /* Detailed concepts sections */
+        .concepts-container {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px 40px 20px;
+            box-sizing: border-box;
+        }
+
+        .concepts-header {
+            text-align: center;
+            margin: 20px 0 35px 0;
+        }
+
+        .concepts-header h2 {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin-bottom: 8px;
+            text-shadow: 0 0 15px rgba(197, 160, 89, 0.25);
+        }
+
+        .concepts-header p {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .concepts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+            gap: 24px;
+            width: 100%;
+        }
+
+        .concept-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .concept-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(197, 160, 89, 0.4);
+        }
+
+        .concept-badge {
+            align-self: flex-start;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            padding: 4px 10px;
+            border-radius: 12px;
+            margin-bottom: 16px;
+        }
+
+        .badge-hazard {
+            background: rgba(231, 76, 60, 0.12);
+            color: var(--accent-red);
+            border: 1px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .badge-powerup {
+            background: rgba(46, 204, 113, 0.12);
+            color: var(--accent-green);
+            border: 1px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .badge-system {
+            background: rgba(0, 243, 255, 0.12);
+            color: var(--accent-cyan);
+            border: 1px solid rgba(0, 243, 255, 0.3);
+        }
+
+        .concept-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #FFF;
+            margin: 0 0 12px 0;
+            letter-spacing: 0.02em;
+        }
+
+        .concept-description {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin: 0 0 20px 0;
+            flex-grow: 1;
+        }
+
+        .concept-details-list {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            font-size: 0.8rem;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            border-top: 1px dashed rgba(255, 255, 255, 0.08);
+            padding-top: 15px;
+        }
+
+        .concept-details-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+        }
+
+        .concept-details-list li::before {
+            content: "✦";
+            color: var(--accent-gold);
+        }
+
+        /* Voting Form */
+        .vote-section {
+            width: 100%;
+            max-width: 1200px;
+            padding: 0 20px 60px 20px;
+            box-sizing: border-box;
+        }
+
+        .vote-card {
+            background: linear-gradient(135deg, rgba(197, 160, 89, 0.03) 0%, rgba(10, 15, 30, 0.8) 100%);
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 25px rgba(197, 160, 89, 0.1);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .vote-title {
+            font-size: 1.8rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--accent-gold);
+            margin: 0 0 12px 0;
+            text-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+
+        .vote-subtitle {
+            color: var(--text-muted);
+            max-width: 600px;
+            margin: 0 auto 30px auto;
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            max-width: 900px;
+            margin: 0 auto 35px auto;
+            text-align: left;
+        }
+
+        .check-container {
+            display: block;
+            position: relative;
+            padding-left: 36px;
+            margin-bottom: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-light);
+            user-select: none;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 14px 14px 14px 44px;
+            border-radius: 8px;
+            transition: var(--transition-smooth);
+        }
+
+        .check-container:hover {
+            background: rgba(255, 255, 255, 0.05);
+            border-color: rgba(197, 160, 89, 0.3);
+        }
+
+        .check-container input {
+            position: absolute;
+            opacity: 0;
+            cursor: pointer;
+            height: 0;
+            width: 0;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 14px;
+            left: 14px;
+            height: 18px;
+            width: 18px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            transition: var(--transition-smooth);
+        }
+
+        .check-container input:checked ~ .checkmark {
+            background-color: var(--accent-cyan);
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 8px rgba(0, 243, 255, 0.6);
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            display: none;
+        }
+
+        .check-container input:checked ~ .checkmark:after {
+            display: block;
+        }
+
+        .check-container .checkmark:after {
+            left: 6px;
+            top: 2px;
+            width: 4px;
+            height: 8px;
+            border: solid #03050c;
+            border-width: 0 2px 2px 0;
+            transform: rotate(45deg);
+        }
+
+        .check-container input:checked {
+            background: rgba(0, 243, 255, 0.04);
+            border-color: var(--accent-cyan);
+        }
+
+        /* Voting Form Input & Button */
+        .vote-form-inputs {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        #vote-callsign {
+            background: rgba(0, 0, 0, 0.5);
+            border: 1.5px solid rgba(197, 160, 89, 0.3);
+            border-radius: 8px;
+            color: #FFF;
+            padding: 12px 16px;
+            font-size: 1rem;
+            font-family: inherit;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            width: 180px;
+            box-sizing: border-box;
+            text-align: center;
+            transition: var(--transition-smooth);
+        }
+
+        #vote-callsign:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+            background: rgba(0, 0, 0, 0.7);
+        }
+
+        .space-btn-primary {
+            background: var(--accent-gold);
+            color: #03050c;
+            border: none;
+            padding: 12px 28px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            box-shadow: 0 4px 15px rgba(197, 160, 89, 0.3);
+        }
+
+        .space-btn-primary:hover {
+            background: var(--accent-gold-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(197, 160, 89, 0.5);
+        }
+
+        .space-btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Success Overlay */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(3, 5, 12, 0.88);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .modal-container {
+            width: 92%;
+            max-width: 440px;
+            background: rgba(8, 12, 26, 0.96);
+            border: 2px solid var(--accent-gold);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.85), 0 0 35px rgba(197, 160, 89, 0.25);
+            border-radius: 16px;
+            padding: 35px;
+            box-sizing: border-box;
+            text-align: center;
+            transform: translateY(20px) scale(0.95);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-overlay.active .modal-container {
+            transform: translateY(0) scale(1);
+        }
+
+        .modal-heading {
+            margin: 0 0 15px 0;
+            color: var(--accent-gold);
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px rgba(197, 160, 89, 0.3);
+        }
+
+        .modal-text {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        /* Math formula display */
+        .math-block {
+            background: rgba(0, 0, 0, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 8px 12px;
+            margin: 10px 0;
+            font-family: 'Times New Roman', Times, serif;
+            font-style: italic;
+            font-size: 1.05rem;
+            color: var(--accent-cyan);
+            text-align: center;
+            letter-spacing: 0.05em;
+        }
+
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 30px 20px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            border-top: 1px solid rgba(255, 255, 255, 0.02);
+            width: 100%;
+            max-width: 1200px;
+            box-sizing: border-box;
+        }
+
+        footer a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Keyboard press display */
+        .keyboard-indicator {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 6px 12px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .indicator-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--text-muted);
+            transition: var(--transition-smooth);
+        }
+
+        .indicator-dot.active {
+            background-color: var(--accent-cyan);
+            box-shadow: 0 0 8px var(--accent-cyan);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nebula-purple"></div>
+    <div class="nebula-gold"></div>
+
+    <header class="header">
+        <div class="brand">
+            <h1>Voyager</h1>
+            <p class="subtitle">Experimental Idea Lab Sandbox</p>
+        </div>
+        <div class="header-actions">
+            <a href="index.html" class="nav-btn">Ascent Initiative</a>
+            <a href="game.html" class="nav-btn btn-gold">Launch Mission</a>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <!-- Interactive Sandbox Pedestal -->
+        <div class="sandbox-pedestal">
+            <div class="sandbox-canvas-wrapper">
+                <canvas id="sandbox-canvas"></canvas>
+                
+                <div class="canvas-hud">
+                    <span id="hud-velocity">Velocity: 0.0 LY/s</span>
+                    <span id="hud-gravity" style="display: none;">Gravity Pull: 0.0G</span>
+                    <span id="hud-shield">Shield Integrity: 100%</span>
+                </div>
+
+                <div class="canvas-instructions">
+                    <span>Steer: <kbd>▲</kbd> <kbd>▼</kbd> <kbd>◀</kbd> <kbd>▶</kbd> or <kbd>W</kbd> <kbd>A</kbd> <kbd>S</kbd> <kbd>D</kbd></span>
+                    <span>Boost: <kbd>Shift</kbd></span>
+                    <span>Brake: <kbd>Z</kbd></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar Control Panel -->
+        <div class="controls-panel">
+            
+            <div class="space-card">
+                <h2>Physics Toggles <span class="card-icon">⚙️</span></h2>
+                <div class="control-group">
+                    
+                    <!-- Gravity Well Switch -->
+                    <div class="switch-row">
+                        <div class="switch-label-block">
+                            <span class="switch-title">Central Gravity Well</span>
+                            <span class="switch-desc">Simulate a black hole pulling the spacecraft</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-gravity" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Gravity Slider -->
+                    <div class="slider-block" id="gravity-slider-block">
+                        <div class="slider-header">
+                            <span>Gravity Magnitude</span>
+                            <span class="slider-value" id="val-gravity">1.5x</span>
+                        </div>
+                        <input type="range" id="slide-gravity" class="slider-input" min="0.5" max="4.0" step="0.1" value="1.5">
+                    </div>
+
+                    <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 4px 0;">
+
+                    <!-- Solar Winds Switch -->
+                    <div class="switch-row">
+                        <div class="switch-label-block">
+                            <span class="switch-title">Cosmic Solar Winds</span>
+                            <span class="switch-desc">Constant atmospheric drift currents in space</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-wind">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Solar Wind Slider -->
+                    <div class="slider-block" id="wind-slider-block" style="display: none;">
+                        <div class="slider-header">
+                            <span>Wind Speed</span>
+                            <span class="slider-value" id="val-wind">0.05 LY/s²</span>
+                        </div>
+                        <input type="range" id="slide-wind" class="slider-input" min="0.01" max="0.15" step="0.01" value="0.05">
+                        
+                        <div class="slider-header" style="margin-top: 10px;">
+                            <span>Wind Angle (Degrees)</span>
+                            <span class="slider-value" id="val-wind-angle">90°</span>
+                        </div>
+                        <input type="range" id="slide-wind-angle" class="slider-input" min="0" max="360" step="5" value="90">
+                    </div>
+
+                    <hr style="border: none; border-top: 1px solid rgba(255, 255, 255, 0.05); margin: 4px 0;">
+
+                    <!-- Asteroids Switch -->
+                    <div class="switch-row">
+                        <div class="switch-label-block">
+                            <span class="switch-title">Drifting Asteroids</span>
+                            <span class="switch-desc">Spawn space debris that bounces off shields</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-asteroids" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Asteroids Sliders -->
+                    <div class="slider-block" id="asteroids-slider-block">
+                        <div class="slider-header">
+                            <span>Asteroid Count</span>
+                            <span class="slider-value" id="val-asteroids">5</span>
+                        </div>
+                        <input type="range" id="slide-asteroids" class="slider-input" min="1" max="12" step="1" value="5">
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="space-card">
+                <h2>Systems & Audio <span class="card-icon">🎛️</span></h2>
+                <div class="control-group">
+
+                    <!-- Warp Gates Switch -->
+                    <div class="switch-row">
+                        <div class="switch-label-block">
+                            <span class="switch-title">Warp Gate Portals</span>
+                            <span class="switch-desc">Twin portals that teleport you across sectors</span>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-portals" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <!-- Sound Synth Switch -->
+                    <div class="switch-row">
+                        <div class="switch-label-block">
+                            <span class="switch-title">Procedural Audio Synth</span>
+                            <span class="switch-desc">Generate real-time audio via Web Audio API</span>
+                        </div>
+                        <div class="keyboard-indicator">
+                            <span class="switch-desc" style="font-weight: 700;" id="audio-status">MUTED</span>
+                            <div class="indicator-dot" id="audio-dot"></div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="toggle-audio">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Features Information Cards Section -->
+    <div class="concepts-container">
+        
+        <div class="concepts-header">
+            <h2>Proposed Gameplay Mechanics</h2>
+            <p>We are considering implementing these concepts to turn Voyager from a simple tracing tool into a tactical, physics-based cosmic navigator. Click the switches above to test their physical interactions!</p>
+        </div>
+
+        <div class="concepts-grid">
+            
+            <!-- Card 1: Gravity Wells -->
+            <div class="concept-card">
+                <span class="concept-badge badge-hazard">Physics Hazard</span>
+                <h3 class="concept-title">Gravity Wells (Singularities)</h3>
+                <p class="concept-description">
+                    Adds gravitational pull centers to the sector layout. Spacecraft must steer actively to avoid being pulled into the core, creating a risk-reward dynamic when stars spawn close to the black hole.
+                </p>
+                <ul class="concept-details-list">
+                    <li>Uses real mathematical inverse-square law pull logic:
+                        <div class="math-block">F_g = (G * M) / (d² + ε)</div>
+                    </li>
+                    <li>Requires the pilot to burn <strong>Hyper-Boost (SHIFT)</strong> to escape deep gravity wells.</li>
+                    <li>Visualized with atmospheric distortion waves and a rotating accretion disk.</li>
+                </ul>
+            </div>
+
+            <!-- Card 2: Solar Winds -->
+            <div class="concept-card">
+                <span class="concept-badge badge-hazard">Environmental Force</span>
+                <h3 class="concept-title">Cosmic Solar Winds</h3>
+                <p class="concept-description">
+                    Dynamically active ionic currents push your ship off-course in specific directions. Steering feels like correcting a ship in water currents, testing fine maneuvering skills.
+                </p>
+                <ul class="concept-details-list">
+                    <li>Constant vector acceleration force applied across the entire canvas grid.</li>
+                    <li>Indicated visually by faint, streaming cosmic energy particles.</li>
+                    <li>Requires players to master the <strong>Retro-Brake (Z)</strong> to stop and pivot accurately.</li>
+                </ul>
+            </div>
+
+            <!-- Card 3: Asteroid Fields -->
+            <div class="concept-card">
+                <span class="concept-badge badge-hazard">Collision Hazard</span>
+                <h3 class="concept-title">Drifting Space Debris</h3>
+                <p class="concept-description">
+                    Asteroids drift across the navigation plane. Collisions deplete the ship's biosphere shields, causing sparks, ship bounceback, and score penalties.
+                </p>
+                <ul class="concept-details-list">
+                    <li>Dynamic elastic collisions where ship velocity is deflected on impact.</li>
+                    <li>Encourages slower, tactical maneuvers or quick, high-risk boosts.</li>
+                    <li>Integrates with a new HUD Shield Meter showing biosphere status.</li>
+                </ul>
+            </div>
+
+            <!-- Card 4: Warp Gates -->
+            <div class="concept-card">
+                <span class="concept-badge badge-powerup">Tactical Utility</span>
+                <h3 class="concept-title">Warp Gate Wormholes</h3>
+                <p class="concept-description">
+                    Spatially paired gravity anomalies allow instant teleportation. Flying into the Cyan Portal teleports the ship to the Green Portal (and vice versa) while preserving exit velocity.
+                </p>
+                <ul class="concept-details-list">
+                    <li>Helps cover long distances quickly in larger constellation grids.</li>
+                    <li>Preserves vector speed on exit, allowing pilots to slingshot across sectors.</li>
+                    <li>Includes a short recharge matrix window to prevent infinite portal looping.</li>
+                </ul>
+            </div>
+
+            <!-- Card 5: Web Audio Synth -->
+            <div class="concept-card">
+                <span class="concept-badge badge-system">Immersive System</span>
+                <h3 class="concept-title">Web Audio Synth Engine</h3>
+                <p class="concept-description">
+                    Fully dynamic, procedural sound generation. Audio is generated directly inside the browser using mathematical oscillator frequencies, meaning no external sound asset lag or file downloads.
+                </p>
+                <ul class="concept-details-list">
+                    <li><strong>Engine Humming:</strong> Low-frequency Sawtooth/Triangle oscillator with frequency mapped to thrust velocity.</li>
+                    <li><strong>Portal Warping:</strong> Sweep of a Bandpass filter over white noise.</li>
+                    <li><strong>Twinkle Pings:</strong> Dual Sine oscillator chords triggered on star visits.</li>
+                </ul>
+            </div>
+
+            <!-- Card 6: Zen Flight Mode -->
+            <div class="concept-card">
+                <span class="concept-badge badge-system">Game Mode</span>
+                <h3 class="concept-title">Zen Navigation Mode</h3>
+                <p class="concept-description">
+                    A relaxed, score-free mode where players can practice flight mechanics, trace custom constellations, and enjoy the ambient procedural sound synthesis without any time limits or hazards.
+                </p>
+                <ul class="concept-details-list">
+                    <li>Disables biosphere depletion timers and cosmic hazards.</li>
+                    <li>Allows free tracing of all 12 Zodiac shapes at the player's leisure.</li>
+                    <li>Plays a continuous, soothing ambient soundscape chord pad.</li>
+                </ul>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- User Feedback / Voting Section -->
+    <div class="vote-section">
+        <div class="vote-card">
+            <h3 class="vote-title">Pilot Voting Portal</h3>
+            <p class="vote-subtitle">Which features would you like to see implemented first in the main Voyager flight engine? Select your favorites and transmit your feedback to the telemetry logs.</p>
+            
+            <form id="vote-form" onsubmit="submitVotes(event)">
+                <div class="checkbox-group">
+                    <label class="check-container">
+                        Gravity Wells (Black Holes)
+                        <input type="checkbox" name="vote-feature" value="gravity" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="check-container">
+                        Cosmic Solar Winds
+                        <input type="checkbox" name="vote-feature" value="winds">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="check-container">
+                        Drifting Space Debris (Asteroids)
+                        <input type="checkbox" name="vote-feature" value="asteroids" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="check-container">
+                        Warp Gate Portals
+                        <input type="checkbox" name="vote-feature" value="gates" checked>
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="check-container">
+                        Procedural Web Audio Synth
+                        <input type="checkbox" name="vote-feature" value="audio">
+                        <span class="checkmark"></span>
+                    </label>
+                    <label class="check-container">
+                        Zen Ambient Flight Mode
+                        <input type="checkbox" name="vote-feature" value="zen">
+                        <span class="checkmark"></span>
+                    </label>
+                </div>
+
+                <div class="vote-form-inputs">
+                    <input type="text" id="vote-callsign" placeholder="CALLSIGN" maxlength="3" required autocomplete="off">
+                    <button type="submit" class="space-btn-primary">Transmit Telemetry Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Success Modal Overlay -->
+    <div id="success-modal" class="modal-overlay">
+        <div class="modal-container">
+            <h2 class="modal-heading">Transmission Sent</h2>
+            <p class="modal-text" id="modal-success-text">Your pilot feedback has been securely transmitted to the Ascent Learning Initiative telemetry logs. Keep flying!</p>
+            <button onclick="closeSuccessModal()" class="space-btn-primary" style="width: auto; padding: 12px 35px;">Acknowledge</button>
+        </div>
+    </div>
+
+    <footer>
+        Voyager System &copy; 2026. Built by Agent B for <a href="index.html">Ascent Learning Initiative</a>. All flight rules apply.
+    </footer>
+
+    <!-- Sandbox Simulation Script -->
+    <script>
+        // --- Web Audio Synthesizer Engine ---
+        class SoundSynth {
+            constructor() {
+                this.ctx = null;
+                this.engineOsc = null;
+                this.engineGain = null;
+                this.enabled = false;
+            }
+
+            init() {
+                if (this.ctx) return;
+                const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+                this.ctx = new AudioContextClass();
+                
+                // Set up Engine hum nodes
+                this.engineOsc = this.ctx.createOscillator();
+                this.engineGain = this.ctx.createGain();
+                
+                this.engineOsc.type = 'sawtooth';
+                this.engineOsc.frequency.setValueAtTime(45, this.ctx.currentTime); // Low bass hum
+                
+                // Lowpass filter to muffle sawtooth hum
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(120, this.ctx.currentTime);
+                
+                this.engineOsc.connect(filter);
+                filter.connect(this.engineGain);
+                this.engineGain.connect(this.ctx.destination);
+                
+                this.engineGain.gain.setValueAtTime(0, this.ctx.currentTime);
+                this.engineOsc.start();
+            }
+
+            enable() {
+                this.init();
+                this.enabled = true;
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+                // Fade in engine hum
+                this.engineGain.gain.setTargetAtTime(0.12, this.ctx.currentTime, 0.1);
+            }
+
+            disable() {
+                this.enabled = false;
+                if (this.engineGain) {
+                    this.engineGain.gain.setTargetAtTime(0, this.ctx.currentTime, 0.1);
+                }
+            }
+
+            setEnginePitch(speed) {
+                if (!this.enabled || !this.engineOsc) return;
+                // speed goes from 0 to 5-6
+                const targetFreq = 45 + (speed * 12);
+                this.engineOsc.frequency.setTargetAtTime(targetFreq, this.ctx.currentTime, 0.1);
+                this.engineGain.gain.setTargetAtTime(0.08 + (speed * 0.02), this.ctx.currentTime, 0.15);
+            }
+
+            playWarp() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                
+                // Sweep sine wave up and down
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(100, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                osc.frequency.exponentialRampToValueAtTime(80, now + 0.45);
+                
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(now + 0.5);
+            }
+
+            playBink() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                
+                // High ping chord
+                const osc1 = this.ctx.createOscillator();
+                const osc2 = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc1.type = 'sine';
+                osc1.frequency.setValueAtTime(880, now); // A5
+                osc1.frequency.exponentialRampToValueAtTime(1760, now + 0.2);
+                
+                osc2.type = 'sine';
+                osc2.frequency.setValueAtTime(1108.73, now); // C#6
+                
+                gain.gain.setValueAtTime(0.18, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                
+                osc1.connect(gain);
+                osc2.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc1.start();
+                osc2.start();
+                osc1.stop(now + 0.35);
+                osc2.stop(now + 0.35);
+            }
+
+            playCollision() {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                
+                // Noise-like rumble explosion using low triangle frequency drop
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(160, now);
+                osc.frequency.linearRampToValueAtTime(30, now + 0.25);
+                
+                gain.gain.setValueAtTime(0.25, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+                
+                osc.start();
+                osc.stop(now + 0.3);
+            }
+        }
+
+        const synth = new SoundSynth();
+
+        // --- Sandbox Core Physics & Engine Simulator ---
+        const canvas = document.getElementById('sandbox-canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Set dimensions
+        canvas.width = 800;
+        canvas.height = 600;
+
+        // Simulator State
+        let ship = {
+            x: 200,
+            y: 300,
+            vx: 0,
+            vy: 0,
+            angle: 0,
+            radius: 12,
+            shield: 100,
+            flashTime: 0
+        };
+
+        let keys = {};
+        let particles = [];
+        let asteroids = [];
+        let starsBackground = [];
+        let portalCooldown = 0;
+
+        // Portals definition
+        const portalA = { x: 180, y: 150, radius: 24, color: '#00F3FF' };
+        const portalB = { x: 620, y: 450, radius: 24, color: '#2ecc71' };
+
+        // Config variables linked to UI elements
+        const toggleGravity = document.getElementById('toggle-gravity');
+        const slideGravity = document.getElementById('slide-gravity');
+        const toggleWind = document.getElementById('toggle-wind');
+        const slideWind = document.getElementById('slide-wind');
+        const slideWindAngle = document.getElementById('slide-wind-angle');
+        const toggleAsteroids = document.getElementById('toggle-asteroids');
+        const slideAsteroids = document.getElementById('slide-asteroids');
+        const togglePortals = document.getElementById('toggle-portals');
+        const toggleAudio = document.getElementById('toggle-audio');
+
+        // Initialize background stars
+        for (let i = 0; i < 100; i++) {
+            starsBackground.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                r: Math.random() * 1.5 + 0.5,
+                alpha: Math.random() * 0.8 + 0.2,
+                speed: Math.random() * 0.02 + 0.005
+            });
+        }
+
+        // Initialize Asteroids
+        function spawnAsteroids(count) {
+            asteroids = [];
+            for (let i = 0; i < count; i++) {
+                // Keep away from the ship start position
+                let ax = Math.random() * (canvas.width - 100) + 50;
+                let ay = Math.random() * (canvas.height - 100) + 50;
+                while (Math.hypot(ax - ship.x, ay - ship.y) < 150) {
+                    ax = Math.random() * (canvas.width - 100) + 50;
+                    ay = Math.random() * (canvas.height - 100) + 50;
+                }
+                
+                const speed = Math.random() * 1.5 + 0.5;
+                const angle = Math.random() * Math.PI * 2;
+                asteroids.push({
+                    x: ax,
+                    y: ay,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    radius: Math.random() * 12 + 10,
+                    angle: Math.random() * Math.PI * 2,
+                    rotSpeed: (Math.random() - 0.5) * 0.04
+                });
+            }
+        }
+        spawnAsteroids(parseInt(slideAsteroids.value));
+
+        // Keyboard Event Handlers (With scroll prevention)
+        window.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            keys[e.code] = true;
+
+            // Scroll prevention
+            if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'Space'].includes(e.key) || 
+                ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
+                // Only prevent scroll if user is active on sandbox page
+                e.preventDefault();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+            keys[e.code] = false;
+        });
+
+        // UI Event Listeners & Sync
+        toggleGravity.addEventListener('change', () => {
+            document.getElementById('gravity-slider-block').style.display = toggleGravity.checked ? 'flex' : 'none';
+            document.getElementById('hud-gravity').style.display = toggleGravity.checked ? 'block' : 'none';
+        });
+
+        slideGravity.addEventListener('input', () => {
+            document.getElementById('val-gravity').textContent = `${slideGravity.value}x`;
+        });
+
+        toggleWind.addEventListener('change', () => {
+            document.getElementById('wind-slider-block').style.display = toggleWind.checked ? 'flex' : 'none';
+        });
+
+        slideWind.addEventListener('input', () => {
+            document.getElementById('val-wind').textContent = `${parseFloat(slideWind.value).toFixed(2)} LY/s²`;
+        });
+
+        slideWindAngle.addEventListener('input', () => {
+            document.getElementById('val-wind-angle').textContent = `${slideWindAngle.value}°`;
+        });
+
+        toggleAsteroids.addEventListener('change', () => {
+            document.getElementById('asteroids-slider-block').style.display = toggleAsteroids.checked ? 'flex' : 'none';
+            if (toggleAsteroids.checked) {
+                spawnAsteroids(parseInt(slideAsteroids.value));
+            } else {
+                asteroids = [];
+            }
+        });
+
+        slideAsteroids.addEventListener('input', () => {
+            document.getElementById('val-asteroids').textContent = slideAsteroids.value;
+            if (toggleAsteroids.checked) {
+                spawnAsteroids(parseInt(slideAsteroids.value));
+            }
+        });
+
+        toggleAudio.addEventListener('change', () => {
+            const statusEl = document.getElementById('audio-status');
+            const dotEl = document.getElementById('audio-dot');
+            if (toggleAudio.checked) {
+                synth.enable();
+                statusEl.textContent = 'ONLINE';
+                dotEl.classList.add('active');
+            } else {
+                synth.disable();
+                statusEl.textContent = 'MUTED';
+                dotEl.classList.remove('active');
+            }
+        });
+
+        // Reset Ship Shield when depleted
+        function checkRespawnShield() {
+            if (ship.shield <= 0) {
+                ship.shield = 100;
+                ship.x = 200;
+                ship.y = 300;
+                ship.vx = 0;
+                ship.vy = 0;
+                // spawn sparks
+                spawnSparks(ship.x, ship.y, '#e74c3c', 30);
+            }
+        }
+
+        function spawnSparks(x, y, color, count = 15) {
+            for (let i = 0; i < count; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3 + 1;
+                particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    color: color,
+                    size: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        // Loop Update Physics
+        function updatePhysics() {
+            // Portal cooldown decay
+            if (portalCooldown > 0) portalCooldown--;
+
+            // Twinkle background stars
+            starsBackground.forEach(star => {
+                star.alpha += star.speed;
+                if (star.alpha > 0.95 || star.alpha < 0.15) {
+                    star.speed = -star.speed;
+                }
+            });
+
+            // 1. Controls thrust force
+            let dx = 0;
+            let dy = 0;
+            if (keys['ArrowUp'] || keys['KeyW'] || keys['w']) dy -= 1;
+            if (keys['ArrowDown'] || keys['KeyS'] || keys['s']) dy += 1;
+            if (keys['ArrowLeft'] || keys['KeyA'] || keys['a']) dx -= 1;
+            if (keys['ArrowRight'] || keys['KeyD'] || keys['d']) dx += 1;
+
+            let multiplier = 1.0;
+            if (keys['Shift'] || keys['ShiftLeft'] || keys['ShiftRight']) {
+                multiplier = 2.0; // Boost
+            } else if (keys['z'] || keys['KeyZ'] || keys['Z']) {
+                multiplier = 0.4; // Brake
+            }
+
+            if (dx !== 0 || dy !== 0) {
+                const length = Math.sqrt(dx * dx + dy * dy);
+                dx /= length;
+                dy /= length;
+                
+                const thrust = 0.12 * multiplier;
+                ship.vx += dx * thrust;
+                ship.vy += dy * thrust;
+                ship.angle = Math.atan2(dy, dx);
+            }
+
+            // Apply inertia / friction
+            ship.vx *= 0.975;
+            ship.vy *= 0.975;
+
+            // 2. Apply Gravity Well Force
+            if (toggleGravity.checked) {
+                const gx = 400;
+                const gy = 300;
+                const distanceX = gx - ship.x;
+                const distanceY = gy - ship.y;
+                const dist = Math.hypot(distanceX, distanceY);
+                
+                if (dist > 15) {
+                    const magnitude = parseFloat(slideGravity.value);
+                    const force = (magnitude * 80) / (dist * 0.8 + 80); // softened pull formula
+                    ship.vx += (distanceX / dist) * force * 0.1;
+                    ship.vy += (distanceY / dist) * force * 0.1;
+                    
+                    document.getElementById('hud-gravity').textContent = `Gravity Pull: ${(force * 1.8).toFixed(1)}G`;
+                } else {
+                    // Pulled directly to singularity core
+                    ship.shield -= 5;
+                    ship.flashTime = 5;
+                    ship.x = 200;
+                    ship.y = 300;
+                    ship.vx = 0;
+                    ship.vy = 0;
+                    synth.playCollision();
+                    spawnSparks(gx, gy, '#9b59b6', 25);
+                }
+            }
+
+            // 3. Apply Solar Winds Force
+            if (toggleWind.checked) {
+                const speed = parseFloat(slideWind.value);
+                const angleDeg = parseFloat(slideWindAngle.value);
+                const angleRad = angleDeg * Math.PI / 180;
+                
+                ship.vx += Math.cos(angleRad) * speed * 0.6;
+                ship.vy += Math.sin(angleRad) * speed * 0.6;
+
+                // Spawn light wind particles flowing
+                if (Math.random() < 0.15) {
+                    particles.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        vx: Math.cos(angleRad) * (speed * 12 + 1),
+                        vy: Math.sin(angleRad) * (speed * 12 + 1),
+                        alpha: 0.4,
+                        color: 'rgba(0, 243, 255, 0.2)',
+                        size: Math.random() * 1.5 + 0.5
+                    });
+                }
+            }
+
+            // Ship movement integration
+            ship.x += ship.vx;
+            ship.y += ship.vy;
+
+            // Bounce off boundaries
+            if (ship.x < ship.radius) { ship.x = ship.radius; ship.vx *= -0.5; }
+            if (ship.x > canvas.width - ship.radius) { ship.x = canvas.width - ship.radius; ship.vx *= -0.5; }
+            if (ship.y < ship.radius) { ship.y = ship.radius; ship.vy *= -0.5; }
+            if (ship.y > canvas.height - ship.radius) { ship.y = canvas.height - ship.radius; ship.vy *= -0.5; }
+
+            // Flash effect decay
+            if (ship.flashTime > 0) ship.flashTime--;
+
+            // Update Pitch in audio synthesizer
+            const shipSpeedVal = Math.hypot(ship.vx, ship.vy);
+            synth.setEnginePitch(shipSpeedVal);
+            document.getElementById('hud-velocity').textContent = `Velocity: ${(shipSpeedVal * 32.2).toFixed(1)} LY/s`;
+
+            // 4. Update Asteroids Physics
+            if (toggleAsteroids.checked) {
+                asteroids.forEach(ast => {
+                    ast.x += ast.vx;
+                    ast.y += ast.vy;
+                    ast.angle += ast.rotSpeed;
+
+                    // Bounce off walls
+                    if (ast.x < ast.radius || ast.x > canvas.width - ast.radius) ast.vx *= -1;
+                    if (ast.y < ast.radius || ast.y > canvas.height - ast.radius) ast.vy *= -1;
+
+                    // Collision check with ship
+                    const distToShip = Math.hypot(ship.x - ast.x, ship.y - ast.y);
+                    if (distToShip < (ship.radius + ast.radius)) {
+                        // Elastic pushback
+                        const pushAngle = Math.atan2(ship.y - ast.y, ship.x - ast.x);
+                        ship.vx = Math.cos(pushAngle) * 5;
+                        ship.vy = Math.sin(pushAngle) * 5;
+                        
+                        // Deduct shield
+                        ship.shield -= Math.round(ast.radius * 0.8);
+                        ship.flashTime = 8;
+                        if (ship.shield < 0) ship.shield = 0;
+                        document.getElementById('hud-shield').textContent = `Shield Integrity: ${ship.shield}%`;
+                        
+                        synth.playCollision();
+                        spawnSparks(ship.x, ship.y, '#f1c40f', 15);
+                        checkRespawnShield();
+                    }
+                });
+            }
+
+            // 5. Update Warp Gates Teleportation
+            if (togglePortals.checked && portalCooldown === 0) {
+                const distToA = Math.hypot(ship.x - portalA.x, ship.y - portalA.y);
+                const distToB = Math.hypot(ship.x - portalB.x, ship.y - portalB.y);
+
+                if (distToA < (ship.radius + portalA.radius)) {
+                    ship.x = portalB.x;
+                    ship.y = portalB.y;
+                    portalCooldown = 60; // 1 second cooldown
+                    synth.playWarp();
+                    spawnSparks(portalA.x, portalA.y, portalA.color, 25);
+                    spawnSparks(portalB.x, portalB.y, portalB.color, 25);
+                } else if (distToB < (ship.radius + portalB.radius)) {
+                    ship.x = portalA.x;
+                    ship.y = portalA.y;
+                    portalCooldown = 60;
+                    synth.playWarp();
+                    spawnSparks(portalB.x, portalB.y, portalB.color, 25);
+                    spawnSparks(portalA.x, portalA.y, portalA.color, 25);
+                }
+            }
+
+            // Update particles
+            particles.forEach((p, idx) => {
+                p.x += p.vx;
+                p.y += p.vy;
+                p.alpha -= 0.025;
+                if (p.alpha <= 0) {
+                    particles.splice(idx, 1);
+                }
+            });
+        }
+
+        // Draw Frame
+        function drawFrame() {
+            // Clear canvas
+            ctx.fillStyle = '#050811';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Twinkling Background Stars
+            starsBackground.forEach(star => {
+                ctx.fillStyle = `rgba(255, 255, 255, ${star.alpha})`;
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // Draw Solar Wind stream particles
+            if (toggleWind.checked) {
+                particles.forEach(p => {
+                    if (p.color.startsWith('rgba(0, 243, 255')) {
+                        ctx.fillStyle = p.color;
+                        ctx.globalAlpha = p.alpha;
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                });
+                ctx.globalAlpha = 1.0;
+            }
+
+            // Draw Gravity Well Visual representation
+            if (toggleGravity.checked) {
+                const gx = 400;
+                const gy = 300;
+                
+                // Draw multiple accretion disk rings
+                const pulseScale = Math.sin(Date.now() * 0.003);
+                
+                ctx.save();
+                ctx.shadowBlur = 20 + pulseScale * 5;
+                ctx.shadowColor = '#9b59b6';
+                
+                // Accretion disk
+                const gradient = ctx.createRadialGradient(gx, gy, 5, gx, gy, 60);
+                gradient.addColorStop(0, '#000000');
+                gradient.addColorStop(0.2, '#3d0c5a');
+                gradient.addColorStop(0.6, 'rgba(155, 89, 182, 0.4)');
+                gradient.addColorStop(1, 'rgba(155, 89, 182, 0)');
+                
+                ctx.fillStyle = gradient;
+                ctx.beginPath();
+                ctx.arc(gx, gy, 70, 0, Math.PI*2);
+                ctx.fill();
+                
+                // Event Horizon center singularity
+                ctx.fillStyle = '#000';
+                ctx.shadowBlur = 5;
+                ctx.shadowColor = '#FFF';
+                ctx.beginPath();
+                ctx.arc(gx, gy, 12, 0, Math.PI*2);
+                ctx.fill();
+                
+                ctx.restore();
+            }
+
+            // Draw Warp Gate Portals
+            if (togglePortals.checked) {
+                [portalA, portalB].forEach(p => {
+                    ctx.save();
+                    ctx.shadowBlur = 15;
+                    ctx.shadowColor = p.color;
+                    
+                    // Outer portal ring spin representation
+                    ctx.strokeStyle = p.color;
+                    ctx.lineWidth = 3;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI*2);
+                    ctx.stroke();
+                    
+                    // Rotating portal inner swirl
+                    ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius - 2, 0, Math.PI*2);
+                    ctx.fill();
+                    
+                    ctx.restore();
+                });
+            }
+
+            // Draw Asteroids
+            if (toggleAsteroids.checked) {
+                asteroids.forEach(ast => {
+                    ctx.save();
+                    ctx.translate(ast.x, ast.y);
+                    ctx.rotate(ast.angle);
+                    
+                    // Draw craggy asteroid path
+                    ctx.beginPath();
+                    const pts = 8;
+                    for (let i = 0; i < pts; i++) {
+                        const angle = (i / pts) * Math.PI * 2;
+                        const radiusOffset = (i % 2 === 0 ? 1 : 0.75);
+                        const r = ast.radius * radiusOffset;
+                        const px = Math.cos(angle) * r;
+                        const py = Math.sin(angle) * r;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    
+                    ctx.fillStyle = '#34495e';
+                    ctx.strokeStyle = '#2c3e50';
+                    ctx.lineWidth = 2;
+                    ctx.fill();
+                    ctx.stroke();
+                    
+                    ctx.restore();
+                });
+            }
+
+            // Draw Sparks & Trail Particles
+            particles.forEach(p => {
+                if (!p.color.startsWith('rgba(0, 243, 255')) {
+                    ctx.fillStyle = p.color;
+                    ctx.globalAlpha = p.alpha;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            });
+            ctx.globalAlpha = 1.0;
+
+            // Draw Ship
+            ctx.save();
+            ctx.translate(ship.x, ship.y);
+            ctx.rotate(ship.angle);
+
+            // Red thrust flame if active
+            const isMoving = keys['ArrowUp'] || keys['ArrowDown'] || keys['ArrowLeft'] || keys['ArrowRight'] || keys['KeyW'] || keys['KeyS'] || keys['KeyA'] || keys['KeyD'];
+            if (isMoving) {
+                const flameLength = Math.random() * 8 + 8;
+                ctx.beginPath();
+                ctx.moveTo(-15, -5);
+                ctx.lineTo(-15 - flameLength, 0);
+                ctx.lineTo(-15, 5);
+                ctx.fillStyle = Math.random() > 0.5 ? '#E74C3C' : '#F1C40F';
+                ctx.fill();
+            }
+
+            // Outer shield bubble if ship recently collided
+            if (ship.flashTime > 0) {
+                ctx.strokeStyle = 'rgba(0, 243, 255, ' + (ship.flashTime / 8) + ')';
+                ctx.lineWidth = 2.5;
+                ctx.beginPath();
+                ctx.arc(0, 0, ship.radius + 6, 0, Math.PI*2);
+                ctx.stroke();
+            }
+
+            // Ship structure
+            ctx.beginPath();
+            ctx.moveTo(15, 0);
+            ctx.lineTo(-10, -10);
+            ctx.lineTo(-6, 0);
+            ctx.lineTo(-10, 10);
+            ctx.closePath();
+
+            ctx.fillStyle = '#FFFFFF';
+            ctx.strokeStyle = ship.flashTime > 0 ? '#E74C3C' : '#00FFFF';
+            ctx.lineWidth = 2;
+            ctx.shadowBlur = 8;
+            ctx.shadowColor = ship.flashTime > 0 ? '#E74C3C' : '#00FFFF';
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.restore();
+            ctx.shadowBlur = 0;
+        }
+
+        // Main game cycle
+        function gameLoop() {
+            updatePhysics();
+            drawFrame();
+            requestAnimationFrame(gameLoop);
+        }
+
+        gameLoop();
+
+        // --- Voting & Dialog Handlers ---
+        function submitVotes(event) {
+            event.preventDefault();
+            const callsignInput = document.getElementById('vote-callsign');
+            const callsign = callsignInput.value.toUpperCase();
+            
+            // Collect features selected
+            const selectedCheckboxes = document.querySelectorAll('input[name="vote-feature"]:checked');
+            const features = Array.from(selectedCheckboxes).map(cb => cb.value);
+
+            // Log details
+            console.log("Transmission Received. Callsign:", callsign, "Features selected:", features);
+
+            // Display success modal
+            const textEl = document.getElementById('modal-success-text');
+            textEl.innerHTML = `Pilot Call Sign <strong>${callsign}</strong> securely verified.<br>Your preferences for [${features.join(', ').toUpperCase()}] have been written to the telemetry logs.<br><br>Ascent Initiative engineers thank you for your input!`;
+            
+            document.getElementById('success-modal').classList.add('active');
+            
+            // Audio chime if enabled
+            synth.playBink();
+        }
+
+        function closeSuccessModal() {
+            document.getElementById('success-modal').classList.remove('active');
+            document.getElementById('vote-form').reset();
+        }
+    </script>
+</body>
+</html>
