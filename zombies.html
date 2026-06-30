@@ -808,6 +808,18 @@
                 <button class="mode-toggle-btn diff-btn" id="btn-diff-hard" onclick="changeDifficulty('hard')" style="padding: 6px 14px; font-size: 0.75rem;">Hard</button>
                 <button class="mode-toggle-btn diff-btn" id="btn-diff-exhard" onclick="changeDifficulty('exhard')" style="padding: 6px 14px; font-size: 0.75rem;">Extra Hard</button>
             </div>
+
+            <!-- Name Customization Inputs -->
+            <div class="name-inputs-container" style="display: flex; gap: 15px; margin-top: 5px; align-items: center; justify-content: center;">
+                <div class="input-group" id="p1-name-group" style="display: flex; flex-direction: column; gap: 4px;">
+                    <label style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; text-align: left;">Player 1 Name</label>
+                    <input type="text" id="p1-name-input" value="Player 1" oninput="changeP1Name(this.value)" style="padding: 8px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #FFF; font-family: inherit; font-size: 0.85rem; outline: none; width: 160px; transition: border 0.2s;" onfocus="this.style.borderColor='rgba(255,51,68,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+                </div>
+                <div class="input-group" id="p2-name-group" style="display: flex; flex-direction: column; gap: 4px; display: none;">
+                    <label style="font-size: 0.65rem; text-transform: uppercase; font-weight: 700; color: var(--text-muted); letter-spacing: 0.05em; text-align: left;">Player 2 Name</label>
+                    <input type="text" id="p2-name-input" value="Player 2" oninput="changeP2Name(this.value)" style="padding: 8px 16px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: #FFF; font-family: inherit; font-size: 0.85rem; outline: none; width: 160px; transition: border 0.2s;" onfocus="this.style.borderColor='rgba(0,255,255,0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.1)'"/>
+                </div>
+            </div>
         </div>
 
         <div class="selector-header">
@@ -1434,6 +1446,8 @@
         let gameMode = 'ai'; // 'ai' or 'pvp'
         let selectionStage = 1; // 1 for Player 1, 2 for Player 2
         let aiDifficulty = 'medium'; // 'easy', 'medium', 'hard', 'exhard'
+        let p1Name = 'Player 1';
+        let p2Name = 'Player 2';
 
         function changeGameMode(mode) {
             gameMode = mode;
@@ -1443,11 +1457,25 @@
             if (mode === 'ai') {
                 document.getElementById('btn-mode-ai').classList.add('active');
                 document.getElementById('ai-difficulty-container').style.display = 'flex';
+                document.getElementById('p2-name-group').style.display = 'none';
                 document.getElementById('score-opp-label').textContent = `AI (${aiDifficulty.toUpperCase()})`;
             } else {
                 document.getElementById('btn-mode-pvp').classList.add('active');
                 document.getElementById('ai-difficulty-container').style.display = 'none';
+                document.getElementById('p2-name-group').style.display = 'flex';
                 document.getElementById('score-opp-label').textContent = 'P2';
+            }
+        }
+
+        function changeP1Name(name) {
+            p1Name = name.trim() || 'Player 1';
+            document.getElementById('hud-username').textContent = p1Name;
+        }
+
+        function changeP2Name(name) {
+            p2Name = name.trim() || 'Player 2';
+            if (gameMode === 'pvp') {
+                document.getElementById('opp-username').textContent = `${p2Name} (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
             }
         }
 
@@ -1742,7 +1770,63 @@
             if (e.key === 'r' || e.key === 'R' || e.code === 'KeyR') {
                 triggerManualReload();
             }
+            if (e.key === 'Control' || e.code === 'ControlLeft' || e.code === 'ControlRight') {
+                if (gameState === 'PLAYING' && !intermissionActive) {
+                    e.preventDefault();
+                    if (e.code === 'ControlRight') {
+                        if (gameMode === 'pvp') {
+                            cycleWeaponP2();
+                        }
+                    } else {
+                        cycleWeaponP1();
+                    }
+                }
+            }
         });
+
+        const WEAPONS_KEYS = ['carbine', 'blaster', 'bazooka', 'raygun', 'drumgun', 'shotgun', 'sniper', 'nookrifle'];
+
+        function cycleWeaponP1() {
+            let currentIndex = WEAPONS_KEYS.indexOf(selectedWeapon);
+            currentIndex = (currentIndex + 1) % WEAPONS_KEYS.length;
+            selectedWeapon = WEAPONS_KEYS[currentIndex];
+
+            const spec = WEAPONS[selectedWeapon];
+            player.activeWeapon = JSON.parse(JSON.stringify(spec));
+            
+            if (selectedCharacter === 'isabelle') {
+                player.activeWeapon.reloadTime *= 0.85;
+            }
+
+            player.ammoInMag = player.activeWeapon.capacity;
+            player.ammoReserve = player.activeWeapon.reserve;
+            player.reloading = false;
+            
+            audio.playReload();
+            spawnExplosiveSparks(player.x, player.y, player.activeWeapon.color, 12);
+            updateHUD();
+        }
+
+        function cycleWeaponP2() {
+            let currentIndex = WEAPONS_KEYS.indexOf(ai.selectedWeapon);
+            currentIndex = (currentIndex + 1) % WEAPONS_KEYS.length;
+            ai.selectedWeapon = WEAPONS_KEYS[currentIndex];
+
+            const spec = WEAPONS[ai.selectedWeapon];
+            ai.activeWeapon = JSON.parse(JSON.stringify(spec));
+            
+            if (ai.selectedCharacter === 'isabelle') {
+                ai.activeWeapon.reloadTime *= 0.85;
+            }
+
+            ai.ammoInMag = ai.activeWeapon.capacity;
+            ai.ammoReserve = ai.activeWeapon.reserve;
+            ai.reloading = false;
+            
+            audio.playReload();
+            spawnExplosiveSparks(ai.x, ai.y, ai.activeWeapon.color, 12);
+            updateHUD();
+        }
 
         window.addEventListener('keyup', (e) => {
             keys[e.key] = false;
@@ -1826,8 +1910,10 @@
             else if (selectedCharacter === 'sonic') player.speed = 4.4;
             else if (selectedCharacter === 'tom-nook') player.speed = 3.6;
 
+            document.getElementById('hud-username').textContent = p1Name;
+
             if (gameMode === 'pvp') {
-                document.getElementById('opp-username').textContent = `PLAYER 2 (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
+                document.getElementById('opp-username').textContent = `${p2Name} (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
                 document.getElementById('score-opp-label').textContent = 'P2';
             } else {
                 const chars = ['red-bird', 'hello-kitty', 'isabelle', 'black-bird', 'sonic', 'tom-nook'];
@@ -2358,8 +2444,8 @@
                 if (moveX !== 0 || moveY !== 0) {
                     const len = Math.sqrt(moveX * moveX + moveY * moveY);
                     let currentSpeed = player.speed;
-                    if (keys['Shift']) {
-                        currentSpeed *= 1.45;
+                    if (keys['Shift'] || keys['ShiftLeft']) {
+                        currentSpeed *= 1.75;
                     }
                     moveX = (moveX / len) * currentSpeed;
                     moveY = (moveY / len) * currentSpeed;
@@ -2386,7 +2472,7 @@
                         const len = Math.sqrt(p2MoveX * p2MoveX + p2MoveY * p2MoveY);
                         let currentSpeed = ai.speed;
                         if (keys['Slash'] || keys['ShiftRight'] || keys['/']) {
-                            currentSpeed *= 1.45;
+                            currentSpeed *= 1.75;
                         }
                         p2MoveX = (p2MoveX / len) * currentSpeed;
                         p2MoveY = (p2MoveY / len) * currentSpeed;
