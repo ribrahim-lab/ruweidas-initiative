@@ -403,11 +403,15 @@ Good luck, and bon voyage!`,
             this.gameState = 'START';
             this.level = 0;
             this.score = 0;
-            this.timeLeft = 35.0; // Seconds
-            this.maxTime = 35.0;
+            this.timeLeft = 70.0; // Seconds
+            this.maxTime = 70.0;
             this.stars = [];
             this.edges = [];
             this.particles = [];
+            this.zombies = [];
+            this.portalCooldown = 0;
+            this.portalA = { x: 150, y: 150, radius: 20, color: '#00F3FF' };
+            this.portalB = { x: 650, y: 450, radius: 20, color: '#2ECC71' };
             
             this.ship = {
                 x: 400,
@@ -415,7 +419,10 @@ Good luck, and bon voyage!`,
                 vx: 0,
                 vy: 0,
                 angle: -Math.PI / 2, // Upwards
-                radius: 12
+                radius: 12,
+                knockbackTime: 0,
+                knockbackX: 0,
+                knockbackY: 0
             };
 
             this.keys = {};
@@ -560,8 +567,8 @@ Good luck, and bon voyage!`,
                 to: e[1]
             }));
 
-            // Time scaling: Level 0 is 35 seconds, Level 11 is 13 seconds (Aries to Pisces)
-            this.maxTime = 35.0 - (this.level * 2.0);
+            // Time scaling: Level 0 is 70 seconds, Level 11 is 42.5 seconds (Aries to Pisces)
+            this.maxTime = 70.0 - (this.level * 2.5);
             this.timeLeft = this.maxTime;
 
             // Reset ship location to center or first star
@@ -570,6 +577,27 @@ Good luck, and bon voyage!`,
             this.ship.vx = 0;
             this.ship.vy = 0;
             this.ship.angle = -Math.PI / 2;
+            this.ship.knockbackTime = 0;
+            this.ship.knockbackX = 0;
+            this.ship.knockbackY = 0;
+            this.portalCooldown = 0;
+
+            // Spawn space zombies
+            this.zombies = [];
+            const numZombies = Math.floor(this.level / 3) + 1; // 1 zombie at level 0, up to 4 zombies
+            for (let i = 0; i < numZombies; i++) {
+                // Spawn zombie at a random screen corner
+                let zx = Math.random() > 0.5 ? 50 : 750;
+                let zy = Math.random() > 0.5 ? 50 : 550;
+                this.zombies.push({
+                    x: zx,
+                    y: zy,
+                    vx: 0,
+                    vy: 0,
+                    radius: 14,
+                    speed: 0.9 + (this.level * 0.12) // Scales with level
+                });
+            }
 
             // Clear particles
             this.particles = [];
@@ -657,9 +685,82 @@ Good luck, and bon voyage!`,
             this.ship.x += this.ship.vx;
             this.ship.y += this.ship.vy;
 
+            // Apply knockback physics if active
+            if (this.ship.knockbackTime > 0) {
+                this.ship.x += this.ship.knockbackX;
+                this.ship.y += this.ship.knockbackY;
+                this.ship.knockbackTime--;
+                this.ship.knockbackX *= 0.9;
+                this.ship.knockbackY *= 0.9;
+            }
+
             // Keep spacecraft in canvas boundaries
             this.ship.x = Math.max(this.ship.radius, Math.min(800 - this.ship.radius, this.ship.x));
             this.ship.y = Math.max(this.ship.radius, Math.min(600 - this.ship.radius, this.ship.y));
+
+            // Update Space Zombies tracking and collision
+            if (this.zombies) {
+                this.zombies.forEach(z => {
+                    let zdx = this.ship.x - z.x;
+                    let zdy = this.ship.y - z.y;
+                    let zdist = Math.hypot(zdx, zdy);
+                    
+                    if (zdist > 1) {
+                        z.vx = (zdx / zdist) * z.speed;
+                        z.vy = (zdy / zdist) * z.speed;
+                    }
+                    
+                    z.x += z.vx;
+                    z.y += z.vy;
+                    
+                    // Keep zombies in bounds
+                    z.x = Math.max(z.radius, Math.min(800 - z.radius, z.x));
+                    z.y = Math.max(z.radius, Math.min(600 - z.radius, z.y));
+                    
+                    // Check collision with ship
+                    if (zdist < (this.ship.radius + z.radius)) {
+                        // Apply knockback to ship
+                        this.ship.knockbackTime = 15;
+                        this.ship.knockbackX = z.vx * 6;
+                        this.ship.knockbackY = z.vy * 6;
+                        
+                        // Deduct oxygen time
+                        this.timeLeft -= 3.0;
+                        if (this.timeLeft < 0) this.timeLeft = 0;
+                        
+                        // Spawn scary green toxic sparks
+                        this.spawnZombieSparks(z.x, z.y);
+                        
+                        // Reposition zombie to a random far corner
+                        z.x = Math.random() > 0.5 ? 50 : 750;
+                        z.y = Math.random() > 0.5 ? 50 : 550;
+                    }
+                });
+            }
+
+            // Update Portals cooldown and check teleportation
+            if (this.portalCooldown > 0) {
+                this.portalCooldown--;
+            }
+
+            if (this.portalCooldown === 0) {
+                const distToA = Math.hypot(this.ship.x - this.portalA.x, this.ship.y - this.portalA.y);
+                const distToB = Math.hypot(this.ship.x - this.portalB.x, this.ship.y - this.portalB.y);
+
+                if (distToA < (this.ship.radius + this.portalA.radius)) {
+                    this.ship.x = this.portalB.x;
+                    this.ship.y = this.portalB.y;
+                    this.portalCooldown = 60; // 1 second cooldown
+                    this.spawnPortalSparks(this.portalA.x, this.portalA.y, this.portalA.color);
+                    this.spawnPortalSparks(this.portalB.x, this.portalB.y, this.portalB.color);
+                } else if (distToB < (this.ship.radius + this.portalB.radius)) {
+                    this.ship.x = this.portalA.x;
+                    this.ship.y = this.portalA.y;
+                    this.portalCooldown = 60;
+                    this.spawnPortalSparks(this.portalB.x, this.portalB.y, this.portalB.color);
+                    this.spawnPortalSparks(this.portalA.x, this.portalA.y, this.portalA.color);
+                }
+            }
 
             // 3. Update background stars (Subtle twinkle)
             this.starsBackground.forEach(star => {
@@ -727,6 +828,38 @@ Good luck, and bon voyage!`,
                     vy: Math.sin(angle) * speed,
                     alpha: 1,
                     color: Math.random() > 0.5 ? '#00FFFF' : '#F1C40F',
+                    size: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        spawnZombieSparks(x, y) {
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 4 + 1;
+                this.particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    color: '#39FF14', // Scary green
+                    size: Math.random() * 3 + 1
+                });
+            }
+        }
+
+        spawnPortalSparks(x, y, color) {
+            for (let i = 0; i < 20; i++) {
+                const angle = Math.random() * Math.PI * 2;
+                const speed = Math.random() * 3 + 1;
+                this.particles.push({
+                    x: x,
+                    y: y,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    alpha: 1,
+                    color: color,
                     size: Math.random() * 2 + 1
                 });
             }
@@ -811,6 +944,78 @@ Good luck, and bon voyage!`,
                 this.ctx.fill();
             });
             this.ctx.globalAlpha = 1.0; // Reset transparency
+
+            // Draw Space Zombies
+            if (this.zombies) {
+                this.zombies.forEach(z => {
+                    this.ctx.save();
+                    this.ctx.translate(z.x, z.y);
+                    
+                    // Head base
+                    this.ctx.fillStyle = '#1A5F20';
+                    this.ctx.strokeStyle = '#39FF14';
+                    this.ctx.lineWidth = 2;
+                    this.ctx.shadowBlur = 8;
+                    this.ctx.shadowColor = '#39FF14';
+                    
+                    this.ctx.beginPath();
+                    this.ctx.arc(0, 0, z.radius, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    this.ctx.stroke();
+                    
+                    // Glowing Red Eyes
+                    this.ctx.fillStyle = '#FF0000';
+                    this.ctx.shadowBlur = 4;
+                    this.ctx.shadowColor = '#FF0000';
+                    this.ctx.beginPath();
+                    this.ctx.arc(-5, -3, 3, 0, Math.PI * 2);
+                    this.ctx.arc(5, -3, 3, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    // Decaying mouth stitches
+                    this.ctx.strokeStyle = '#000000';
+                    this.ctx.lineWidth = 1.5;
+                    this.ctx.shadowBlur = 0;
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(-6, 4);
+                    this.ctx.lineTo(6, 4);
+                    this.ctx.stroke();
+                    
+                    this.ctx.beginPath();
+                    this.ctx.moveTo(-3, 2); this.ctx.lineTo(-3, 6);
+                    this.ctx.moveTo(0, 2); this.ctx.lineTo(0, 6);
+                    this.ctx.moveTo(3, 2); this.ctx.lineTo(3, 6);
+                    this.ctx.stroke();
+                    
+                    this.ctx.restore();
+                });
+                this.ctx.shadowBlur = 0; // reset
+            }
+
+            // Draw Warp Portals
+            if (this.portalA && this.portalB) {
+                [this.portalA, this.portalB].forEach(p => {
+                    this.ctx.save();
+                    this.ctx.shadowBlur = 12;
+                    this.ctx.shadowColor = p.color;
+                    
+                    // Outer portal ring
+                    this.ctx.strokeStyle = p.color;
+                    this.ctx.lineWidth = 3;
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    this.ctx.stroke();
+                    
+                    // Swirl background
+                    this.ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+                    this.ctx.beginPath();
+                    this.ctx.arc(p.x, p.y, p.radius - 2, 0, Math.PI * 2);
+                    this.ctx.fill();
+                    
+                    this.ctx.restore();
+                });
+                this.ctx.shadowBlur = 0; // reset
+            }
 
             // Draw Spacecraft (Ship)
             this.ctx.save();
