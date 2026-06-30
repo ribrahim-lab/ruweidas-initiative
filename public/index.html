@@ -817,10 +817,10 @@
             <p>Establish primary weapon payload and core ballistic profile</p>
         </div>
 
-        <div style="max-width: 500px; width: 100%; margin-bottom: 35px;">
+        <div style="max-width: 780px; width: 100%; margin-bottom: 35px;">
             <div class="selection-section">
                 <h3 class="section-title-tag">Weapon Arsenal</h3>
-                <div class="control-group" style="display: flex; flex-direction: column; gap: 12px;">
+                <div class="control-group" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 12px;">
                     
                     <!-- Weapon 1: Carbine -->
                     <div class="weapon-card selected" id="weap-carbine" onclick="selectWeapon('carbine')">
@@ -864,6 +864,81 @@
                             
                             <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">0.8/s</span></div>
                             <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 10%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 4: Ray Gun -->
+                    <div class="weapon-card" id="weap-raygun" onclick="selectWeapon('raygun')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Ray-Kitty Laser Blaster</h4>
+                            <p class="weapon-tagline">High-Tech Laser. Fast energy bolts.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">95</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 85%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">4/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 45%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 5: Drum Gun -->
+                    <div class="weapon-card" id="weap-drumgun" onclick="selectWeapon('drumgun')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Isabelle Drum Rifle</h4>
+                            <p class="weapon-tagline">Fully Automatic. Huge drum magazine.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">45</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 45%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">8/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 75%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 6: Shotgun -->
+                    <div class="weapon-card" id="weap-shotgun" onclick="selectWeapon('shotgun')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Flock Scattergun</h4>
+                            <p class="weapon-tagline">Double-Barrel. Shoots a 5-bullet spread.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">55 x 5</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 90%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">1.4/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 20%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 7: Sniper -->
+                    <div class="weapon-card" id="weap-sniper" onclick="selectWeapon('sniper')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Sonic Bolt Sniper</h4>
+                            <p class="weapon-tagline">High Precision. Piercing supersonic rounds.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">300</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 100%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">0.6/s</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 8%;"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- Weapon 8: Burst Rifle -->
+                    <div class="weapon-card" id="weap-nookrifle" onclick="selectWeapon('nookrifle')">
+                        <div class="weapon-info-block">
+                            <h4 class="weapon-title">Nook's Bells Rifle</h4>
+                            <p class="weapon-tagline">Burst Action. Fires a rapid 3-round burst.</p>
+                        </div>
+                        <div class="weapon-stat-visuals">
+                            <div class="weapon-stat-row">Damage <span class="slider-value">70 x 3</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 70%;"></div></div>
+                            
+                            <div class="weapon-stat-row" style="margin-top: 6px;">Fire Rate <span class="slider-value">6/s (bursts)</span></div>
+                            <div class="weapon-stat-bar-container"><div class="weapon-stat-bar-fill" style="width: 60%;"></div></div>
                         </div>
                     </div>
 
@@ -1111,6 +1186,74 @@
                     
                     osc.start();
                     osc.stop(now + 0.5);
+                } else if (type === 'raygun') {
+                    // Laser zap
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(1000, now);
+                    osc.frequency.exponentialRampToValueAtTime(300, now + 0.15);
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                    
+                    const hp = this.ctx.createBiquadFilter();
+                    hp.type = 'highpass';
+                    hp.frequency.setValueAtTime(400, now);
+                    
+                    osc.connect(hp);
+                    hp.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.16);
+                } else if (type === 'drumgun') {
+                    // SMG rattle
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(500, now);
+                    osc.frequency.exponentialRampToValueAtTime(150, now + 0.09);
+                    gain.gain.setValueAtTime(0.22, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.09);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.1);
+                } else if (type === 'shotgun') {
+                    // Heavy double-barrel blast
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(250, now);
+                    osc.frequency.linearRampToValueAtTime(40, now + 0.3);
+                    gain.gain.setValueAtTime(0.5, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    
+                    const lp = this.ctx.createBiquadFilter();
+                    lp.type = 'lowpass';
+                    lp.frequency.setValueAtTime(300, now);
+                    
+                    osc.connect(lp);
+                    lp.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.32);
+                } else if (type === 'sniper') {
+                    // Supersonic whip crack
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(800, now);
+                    osc.frequency.exponentialRampToValueAtTime(60, now + 0.25);
+                    gain.gain.setValueAtTime(0.4, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+                    
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.27);
+                } else if (type === 'nookrifle') {
+                    // Sharp burst carbine snap
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(650, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.1);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                    osc.connect(gain);
+                    gain.connect(this.ctx.destination);
+                    osc.start();
+                    osc.stop(now + 0.12);
                 }
             }
 
@@ -1501,6 +1644,61 @@
                 type: 'heavy',
                 bulletSpeed: 6.5,
                 color: '#ffcc00'
+            },
+            raygun: {
+                name: "Ray-Kitty Laser Blaster",
+                damage: 95,
+                fireDelay: 250,
+                capacity: 20,
+                reloadTime: 1400,
+                reserve: 120,
+                type: 'semi',
+                bulletSpeed: 16,
+                color: '#00ffff'
+            },
+            drumgun: {
+                name: "Isabelle Drum Rifle",
+                damage: 45,
+                fireDelay: 125,
+                capacity: 60,
+                reloadTime: 1800,
+                reserve: 300,
+                type: 'auto',
+                bulletSpeed: 11,
+                color: '#39ff14'
+            },
+            shotgun: {
+                name: "Flock Scattergun",
+                damage: 55,
+                fireDelay: 700,
+                capacity: 2,
+                reloadTime: 1600,
+                reserve: 24,
+                type: 'semi',
+                bulletSpeed: 9,
+                color: '#ff3344'
+            },
+            sniper: {
+                name: "Sonic Bolt Sniper",
+                damage: 300,
+                fireDelay: 1500,
+                capacity: 5,
+                reloadTime: 2000,
+                reserve: 20,
+                type: 'semi',
+                bulletSpeed: 20,
+                color: '#ffd700'
+            },
+            nookrifle: {
+                name: "Nook's Bells Rifle",
+                damage: 70,
+                fireDelay: 500,
+                capacity: 30,
+                reloadTime: 1300,
+                reserve: 180,
+                type: 'burst',
+                bulletSpeed: 13,
+                color: '#c5a059'
             }
         };
 
@@ -1575,7 +1773,7 @@
         window.addEventListener('mousedown', (e) => {
             if (gameState === 'PLAYING') {
                 mouse.down = true;
-                if (player.activeWeapon && (player.activeWeapon.type === 'semi' || player.activeWeapon.type === 'heavy')) {
+                if (player.activeWeapon && (player.activeWeapon.type === 'semi' || player.activeWeapon.type === 'heavy' || player.activeWeapon.type === 'burst')) {
                     shootActiveWeapon();
                 }
             }
@@ -1713,6 +1911,46 @@
             }, 1000);
         }
 
+        function fireBurst(count) {
+            if (count <= 0 || gameState !== 'PLAYING' || player.reloading) return;
+            if (player.ammoInMag <= 0) return;
+
+            const angle = player.angle;
+            const muzzleOffset = player.radius + 8;
+            const bx = player.x + Math.cos(angle) * muzzleOffset;
+            const by = player.y + Math.sin(angle) * muzzleOffset;
+            
+            const speed = player.activeWeapon.bulletSpeed;
+            let bulletColor = player.activeWeapon.color;
+            let isMiniExplosive = false;
+            if (selectedCharacter === 'black-bird' && Math.random() < 0.25) {
+                isMiniExplosive = true;
+                bulletColor = '#ffa500';
+            }
+
+            bullets.push({
+                x: bx,
+                y: by,
+                vx: Math.cos(angle) * speed,
+                vy: Math.sin(angle) * speed,
+                radius: 4,
+                damage: player.activeWeapon.damage,
+                type: selectedWeapon,
+                color: bulletColor,
+                isMiniExplosive: isMiniExplosive
+            });
+
+            audio.playShoot('nookrifle');
+            player.ammoInMag--;
+            updateHUD();
+
+            if (count > 1) {
+                setTimeout(() => {
+                    fireBurst(count - 1);
+                }, 85);
+            }
+        }
+
         // --- Weapon shoot logic ---
         function shootActiveWeapon() {
             if (player.reloading) return;
@@ -1726,6 +1964,12 @@
             
             if (player.ammoInMag <= 0) {
                 triggerManualReload();
+                return;
+            }
+
+            if (selectedWeapon === 'nookrifle') {
+                fireBurst(3);
+                lastShotTime = now;
                 return;
             }
 
@@ -1743,17 +1987,35 @@
                 bulletColor = '#ffa500'; // orange glowing bullet
             }
 
-            bullets.push({
-                x: bx,
-                y: by,
-                vx: Math.cos(angle) * speed,
-                vy: Math.sin(angle) * speed,
-                radius: 4,
-                damage: player.activeWeapon.damage,
-                type: selectedWeapon,
-                color: bulletColor,
-                isMiniExplosive: isMiniExplosive
-            });
+            if (selectedWeapon === 'shotgun') {
+                const spreadAngles = [-0.18, -0.09, 0, 0.09, 0.18];
+                spreadAngles.forEach(offsetAngle => {
+                    const finalAngle = angle + offsetAngle;
+                    bullets.push({
+                        x: bx,
+                        y: by,
+                        vx: Math.cos(finalAngle) * speed,
+                        vy: Math.sin(finalAngle) * speed,
+                        radius: 4,
+                        damage: player.activeWeapon.damage,
+                        type: selectedWeapon,
+                        color: bulletColor,
+                        isMiniExplosive: isMiniExplosive
+                    });
+                });
+            } else {
+                bullets.push({
+                    x: bx,
+                    y: by,
+                    vx: Math.cos(angle) * speed,
+                    vy: Math.sin(angle) * speed,
+                    radius: 4,
+                    damage: player.activeWeapon.damage,
+                    type: selectedWeapon,
+                    color: bulletColor,
+                    isMiniExplosive: isMiniExplosive
+                });
+            }
 
             // Play Synth audio
             audio.playShoot(selectedWeapon);
