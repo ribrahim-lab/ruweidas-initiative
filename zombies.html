@@ -1806,8 +1806,12 @@
             if (moveX !== 0 || moveY !== 0) {
                 // Diagonal speed normalize
                 const len = Math.sqrt(moveX * moveX + moveY * moveY);
-                moveX = (moveX / len) * player.speed;
-                moveY = (moveY / len) * player.speed;
+                let currentSpeed = player.speed;
+                if (keys['Shift']) {
+                    currentSpeed *= 1.45; // Sprint modifier
+                }
+                moveX = (moveX / len) * currentSpeed;
+                moveY = (moveY / len) * currentSpeed;
                 
                 player.x += moveX;
                 player.y += moveY;
@@ -1881,18 +1885,19 @@
             });
 
             // 6. Update Bullets movement
-            bullets.forEach((b, bIdx) => {
+            bullets.forEach(b => {
                 b.x += b.vx;
                 b.y += b.vy;
 
                 // Out of bounds check
                 if (b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height) {
-                    bullets.splice(bIdx, 1);
+                    b.toRemove = true;
                     return;
                 }
 
                 // Check collision with zombies
                 zombies.forEach((z, zIdx) => {
+                    if (z.toRemove) return;
                     const bDist = Math.hypot(z.x - b.x, z.y - b.y);
                     if (bDist < (z.radius + b.radius)) {
                         // Bullet hits zombie!
@@ -1913,11 +1918,11 @@
                         }
 
                         // Remove bullet
-                        bullets.splice(bIdx, 1);
+                        b.toRemove = true;
 
                         // Check if zombie dead
                         if (z.health <= 0) {
-                            zombies.splice(zIdx, 1);
+                            z.toRemove = true;
                             
                             // Calculate points
                             let points = 50;
@@ -1940,16 +1945,17 @@
             });
 
             // 7. Update Explosion area of effects
-            explosions.forEach((exp, eIdx) => {
+            explosions.forEach(exp => {
                 exp.radius += 4;
                 exp.alpha -= 0.05;
                 if (exp.alpha <= 0) {
-                    explosions.splice(eIdx, 1);
+                    exp.toRemove = true;
                     return;
                 }
 
                 // Damage surrounding zombies inside radius (AOE logic)
                 zombies.forEach((z, zIdx) => {
+                    if (z.toRemove) return;
                     const distToExp = Math.hypot(z.x - exp.x, z.y - exp.y);
                     if (distToExp < (exp.radius + z.radius) && !exp.damagedIds.includes(zIdx)) {
                         z.health -= exp.damage;
@@ -1957,7 +1963,7 @@
                         exp.damagedIds.push(zIdx);
 
                         if (z.health <= 0) {
-                            zombies.splice(zIdx, 1);
+                            z.toRemove = true;
                             let points = 50;
                             if (doublePointsActive) points = 100;
                             player.score += points;
@@ -1975,29 +1981,36 @@
             });
 
             // 8. Collect power-up drops
-            drops.forEach((d, dIdx) => {
+            drops.forEach(d => {
                 const distToPlayer = Math.hypot(player.x - d.x, player.y - d.y);
                 if (distToPlayer < (player.radius + d.radius)) {
                     triggerPowerUp(d.type);
-                    drops.splice(dIdx, 1);
+                    d.toRemove = true;
                     return;
                 }
 
                 // Expire drops over time
                 if (Date.now() - d.timeCreated > d.duration) {
-                    drops.splice(dIdx, 1);
+                    d.toRemove = true;
                 }
             });
 
             // 9. Update particles alpha decay
-            particles.forEach((p, idx) => {
+            particles.forEach(p => {
                 p.x += p.vx;
                 p.y += p.vy;
                 p.alpha -= 0.02;
                 if (p.alpha <= 0) {
-                    particles.splice(idx, 1);
+                    p.toRemove = true;
                 }
             });
+
+            // Clean up entities marked for removal
+            bullets = bullets.filter(b => !b.toRemove);
+            zombies = zombies.filter(z => !z.toRemove);
+            explosions = explosions.filter(exp => !exp.toRemove);
+            drops = drops.filter(d => !d.toRemove);
+            particles = particles.filter(p => !p.toRemove);
         }
 
         // Bazooka explosion event trigger
