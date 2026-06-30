@@ -1323,6 +1323,22 @@
             drawIsabelleHead(ctx, 25, 25, 16);
         }
 
+        function drawBlackBirdPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawBlackBirdHead(ctx, 25, 25, 16);
+        }
+
+        function drawSonicPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawSonicHead(ctx, 25, 25, 16);
+        }
+
         // Initialize previews on load
         window.addEventListener('load', () => {
             drawRedBirdPreview('canvas-preview-red');
