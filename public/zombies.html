@@ -793,10 +793,21 @@
 
     <!-- 2. WEAPON LOADOUT SCREEN -->
     <div class="screen hidden" id="selector-screen">
-        <!-- Game Mode Selection Toggle -->
-        <div class="mode-select-container" style="display: flex; gap: 12px; margin-top: 10px; margin-bottom: 25px; align-items: center; justify-content: center; z-index: 20;">
-            <button class="mode-toggle-btn active" id="btn-mode-ai" onclick="changeGameMode('ai')">🆚 VS AI</button>
-            <button class="mode-toggle-btn" id="btn-mode-pvp" onclick="changeGameMode('pvp')">👥 VS Player 2 (Local)</button>
+        <!-- Game Mode & Difficulty Selection Toggle -->
+        <div class="mode-select-container" style="display: flex; flex-direction: column; gap: 15px; margin-top: 10px; margin-bottom: 25px; align-items: center; justify-content: center; z-index: 20;">
+            <div style="display: flex; gap: 12px;">
+                <button class="mode-toggle-btn active" id="btn-mode-ai" onclick="changeGameMode('ai')">🆚 VS AI</button>
+                <button class="mode-toggle-btn" id="btn-mode-pvp" onclick="changeGameMode('pvp')">👥 VS Player 2 (Local)</button>
+            </div>
+            
+            <!-- AI Difficulty Selection (Only visible when VS AI is active) -->
+            <div id="ai-difficulty-container" style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 0.8rem; text-transform: uppercase; font-weight: 700; letter-spacing: 0.05em; color: var(--text-muted); margin-right: 8px;">AI Difficulty:</span>
+                <button class="mode-toggle-btn diff-btn" id="btn-diff-easy" onclick="changeDifficulty('easy')" style="padding: 6px 14px; font-size: 0.75rem;">Easy</button>
+                <button class="mode-toggle-btn diff-btn active" id="btn-diff-medium" onclick="changeDifficulty('medium')" style="padding: 6px 14px; font-size: 0.75rem;">Medium</button>
+                <button class="mode-toggle-btn diff-btn" id="btn-diff-hard" onclick="changeDifficulty('hard')" style="padding: 6px 14px; font-size: 0.75rem;">Hard</button>
+                <button class="mode-toggle-btn diff-btn" id="btn-diff-exhard" onclick="changeDifficulty('exhard')" style="padding: 6px 14px; font-size: 0.75rem;">Extra Hard</button>
+            </div>
         </div>
 
         <div class="selector-header">
@@ -1422,17 +1433,36 @@
         
         let gameMode = 'ai'; // 'ai' or 'pvp'
         let selectionStage = 1; // 1 for Player 1, 2 for Player 2
+        let aiDifficulty = 'medium'; // 'easy', 'medium', 'hard', 'exhard'
 
         function changeGameMode(mode) {
             gameMode = mode;
-            document.querySelectorAll('.mode-toggle-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.mode-toggle-btn').forEach(btn => {
+                if (!btn.classList.contains('diff-btn')) btn.classList.remove('active');
+            });
             if (mode === 'ai') {
                 document.getElementById('btn-mode-ai').classList.add('active');
-                document.getElementById('score-opp-label').textContent = 'AI';
+                document.getElementById('ai-difficulty-container').style.display = 'flex';
+                document.getElementById('score-opp-label').textContent = `AI (${aiDifficulty.toUpperCase()})`;
             } else {
                 document.getElementById('btn-mode-pvp').classList.add('active');
+                document.getElementById('ai-difficulty-container').style.display = 'none';
                 document.getElementById('score-opp-label').textContent = 'P2';
             }
+        }
+
+        function changeDifficulty(diff) {
+            aiDifficulty = diff;
+            document.querySelectorAll('.diff-btn').forEach(btn => btn.classList.remove('active'));
+            if (diff === 'easy') document.getElementById('btn-diff-easy').classList.add('active');
+            else if (diff === 'medium') document.getElementById('btn-diff-medium').classList.add('active');
+            else if (diff === 'hard') document.getElementById('btn-diff-hard').classList.add('active');
+            else if (diff === 'exhard') document.getElementById('btn-diff-exhard').classList.add('active');
+            
+            if (gameMode === 'ai') {
+                document.getElementById('score-opp-label').textContent = `AI (${diff.toUpperCase()})`;
+            }
+            audio.playPowerUp();
         }
 
         function selectChar(charId) {
@@ -1546,89 +1576,89 @@
             carbine: {
                 name: "Red Bird Carbine",
                 damage: 80,
-                fireDelay: 330,
+                fireDelay: 220,
                 capacity: 35,
-                reloadTime: 1200,
+                reloadTime: 800,
                 reserve: 140,
                 type: 'semi',
-                bulletSpeed: 10,
+                bulletSpeed: 14,
                 color: '#ff3344'
             },
             blaster: {
                 name: "Kitty Bubble SMG",
-                damage: 30,
-                fireDelay: 100,
+                damage: 36,
+                fireDelay: 70,
                 capacity: 55,
-                reloadTime: 1500,
+                reloadTime: 1000,
                 reserve: 220,
                 type: 'auto',
-                bulletSpeed: 12,
+                bulletSpeed: 16,
                 color: '#ff69b4'
             },
             bazooka: {
                 name: "Sling-Shot Bazooka",
                 damage: 250,
-                fireDelay: 1200,
+                fireDelay: 800,
                 capacity: 30,
-                reloadTime: 2200,
+                reloadTime: 1500,
                 reserve: 100,
                 type: 'heavy',
-                bulletSpeed: 6.5,
+                bulletSpeed: 10,
                 color: '#ffcc00'
             },
             raygun: {
                 name: "Ray-Kitty Laser Blaster",
-                damage: 95,
-                fireDelay: 250,
+                damage: 110,
+                fireDelay: 180,
                 capacity: 40,
-                reloadTime: 1400,
+                reloadTime: 900,
                 reserve: 160,
                 type: 'semi',
-                bulletSpeed: 16,
+                bulletSpeed: 22,
                 color: '#00ffff'
             },
             drumgun: {
                 name: "Isabelle Drum Rifle",
-                damage: 45,
-                fireDelay: 125,
+                damage: 55,
+                fireDelay: 90,
                 capacity: 55,
-                reloadTime: 1800,
+                reloadTime: 1200,
                 reserve: 220,
                 type: 'auto',
-                bulletSpeed: 11,
+                bulletSpeed: 15,
                 color: '#39ff14'
             },
             shotgun: {
                 name: "Flock Scattergun",
-                damage: 55,
-                fireDelay: 700,
+                damage: 65,
+                fireDelay: 450,
                 capacity: 30,
-                reloadTime: 1600,
+                reloadTime: 1100,
                 reserve: 120,
                 type: 'semi',
-                bulletSpeed: 9,
+                bulletSpeed: 13,
                 color: '#ff3344'
             },
             sniper: {
                 name: "Sonic Bolt Sniper",
                 damage: 300,
-                fireDelay: 1500,
+                fireDelay: 900,
                 capacity: 35,
-                reloadTime: 2000,
+                reloadTime: 1300,
                 reserve: 105,
                 type: 'semi',
-                bulletSpeed: 20,
+                bulletSpeed: 28,
                 color: '#ffd700'
             },
             nookrifle: {
                 name: "Nook's Bells Rifle",
-                damage: 70,
-                fireDelay: 500,
+                damage: 85,
+                fireDelay: 300,
                 capacity: 45,
-                reloadTime: 1300,
+                reloadTime: 950,
                 reserve: 180,
                 type: 'burst',
-                bulletSpeed: 13,
+                bulletSpeed: 17,
                 color: '#c5a059'
             }
         };
@@ -1820,14 +1850,37 @@
             ai.ringShieldRegenTimer = 0;
             ai.invincibilityFrames = 0;
 
-            if (ai.selectedCharacter === 'red-bird') ai.speed = 3.5;
-            else if (ai.selectedCharacter === 'hello-kitty') ai.speed = 3.8;
+            let baseSpeedAI = 3.5;
+            if (ai.selectedCharacter === 'red-bird') baseSpeedAI = 3.5;
+            else if (ai.selectedCharacter === 'hello-kitty') baseSpeedAI = 3.8;
             else if (ai.selectedCharacter === 'isabelle') {
-                ai.speed = 4.3;
+                baseSpeedAI = 4.3;
                 ai.activeWeapon.reloadTime *= 0.85;
-            } else if (ai.selectedCharacter === 'black-bird') ai.speed = 3.3;
-            else if (ai.selectedCharacter === 'sonic') ai.speed = 4.4;
-            else if (ai.selectedCharacter === 'tom-nook') ai.speed = 3.6;
+            } else if (ai.selectedCharacter === 'black-bird') baseSpeedAI = 3.3;
+            else if (ai.selectedCharacter === 'sonic') baseSpeedAI = 4.4;
+            else if (ai.selectedCharacter === 'tom-nook') baseSpeedAI = 3.6;
+
+            if (gameMode === 'ai') {
+                if (aiDifficulty === 'easy') {
+                    baseSpeedAI *= 0.65;
+                    ai.activeWeapon.fireDelay *= 1.6;
+                    ai.activeWeapon.reloadTime *= 1.4;
+                    ai.activeWeapon.bulletSpeed *= 0.75;
+                } else if (aiDifficulty === 'medium') {
+                    // Normal stats
+                } else if (aiDifficulty === 'hard') {
+                    baseSpeedAI *= 1.25;
+                    ai.activeWeapon.fireDelay *= 0.75;
+                    ai.activeWeapon.reloadTime *= 0.8;
+                    ai.activeWeapon.bulletSpeed *= 1.2;
+                } else if (aiDifficulty === 'exhard') {
+                    baseSpeedAI *= 1.45;
+                    ai.activeWeapon.fireDelay *= 0.55;
+                    ai.activeWeapon.reloadTime *= 0.6;
+                    ai.activeWeapon.bulletSpeed *= 1.35;
+                }
+            }
+            ai.speed = baseSpeedAI;
 
             bullets = [];
             particles = [];
@@ -1857,6 +1910,11 @@
             
             // Show mode selection again
             document.querySelector('.mode-select-container').style.display = 'flex';
+            if (gameMode === 'ai') {
+                document.getElementById('ai-difficulty-container').style.display = 'flex';
+            } else {
+                document.getElementById('ai-difficulty-container').style.display = 'none';
+            }
 
             // Hide back to P1 button
             document.getElementById('weap-back-btn').classList.add('hidden');
@@ -2362,7 +2420,12 @@
                     ai.behaviorTimer--;
                     
                     if (ai.behaviorTimer <= 0) {
-                        ai.behaviorTimer = Math.random() * 40 + 20;
+                        let baseInterval = 40;
+                        if (aiDifficulty === 'easy') baseInterval = 80;
+                        else if (aiDifficulty === 'hard') baseInterval = 25;
+                        else if (aiDifficulty === 'exhard') baseInterval = 12;
+                        
+                        ai.behaviorTimer = Math.random() * baseInterval + baseInterval / 2;
 
                         let nearestDrop = null;
                         let minDist = 9999;
@@ -2413,7 +2476,13 @@
 
                     ai.angle = Math.atan2(player.y - ai.y, player.x - ai.x);
                     const pDistToPlayer = Math.hypot(player.x - ai.x, player.y - ai.y);
-                    if (pDistToPlayer < 450 && Math.random() < 0.12) {
+                    
+                    let shootChance = 0.12;
+                    if (aiDifficulty === 'easy') shootChance = 0.05;
+                    else if (aiDifficulty === 'hard') shootChance = 0.18;
+                    else if (aiDifficulty === 'exhard') shootChance = 0.28;
+                    
+                    if (pDistToPlayer < 450 && Math.random() < shootChance) {
                         shootActiveWeaponAI();
                     }
 
