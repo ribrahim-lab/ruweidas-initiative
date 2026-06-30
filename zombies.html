@@ -741,6 +741,35 @@
             0% { opacity: 0.6; }
             100% { opacity: 1; }
         }
+
+        /* 1v1 Mode Selection Buttons */
+        .mode-toggle-btn {
+            padding: 10px 22px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1.5px solid rgba(255, 255, 255, 0.12);
+            color: var(--text-muted);
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            cursor: pointer;
+            transition: var(--transition-smooth);
+        }
+        .mode-toggle-btn.active {
+            background: linear-gradient(135deg, var(--accent-red) 0%, #cc1b2b 100%);
+            border-color: var(--accent-red);
+            color: #FFF;
+            box-shadow: 0 0 18px rgba(255, 51, 68, 0.4);
+        }
+        .mode-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.25);
+            color: #FFF;
+        }
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
@@ -764,9 +793,15 @@
 
     <!-- 2. WEAPON LOADOUT SCREEN -->
     <div class="screen hidden" id="selector-screen">
+        <!-- Game Mode Selection Toggle -->
+        <div class="mode-select-container" style="display: flex; gap: 12px; margin-top: 10px; margin-bottom: 25px; align-items: center; justify-content: center; z-index: 20;">
+            <button class="mode-toggle-btn active" id="btn-mode-ai" onclick="changeGameMode('ai')">🆚 VS AI</button>
+            <button class="mode-toggle-btn" id="btn-mode-pvp" onclick="changeGameMode('pvp')">👥 VS Player 2 (Local)</button>
+        </div>
+
         <div class="selector-header">
-            <h2>Select Starting Weapon</h2>
-            <p>Establish primary weapon payload and core ballistic profile</p>
+            <h2 id="weap-select-title">Select Starting Weapon</h2>
+            <p id="weap-select-subtitle">Establish primary weapon payload and core ballistic profile</p>
         </div>
 
         <div style="max-width: 780px; width: 100%; margin-bottom: 35px;">
@@ -898,14 +933,17 @@
             </div>
         </div>
 
-        <button class="launch-btn" onclick="goToCharacterSelect()">Select Operative &rarr;</button>
+        <div style="display: flex; gap: 20px;">
+            <button class="launch-btn hidden" id="weap-back-btn" style="background: rgba(255,255,255,0.05); color: #FFF; border: 1.5px solid rgba(255,255,255,0.15); box-shadow: none;" onclick="handleBackP2ToP1()">&larr; Back to P1</button>
+            <button class="launch-btn" onclick="goToCharacterSelect()">Select Operative &rarr;</button>
+        </div>
     </div>
 
     <!-- 2.5. CHARACTER SELECTOR SCREEN -->
     <div class="screen hidden" id="char-select-screen">
         <div class="selector-header">
-            <h2>Select Your Operative</h2>
-            <p>Determine signature combat vector skin and active passive specs</p>
+            <h2 id="char-select-title">Select Your Operative</h2>
+            <p id="char-select-subtitle">Determine signature combat vector skin and active passive specs</p>
         </div>
 
         <div class="selection-section" style="max-width: 900px; width: 100%;">
@@ -991,7 +1029,7 @@
 
         <div style="display: flex; gap: 20px;">
             <button class="launch-btn" style="background: rgba(255,255,255,0.05); color: #FFF; border: 1.5px solid rgba(255,255,255,0.15); box-shadow: none;" onclick="goToWeaponSelect()">&larr; Back</button>
-            <button class="launch-btn" onclick="startGame()">Deploy to Arena &rarr;</button>
+            <button class="launch-btn" onclick="handleDeployClick()">Deploy to Arena &rarr;</button>
         </div>
     </div>
 
@@ -1023,7 +1061,7 @@
                         <span class="hud-score-value player" id="score-player-val">0</span>
                         <span style="color: rgba(255,255,255,0.25); font-weight: 900;">:</span>
                         <span class="hud-score-value ai" id="score-ai-val">0</span>
-                        <span class="hud-score-label">AI</span>
+                        <span class="hud-score-label" id="score-opp-label">AI</span>
                     </div>
 
                     <!-- Opponent Health & Profile -->
@@ -1381,11 +1419,40 @@
         // --- Selection Variables & Logic ---
         let selectedCharacter = 'red-bird';
         let selectedWeapon = 'carbine';
+        
+        let gameMode = 'ai'; // 'ai' or 'pvp'
+        let selectionStage = 1; // 1 for Player 1, 2 for Player 2
+
+        function changeGameMode(mode) {
+            gameMode = mode;
+            document.querySelectorAll('.mode-toggle-btn').forEach(btn => btn.classList.remove('active'));
+            if (mode === 'ai') {
+                document.getElementById('btn-mode-ai').classList.add('active');
+                document.getElementById('score-opp-label').textContent = 'AI';
+            } else {
+                document.getElementById('btn-mode-pvp').classList.add('active');
+                document.getElementById('score-opp-label').textContent = 'P2';
+            }
+        }
 
         function selectChar(charId) {
-            selectedCharacter = charId;
+            if (gameMode === 'pvp' && selectionStage === 2) {
+                ai.selectedCharacter = charId;
+            } else {
+                selectedCharacter = charId;
+            }
             document.querySelectorAll('.char-card').forEach(card => card.classList.remove('selected'));
             document.getElementById(`char-${charId}`).classList.add('selected');
+        }
+
+        function selectWeapon(weapId) {
+            if (gameMode === 'pvp' && selectionStage === 2) {
+                ai.selectedWeapon = weapId;
+            } else {
+                selectedWeapon = weapId;
+            }
+            document.querySelectorAll('.weapon-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById(`weap-${weapId}`).classList.add('selected');
         }
 
         function goToCharacterSelect() {
@@ -1404,11 +1471,69 @@
             document.getElementById('selector-screen').classList.remove('hidden');
         }
 
-        // Select Weapon
-        function selectWeapon(weapId) {
-            selectedWeapon = weapId;
+        function startP2Selection() {
+            selectionStage = 2;
+            
+            // Set defaults for Player 2 selection
+            ai.selectedWeapon = 'carbine';
+            ai.selectedCharacter = 'red-bird';
+
+            // Hide the game mode selectors during player 2 select
+            document.querySelector('.mode-select-container').style.display = 'none';
+
+            // Show the Back to Player 1 button
+            document.getElementById('weap-back-btn').classList.remove('hidden');
+
+            // Update UI highlights
             document.querySelectorAll('.weapon-card').forEach(card => card.classList.remove('selected'));
-            document.getElementById(`weap-${weapId}`).classList.add('selected');
+            document.getElementById('weap-carbine').classList.add('selected');
+            
+            document.querySelectorAll('.char-card').forEach(card => card.classList.remove('selected'));
+            document.getElementById('char-red-bird').classList.add('selected');
+
+            // Update headers for Player 2
+            document.getElementById('weap-select-title').textContent = "Player 2: Select Starting Weapon";
+            document.getElementById('weap-select-subtitle').textContent = "Establish Player 2's primary weapon payload";
+            document.getElementById('char-select-title').textContent = "Player 2: Select Your Operative";
+            document.getElementById('char-select-subtitle').textContent = "Determine Player 2's combat vector skin and active passive";
+
+            // Go back to weapon screen
+            document.getElementById('char-select-screen').classList.add('hidden');
+            document.getElementById('selector-screen').classList.remove('hidden');
+            
+            audio.playPowerUp();
+        }
+
+        function handleBackP2ToP1() {
+            selectionStage = 1;
+            
+            // Show mode selection again
+            document.querySelector('.mode-select-container').style.display = 'flex';
+
+            // Hide back to P1 button
+            document.getElementById('weap-back-btn').classList.add('hidden');
+
+            // Restore titles for Player 1 / defaults
+            document.getElementById('weap-select-title').textContent = "Select Starting Weapon";
+            document.getElementById('weap-select-subtitle').textContent = "Establish primary weapon payload and core ballistic profile";
+            document.getElementById('char-select-title').textContent = "Select Your Operative";
+            document.getElementById('char-select-subtitle').textContent = "Determine signature combat vector skin and active passive specs";
+
+            // Go to character screen of Player 1
+            document.getElementById('selector-screen').classList.add('hidden');
+            document.getElementById('char-select-screen').classList.remove('hidden');
+            
+            // Set highlights back to Player 1 selection
+            selectWeapon(selectedWeapon);
+            selectChar(selectedCharacter);
+        }
+
+        function handleDeployClick() {
+            if (gameMode === 'pvp' && selectionStage === 1) {
+                startP2Selection();
+            } else {
+                startGame();
+            }
         }
 
         // --- Game Setup & Loop ---
@@ -1671,13 +1796,18 @@
             else if (selectedCharacter === 'sonic') player.speed = 4.4;
             else if (selectedCharacter === 'tom-nook') player.speed = 3.6;
 
-            const chars = ['red-bird', 'hello-kitty', 'isabelle', 'black-bird', 'sonic', 'tom-nook'];
-            const weaps = ['carbine', 'blaster', 'bazooka', 'raygun', 'drumgun', 'shotgun', 'sniper', 'nookrifle'];
-            ai.selectedCharacter = chars[Math.floor(Math.random() * chars.length)];
-            ai.selectedWeapon = weaps[Math.floor(Math.random() * weaps.length)];
+            if (gameMode === 'pvp') {
+                document.getElementById('opp-username').textContent = `PLAYER 2 (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
+                document.getElementById('score-opp-label').textContent = 'P2';
+            } else {
+                const chars = ['red-bird', 'hello-kitty', 'isabelle', 'black-bird', 'sonic', 'tom-nook'];
+                const weaps = ['carbine', 'blaster', 'bazooka', 'raygun', 'drumgun', 'shotgun', 'sniper', 'nookrifle'];
+                ai.selectedCharacter = chars[Math.floor(Math.random() * chars.length)];
+                ai.selectedWeapon = weaps[Math.floor(Math.random() * weaps.length)];
+                document.getElementById('opp-username').textContent = `AI (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
+                document.getElementById('score-opp-label').textContent = 'AI';
+            }
             
-            document.getElementById('opp-username').textContent = `AI (${ai.selectedCharacter.replace('-', ' ').toUpperCase()})`;
-
             ai.x = 700;
             ai.y = 300;
             ai.health = 100;
@@ -1723,10 +1853,28 @@
         }
 
         function relaunchSelector() {
+            selectionStage = 1;
+            
+            // Show mode selection again
+            document.querySelector('.mode-select-container').style.display = 'flex';
+
+            // Hide back to P1 button
+            document.getElementById('weap-back-btn').classList.add('hidden');
+
+            // Restore titles for Player 1 / defaults
+            document.getElementById('weap-select-title').textContent = "Select Starting Weapon";
+            document.getElementById('weap-select-subtitle').textContent = "Establish primary weapon payload and core ballistic profile";
+            document.getElementById('char-select-title').textContent = "Select Your Operative";
+            document.getElementById('char-select-subtitle').textContent = "Determine signature combat vector skin and active passive specs";
+
             document.getElementById('gameover-screen').classList.remove('active');
             document.getElementById('game-screen').classList.add('hidden');
             document.getElementById('selector-screen').classList.remove('hidden');
             gameState = 'SELECTOR';
+            
+            // Set highlights back to Player 1 selection
+            selectWeapon(selectedWeapon);
+            selectChar(selectedCharacter);
         }
 
         function triggerRoundEnd(winner) {
@@ -1774,7 +1922,8 @@
                 goTitle.textContent = "DECIMATED";
                 goTitle.className = "gameover-title";
             }
-            document.getElementById('go-final-score').textContent = `PLAYER ${playerWins} - ${aiWins} AI`;
+            const oppLabel = (gameMode === 'pvp') ? 'P2' : 'AI';
+            document.getElementById('go-final-score').textContent = `PLAYER ${playerWins} - ${aiWins} ${oppLabel}`;
             document.getElementById('gameover-screen').classList.add('active');
         }
 
@@ -2164,68 +2313,113 @@
                 player.y = Math.max(player.radius, Math.min(canvas.height - player.radius, player.y));
             }
 
-            // AI Movement & Behavior
+            // AI / Player 2 Movement & Behavior
             if (!intermissionActive && ai.health > 0) {
-                ai.behaviorTimer--;
-                
-                if (ai.behaviorTimer <= 0) {
-                    ai.behaviorTimer = Math.random() * 40 + 20;
+                if (gameMode === 'pvp') {
+                    // Player 2 keyboard movement (Arrow keys)
+                    let p2MoveX = 0;
+                    let p2MoveY = 0;
+                    if (keys['ArrowUp']) p2MoveY -= 1;
+                    if (keys['ArrowDown']) p2MoveY += 1;
+                    if (keys['ArrowLeft']) p2MoveX -= 1;
+                    if (keys['ArrowRight']) p2MoveX += 1;
 
-                    let nearestDrop = null;
-                    let minDist = 9999;
-                    drops.forEach(d => {
-                        const dist = Math.hypot(ai.x - d.x, ai.y - d.y);
-                        if (dist < minDist) {
-                            minDist = dist;
-                            nearestDrop = d;
+                    if (p2MoveX !== 0 || p2MoveY !== 0) {
+                        const len = Math.sqrt(p2MoveX * p2MoveX + p2MoveY * p2MoveY);
+                        let currentSpeed = ai.speed;
+                        if (keys['Slash'] || keys['ShiftRight'] || keys['/']) {
+                            currentSpeed *= 1.45;
                         }
-                    });
+                        p2MoveX = (p2MoveX / len) * currentSpeed;
+                        p2MoveY = (p2MoveY / len) * currentSpeed;
+                        ai.x += p2MoveX;
+                        ai.y += p2MoveY;
+                    }
 
-                    if (ai.health < 40 && nearestDrop && nearestDrop.type === 'health' && minDist < 350) {
-                        ai.actionState = 'MAGNETIZING_POWERUP';
-                        ai.targetX = nearestDrop.x;
-                        ai.targetY = nearestDrop.y;
-                    } else if (nearestDrop && minDist < 180) {
-                        ai.actionState = 'MAGNETIZING_POWERUP';
-                        ai.targetX = nearestDrop.x;
-                        ai.targetY = nearestDrop.y;
+                    // Aiming: manual aim with IJKL, auto-aim at Player 1 if not pressed
+                    let p2AimX = 0;
+                    let p2AimY = 0;
+                    if (keys['i'] || keys['I']) p2AimY -= 1;
+                    if (keys['k'] || keys['K']) p2AimY += 1;
+                    if (keys['j'] || keys['J']) p2AimX -= 1;
+                    if (keys['l'] || keys['L']) p2AimX += 1;
+
+                    if (p2AimX !== 0 || p2AimY !== 0) {
+                        ai.angle = Math.atan2(p2AimY, p2AimX);
                     } else {
-                        const pDist = Math.hypot(ai.x - player.x, ai.y - player.y);
-                        if (ai.health < 35) {
-                            ai.actionState = 'FLEEING';
-                            const distPort0 = Math.hypot(ai.x - portals[0].x, ai.y - portals[0].y);
-                            const distPort1 = Math.hypot(ai.x - portals[1].x, ai.y - portals[1].y);
-                            const targetPortal = (distPort0 < distPort1) ? portals[0] : portals[1];
-                            ai.targetX = targetPortal.x;
-                            ai.targetY = targetPortal.y;
-                        } else if (pDist > 300) {
-                            ai.actionState = 'CHASING';
-                            ai.targetX = player.x + (Math.random() * 80 - 40);
-                            ai.targetY = player.y + (Math.random() * 80 - 40);
+                        // Default auto-aim at Player 1
+                        ai.angle = Math.atan2(player.y - ai.y, player.x - ai.x);
+                    }
+
+                    // Shooting for Player 2: Enter or Right Control or Numpad0
+                    if (keys['Enter'] || keys['ControlRight'] || keys['Numpad0']) {
+                        shootActiveWeaponAI();
+                    }
+
+                    ai.x = Math.max(ai.radius, Math.min(canvas.width - ai.radius, ai.x));
+                    ai.y = Math.max(ai.radius, Math.min(canvas.height - ai.radius, ai.y));
+                } else {
+                    ai.behaviorTimer--;
+                    
+                    if (ai.behaviorTimer <= 0) {
+                        ai.behaviorTimer = Math.random() * 40 + 20;
+
+                        let nearestDrop = null;
+                        let minDist = 9999;
+                        drops.forEach(d => {
+                            const dist = Math.hypot(ai.x - d.x, ai.y - d.y);
+                            if (dist < minDist) {
+                                minDist = dist;
+                                nearestDrop = d;
+                            }
+                        });
+
+                        if (ai.health < 40 && nearestDrop && nearestDrop.type === 'health' && minDist < 350) {
+                            ai.actionState = 'MAGNETIZING_POWERUP';
+                            ai.targetX = nearestDrop.x;
+                            ai.targetY = nearestDrop.y;
+                        } else if (nearestDrop && minDist < 180) {
+                            ai.actionState = 'MAGNETIZING_POWERUP';
+                            ai.targetX = nearestDrop.x;
+                            ai.targetY = nearestDrop.y;
                         } else {
-                            ai.actionState = 'WANDERING';
-                            ai.targetX = ai.x + (Math.random() * 200 - 100);
-                            ai.targetY = ai.y + (Math.random() * 200 - 100);
+                            const pDist = Math.hypot(ai.x - player.x, ai.y - player.y);
+                            if (ai.health < 35) {
+                                ai.actionState = 'FLEEING';
+                                const distPort0 = Math.hypot(ai.x - portals[0].x, ai.y - portals[0].y);
+                                const distPort1 = Math.hypot(ai.x - portals[1].x, ai.y - portals[1].y);
+                                const targetPortal = (distPort0 < distPort1) ? portals[0] : portals[1];
+                                ai.targetX = targetPortal.x;
+                                ai.targetY = targetPortal.y;
+                            } else if (pDist > 300) {
+                                ai.actionState = 'CHASING';
+                                ai.targetX = player.x + (Math.random() * 80 - 40);
+                                ai.targetY = player.y + (Math.random() * 80 - 40);
+                            } else {
+                                ai.actionState = 'WANDERING';
+                                ai.targetX = ai.x + (Math.random() * 200 - 100);
+                                ai.targetY = ai.y + (Math.random() * 200 - 100);
+                            }
                         }
                     }
-                }
 
-                let adx = ai.targetX - ai.x;
-                let ady = ai.targetY - ai.y;
-                let adist = Math.hypot(adx, ady);
-                if (adist > 5) {
-                    ai.x += (adx / adist) * ai.speed;
-                    ai.y += (ady / adist) * ai.speed;
-                }
+                    let adx = ai.targetX - ai.x;
+                    let ady = ai.targetY - ai.y;
+                    let adist = Math.hypot(adx, ady);
+                    if (adist > 5) {
+                        ai.x += (adx / adist) * ai.speed;
+                        ai.y += (ady / adist) * ai.speed;
+                    }
 
-                ai.angle = Math.atan2(player.y - ai.y, player.x - ai.x);
-                const pDistToPlayer = Math.hypot(player.x - ai.x, player.y - ai.y);
-                if (pDistToPlayer < 450 && Math.random() < 0.12) {
-                    shootActiveWeaponAI();
-                }
+                    ai.angle = Math.atan2(player.y - ai.y, player.x - ai.x);
+                    const pDistToPlayer = Math.hypot(player.x - ai.x, player.y - ai.y);
+                    if (pDistToPlayer < 450 && Math.random() < 0.12) {
+                        shootActiveWeaponAI();
+                    }
 
-                ai.x = Math.max(ai.radius, Math.min(canvas.width - ai.radius, ai.x));
-                ai.y = Math.max(ai.radius, Math.min(canvas.height - ai.radius, ai.y));
+                    ai.x = Math.max(ai.radius, Math.min(canvas.width - ai.radius, ai.x));
+                    ai.y = Math.max(ai.radius, Math.min(canvas.height - ai.radius, ai.y));
+                }
             }
 
             // Portal checks
