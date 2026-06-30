@@ -255,6 +255,12 @@
             box-shadow: 0 0 20px rgba(0, 243, 255, 0.15);
         }
 
+        .char-card.selected#char-tom-nook {
+            border-color: var(--accent-gold);
+            background: rgba(197, 160, 89, 0.05);
+            box-shadow: 0 0 20px rgba(197, 160, 89, 0.15);
+        }
+
         .char-icon-preview {
             width: 50px;
             height: 50px;
@@ -940,6 +946,18 @@
                         </div>
                     </div>
 
+                    <!-- Card 6: Tom Nook -->
+                    <div class="char-card" id="char-tom-nook" onclick="selectChar('tom-nook')">
+                        <div class="char-icon-preview">
+                            <canvas id="canvas-preview-nook" width="50" height="50"></canvas>
+                        </div>
+                        <span class="char-name">Tom Nook</span>
+                        <p class="char-desc" style="margin-top: 6px; flex-grow: 1;">The business tycoon from Animal Crossing. Always charging bells but helps you rake them in.</p>
+                        <div class="powerup-badge" style="margin-top: 15px; padding: 6px 10px; background: rgba(197, 160, 89, 0.12); border: 1px solid rgba(197, 160, 89, 0.25); border-radius: 6px; font-size: 0.75rem; color: #c5a059; font-weight: 700; width: 100%; box-sizing: border-box;">
+                            💰 Bells Magnet: +10% points & power-up pickup radius +60px
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -1339,6 +1357,14 @@
             drawSonicHead(ctx, 25, 25, 16);
         }
 
+        function drawTomNookPreview(canvasId) {
+            const canv = document.getElementById(canvasId);
+            if (!canv) return;
+            const ctx = canv.getContext('2d');
+            ctx.clearRect(0,0,50,50);
+            drawTomNookHead(ctx, 25, 25, 16);
+        }
+
         // Initialize previews on load
         window.addEventListener('load', () => {
             drawRedBirdPreview('canvas-preview-red');
@@ -1346,6 +1372,7 @@
             drawIsabellePreview('canvas-preview-isabelle');
             drawBlackBirdPreview('canvas-preview-black');
             drawSonicPreview('canvas-preview-sonic');
+            drawTomNookPreview('canvas-preview-nook');
             
             // Console log animation simulate
             runIntroLogs();
@@ -1360,6 +1387,7 @@
             "LOADING ASSETS: ISABELLE PARADIGM DEPLOYED.",
             "LOADING ASSETS: BLACK BIRD ORDNANCE INTEGRATED.",
             "LOADING ASSETS: SONIC VELOCITY VECTOR ESTABLISHED.",
+            "LOADING ASSETS: TOM NOOK BELLS MAGNET ACTIVATED.",
             "WEAPON CHECK: RED BIRD CARBINE CONNECTED.",
             "WEAPON CHECK: HELLO KITTY SMG BUBBLE ENGINE ONLINE.",
             "WEAPON CHECK: EXPLOSIVE SLING-SHOT BAZOOKA INTEGRATED.",
@@ -1419,6 +1447,7 @@
             drawIsabellePreview('canvas-preview-isabelle');
             drawBlackBirdPreview('canvas-preview-black');
             drawSonicPreview('canvas-preview-sonic');
+            drawTomNookPreview('canvas-preview-nook');
         }
 
         function goToWeaponSelect() {
@@ -1501,6 +1530,11 @@
         let particles = [];
         let drops = [];
         let explosions = [];
+        let portals = [
+            { x: 60, y: 300, radius: 24, targetX: 740, targetY: 300, color: '#00F3FF' },
+            { x: 740, y: 300, radius: 24, targetX: 60, targetY: 300, color: '#00F3FF' }
+        ];
+        let portalCooldown = 0; // cooldown in frames
 
         let waveNumber = 1;
         let waveZombiesToSpawn = 8;
@@ -1541,7 +1575,7 @@
         window.addEventListener('mousedown', (e) => {
             if (gameState === 'PLAYING') {
                 mouse.down = true;
-                if (player.activeWeapon && player.activeWeapon.type === 'semi') {
+                if (player.activeWeapon && (player.activeWeapon.type === 'semi' || player.activeWeapon.type === 'heavy')) {
                     shootActiveWeapon();
                 }
             }
@@ -1563,6 +1597,8 @@
                 drawBlackBirdPreview('hud-avatar-canvas');
             } else if (selectedCharacter === 'sonic') {
                 drawSonicPreview('hud-avatar-canvas');
+            } else if (selectedCharacter === 'tom-nook') {
+                drawTomNookPreview('hud-avatar-canvas');
             }
         }
 
@@ -1606,6 +1642,8 @@
             } else if (selectedCharacter === 'sonic') {
                 player.speed = 4.4; // Sonic: high base speed
                 player.hasRingShield = true; // Ring Shield active
+            } else if (selectedCharacter === 'tom-nook') {
+                player.speed = 3.6; // Average speed
             }
 
             // Setup Wave 1
@@ -1619,6 +1657,7 @@
             particles = [];
             drops = [];
             explosions = [];
+            portalCooldown = 0;
 
             // Spawn first particle sparks
             spawnExplosiveSparks(400, 300, '#ff3344', 15);
@@ -1850,6 +1889,28 @@
         function updatePhysics() {
             if (gameState !== 'PLAYING') return;
 
+            // Portal cooldown update
+            if (portalCooldown > 0) {
+                portalCooldown--;
+            }
+
+            // Portal collision check
+            portals.forEach(port => {
+                const distToPortal = Math.hypot(player.x - port.x, player.y - port.y);
+                if (distToPortal < (player.radius + port.radius - 5)) {
+                    if (portalCooldown === 0) {
+                        // Teleport player!
+                        player.x = port.targetX;
+                        player.y = port.targetY;
+                        portalCooldown = 60; // 1 second cooldown (60 frames at 60fps)
+                        
+                        audio.playPowerUp();
+                        spawnExplosiveSparks(port.x, port.y, '#00F3FF', 25);
+                        spawnExplosiveSparks(port.targetX, port.targetY, '#00F3FF', 25);
+                    }
+                }
+            });
+
             // Invincibility frames update
             if (player.invincibilityFrames && player.invincibilityFrames > 0) {
                 player.invincibilityFrames--;
@@ -2044,6 +2105,7 @@
                             // Calculate points
                             let points = 50;
                             if (doublePointsActive) points = 100;
+                            if (selectedCharacter === 'tom-nook') points = Math.round(points * 1.1);
                             player.score += points;
                             player.kills++;
                             
@@ -2083,6 +2145,7 @@
                             z.toRemove = true;
                             let points = 50;
                             if (doublePointsActive) points = 100;
+                            if (selectedCharacter === 'tom-nook') points = Math.round(points * 1.1);
                             player.score += points;
                             player.kills++;
                             spawnDrop(z.x, z.y);
@@ -2100,7 +2163,8 @@
             // 8. Collect power-up drops
             drops.forEach(d => {
                 const distToPlayer = Math.hypot(player.x - d.x, player.y - d.y);
-                if (distToPlayer < (player.radius + d.radius)) {
+                const pickupRadius = (selectedCharacter === 'tom-nook') ? (player.radius + d.radius + 60) : (player.radius + d.radius);
+                if (distToPlayer < pickupRadius) {
                     triggerPowerUp(d.type);
                     d.toRemove = true;
                     return;
@@ -2603,6 +2667,87 @@
             ctx.restore();
         }
 
+        function drawTomNookHead(ctx, x, y, radius) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            // Ears
+            ctx.fillStyle = '#654321'; // Dark brown
+            ctx.strokeStyle = '#4a2f16';
+            ctx.lineWidth = 1.5;
+            
+            // Left ear
+            ctx.beginPath();
+            ctx.arc(-radius * 0.7, -radius * 0.7, radius * 0.35, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+            // Inner left ear (tan)
+            ctx.fillStyle = '#d2b48c';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.7, -radius * 0.7, radius * 0.18, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Right ear
+            ctx.fillStyle = '#654321';
+            ctx.beginPath();
+            ctx.arc(radius * 0.7, -radius * 0.7, radius * 0.35, 0, Math.PI * 2);
+            ctx.fill(); ctx.stroke();
+            // Inner right ear (tan)
+            ctx.fillStyle = '#d2b48c';
+            ctx.beginPath();
+            ctx.arc(radius * 0.7, -radius * 0.7, radius * 0.18, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Main head circle (brown)
+            ctx.fillStyle = '#8b5a2b'; // Medium brown
+            ctx.beginPath();
+            ctx.arc(0, 0, radius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Raccoon mask (dark brown horizontal oval shape across eyes)
+            ctx.fillStyle = '#4a2f16'; // Very dark brown mask
+            ctx.beginPath();
+            ctx.ellipse(0, -radius * 0.05, radius * 0.85, radius * 0.45, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Tan muzzle (ellipse at front/bottom)
+            ctx.fillStyle = '#d2b48c'; // Tan color
+            ctx.beginPath();
+            ctx.ellipse(0, radius * 0.3, radius * 0.55, radius * 0.35, 0, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+
+            // Small black eyes inside the mask
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.35, -radius * 0.05, radius * 0.08, 0, Math.PI * 2);
+            ctx.arc(radius * 0.35, -radius * 0.05, radius * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Eye highlights (white dots)
+            ctx.fillStyle = '#FFF';
+            ctx.beginPath();
+            ctx.arc(-radius * 0.32, -radius * 0.09, radius * 0.03, 0, Math.PI * 2);
+            ctx.arc(radius * 0.38, -radius * 0.09, radius * 0.03, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Nose (black button)
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            ctx.arc(0, radius * 0.15, radius * 0.08, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Cheerful smile
+            ctx.strokeStyle = '#000';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.arc(-radius * 0.1, radius * 0.25, radius * 0.1, 0, Math.PI);
+            ctx.arc(radius * 0.1, radius * 0.25, radius * 0.1, 0, Math.PI);
+            ctx.stroke();
+
+            ctx.restore();
+        }
+
         // Draw active frame
         function drawFrame() {
             // Clear Arena
@@ -2618,6 +2763,50 @@
             for (let i = 0; i < canvas.height; i += 40) {
                 ctx.beginPath(); ctx.moveTo(0, i); ctx.lineTo(canvas.width, i); ctx.stroke();
             }
+
+            // Draw Portals
+            portals.forEach(port => {
+                ctx.save();
+                
+                // Pulsing glow
+                const time = Date.now() * 0.003;
+                const pulse = Math.sin(time * 2) * 4 + 6;
+                ctx.shadowBlur = pulse + 12;
+                ctx.shadowColor = port.color;
+                
+                // Outer ring
+                ctx.strokeStyle = port.color;
+                ctx.lineWidth = 3;
+                ctx.beginPath();
+                ctx.arc(port.x, port.y, port.radius + Math.sin(time) * 2, 0, Math.PI * 2);
+                ctx.stroke();
+                
+                // Inner swirling vortex lines
+                ctx.shadowBlur = 0;
+                ctx.lineWidth = 2;
+                for (let angle = 0; angle < Math.PI * 2; angle += Math.PI / 4) {
+                    const startR = port.radius * 0.2;
+                    const endR = port.radius * 0.9;
+                    const spinAngle = angle + time;
+                    const sx = port.x + Math.cos(spinAngle) * startR;
+                    const sy = port.y + Math.sin(spinAngle) * startR;
+                    const ex = port.x + Math.cos(spinAngle + 0.4) * endR;
+                    const ey = port.y + Math.sin(spinAngle + 0.4) * endR;
+                    
+                    ctx.beginPath();
+                    ctx.moveTo(sx, sy);
+                    ctx.lineTo(ex, ey);
+                    ctx.stroke();
+                }
+                
+                // Center dark hole
+                ctx.fillStyle = '#03050c';
+                ctx.beginPath();
+                ctx.arc(port.x, port.y, port.radius * 0.3, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.restore();
+            });
 
             // 1. Draw power up drops
             drops.forEach(d => {
@@ -2844,6 +3033,8 @@
                 drawBlackBirdHead(ctx, 0, 0, player.radius);
             } else if (selectedCharacter === 'sonic') {
                 drawSonicHead(ctx, 0, 0, player.radius);
+            } else if (selectedCharacter === 'tom-nook') {
+                drawTomNookHead(ctx, 0, 0, player.radius);
             }
 
             // Draw muzzle tip or gun bar
